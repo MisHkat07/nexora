@@ -10,7 +10,7 @@ export default function CustomerPreviewCard({
   const translate = useLanguage();
   return (
     <Row className="gutter-row">
-      <div className="whiteBox shadow" style={{ height: 458 }}>
+      <div className="whiteBox shadow customer-preview-card" style={{ height: 458, width: '100%' }}>
         <div
           className="pad20"
           style={{
@@ -18,7 +18,7 @@ export default function CustomerPreviewCard({
             justifyContent: 'center',
           }}
         >
-          <h3 style={{ color: '#333', marginBottom: 40, marginTop: 15, fontSize: 'large' }}>
+          <h3 style={{ color: '#1f3d3d', marginBottom: 32, marginTop: 12, fontSize: '16px' }}>
             {translate('Customers')}
           </h3>
 
@@ -31,20 +31,16 @@ export default function CustomerPreviewCard({
                 justifyContent: 'center',
               }}
             >
-              <Progress type="dashboard" percent={newCustomer} size={148} />
-              <p>{translate('New Customer this Month')}</p>
+              <Progress type="dashboard" percent={newCustomer} size={148} strokeColor="#339393" />
+              <p style={{ color: '#6b7c93', marginTop: 12 }}>
+                {translate('New Customer this Month')}
+              </p>
               <Divider />
               <Statistic
                 title={translate('Active Customer')}
                 value={activeCustomer}
                 precision={2}
-                valueStyle={
-                  activeCustomer > 0
-                    ? { color: '#333' }
-                    : activeCustomer < 0
-                      ? { color: '#333' }
-                      : { color: '#000000' }
-                }
+                valueStyle={{ color: '#1f3d3d' }}
                 prefix={
                   activeCustomer > 0 ? (
                     <ArrowUpOutlined />

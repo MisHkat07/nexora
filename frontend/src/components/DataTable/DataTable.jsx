@@ -138,7 +138,8 @@ export default function DataTable({ config, extra = [] }) {
           trigger={['click']}
         >
           <EllipsisOutlined
-            style={{ cursor: 'pointer', fontSize: '24px' }}
+            className="table-action-trigger"
+            style={{ cursor: 'pointer', fontSize: '20px' }}
             onClick={(e) => e.preventDefault()}
           />
         </Dropdown>
@@ -176,8 +177,9 @@ export default function DataTable({ config, extra = [] }) {
   }, []);
 
   return (
-    <>
+    <div className="page-module">
       <PageHeader
+        className="data-table-toolbar"
         onBack={() => window.history.back()}
         backIcon={<ArrowLeftOutlined />}
         title={DATATABLE_TITLE}
@@ -196,7 +198,7 @@ export default function DataTable({ config, extra = [] }) {
           <AddNewItem key={`${uniqueId()}`} config={config} />,
         ]}
         style={{
-          padding: '20px 0px',
+          padding: '12px 0 20px',
         }}
       ></PageHeader>
 
@@ -208,7 +210,8 @@ export default function DataTable({ config, extra = [] }) {
         loading={listIsLoading}
         onChange={handelDataTableLoad}
         scroll={{ x: true }}
+        size="middle"
       />
-    </>
+    </div>
   );
 }

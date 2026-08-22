@@ -126,17 +126,22 @@ export default function ReadItem({ config, selectedItem }) {
   return (
     <>
       <PageHeader
+        className="erp-read-actions data-table-toolbar"
         onBack={() => {
           navigate(`/${entity.toLowerCase()}`);
         }}
         title={`${ENTITY_NAME} # ${currentErp.number}/${currentErp.year || ''}`}
         ghost={false}
         tags={[
-          <span key="status">{currentErp.status && translate(currentErp.status)}</span>,
+          currentErp.status && (
+            <Tag className="status-tag" key="status" color="cyan">
+              {translate(currentErp.status)}
+            </Tag>
+          ),
           currentErp.paymentStatus && (
-            <span key="paymentStatus">
-              {currentErp.paymentStatus && translate(currentErp.paymentStatus)}
-            </span>
+            <Tag className="status-tag" key="paymentStatus" color="blue">
+              {translate(currentErp.paymentStatus)}
+            </Tag>
           ),
         ]}
         extra={[
@@ -200,11 +205,11 @@ export default function ReadItem({ config, selectedItem }) {
           </Button>,
         ]}
         style={{
-          padding: '20px 0px',
+          padding: '12px 0 20px',
         }}
       >
         <Row>
-          <Statistic title="Status" value={currentErp.status} />
+          <Statistic title={translate('Status')} value={currentErp.status} />
           <Statistic
             title={translate('SubTotal')}
             value={moneyFormatter({

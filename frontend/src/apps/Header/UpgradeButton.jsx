@@ -17,20 +17,17 @@ export default function UpgradeButton() {
           float: 'right',
           marginTop: '5px',
           cursor: 'pointer',
-          background: '#16923e',
-          boxShadow: '0 2px 0 rgb(82 196 26 / 20%)',
+          background: '#339393',
+          borderColor: '#339393',
+          boxShadow: '0 2px 0 rgba(51, 147, 147, 0.2)',
         }}
         icon={<RocketOutlined />}
         onClick={() => {
           window.open(`https://cloud.idurarapp.com`);
         }}
       >
-        {translate('Try Entreprise Version')}
+        {translate('try_enterprise_version')}
       </Button>
     </Badge>
   );
 }
-
-console.log(
-  '🚀 Welcome to ERP CRM!'
-);

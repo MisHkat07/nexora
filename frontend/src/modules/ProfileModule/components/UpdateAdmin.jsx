@@ -68,18 +68,18 @@ const UpdateAdmin = ({ config }) => {
           </Button>,
         ]}
         style={{
-          padding: '20px 0px',
+          padding: '12px 0 20px',
         }}
       ></PageHeader>
-      <Row align="start">
+      <Row align="start" gutter={[16, 16]}>
         <Col xs={{ span: 24 }} sm={{ span: 6 }} md={{ span: 4 }}></Col>
-        <Col xs={{ span: 16 }}>
+        <Col xs={{ span: 24 }} sm={{ span: 16 }}>
           <Form
             form={form}
             onFinish={onSubmit}
             labelAlign="left"
             labelCol={{ span: 6 }}
-            wrapperCol={{ span: 10 }}
+            wrapperCol={{ span: 12 }}
           >
             <ProfileAdminForm isUpdateForm={true} />
           </Form>

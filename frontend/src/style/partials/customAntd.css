@@ -1,5 +1,5 @@
 .ant-layout {
-  background: #ffffff !important;
+  background: #f7f9fa !important;
 }
 .site-layout .site-layout-background {
   background: #fff;
@@ -9,7 +9,7 @@
 }
 
 .headerIcon .ant-dropdown-menu {
-  border-radius: 6px;
+  border-radius: 8px;
   background: none;
   padding: 0;
   box-shadow: none;
@@ -75,8 +75,55 @@ h6 {
 }
 
 .ant-menu-item {
-  height: 36px !important;
+  height: 40px !important;
+  margin-inline: 8px !important;
+  width: calc(100% - 16px) !important;
 }
+
+.ant-menu-item-selected {
+  font-weight: 600;
+}
+
+.page-module {
+  padding: 8px 4px 24px;
+}
+
+.summary-card,
+.preview-card,
+.customer-preview-card {
+  border-radius: 8px;
+  border: 1px solid #edf0f5;
+  box-shadow: 0 1px 2px rgba(31, 61, 61, 0.04);
+}
+
+.data-table-toolbar .ant-page-header-heading-extra {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.data-table-toolbar .ant-input-affix-wrapper,
+.data-table-toolbar .ant-input {
+  min-width: 200px;
+}
+
+.table-action-trigger {
+  color: #4f5d75;
+  padding: 4px 8px;
+  border-radius: 6px;
+}
+
+.table-action-trigger:hover {
+  color: #339393;
+  background: rgba(51, 147, 147, 0.08);
+}
+
+.status-tag {
+  border-radius: 4px;
+  font-weight: 500;
+}
+
 @media (max-width: 768px) {
   .tabContent .ant-tabs-right > .ant-tabs-content-holder > .ant-tabs-content > .ant-tabs-tabpane {
     padding-right: 0;

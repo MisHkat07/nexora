@@ -126,8 +126,8 @@ export default function DashboardModule() {
 
   if (money_format_settings) {
     return (
-      <>
-        <Row gutter={[32, 32]}>
+      <div className="page-module">
+        <Row gutter={[24, 24]}>
           <SummaryCard
             title={translate('Invoices')}
             prefix={translate('This month')}
@@ -154,9 +154,9 @@ export default function DashboardModule() {
           />
         </Row>
         <div className="space30"></div>
-        <Row gutter={[32, 32]}>
+        <Row gutter={[24, 24]}>
           <Col className="gutter-row w-full" sm={{ span: 24 }} md={{ span: 24 }} lg={{ span: 18 }}>
-            <div className="whiteBox shadow" style={{ height: 458 }}>
+            <div className="whiteBox shadow preview-card" style={{ height: 458 }}>
               <Row className="pad20" gutter={[0, 0]}>
                 {statisticCards}
               </Row>
@@ -171,10 +171,10 @@ export default function DashboardModule() {
           </Col>
         </Row>
         <div className="space30"></div>
-        <Row gutter={[32, 32]}>
+        <Row gutter={[24, 24]}>
           <Col className="gutter-row w-full" sm={{ span: 24 }} lg={{ span: 12 }}>
-            <div className="whiteBox shadow pad20" style={{ height: '100%' }}>
-              <h3 style={{ color: '#22075e', marginBottom: 5, padding: '0 20px 20px' }}>
+            <div className="whiteBox shadow pad20 preview-card" style={{ height: '100%' }}>
+              <h3 style={{ color: '#1f3d3d', marginBottom: 8, padding: '0 8px 16px' }}>
                 {translate('Recent Invoices')}
               </h3>
 
@@ -183,15 +183,15 @@ export default function DashboardModule() {
           </Col>
 
           <Col className="gutter-row w-full" sm={{ span: 24 }} lg={{ span: 12 }}>
-            <div className="whiteBox shadow pad20" style={{ height: '100%' }}>
-              <h3 style={{ color: '#22075e', marginBottom: 5, padding: '0 20px 20px' }}>
+            <div className="whiteBox shadow pad20 preview-card" style={{ height: '100%' }}>
+              <h3 style={{ color: '#1f3d3d', marginBottom: 8, padding: '0 8px 16px' }}>
                 {translate('Recent Quotes')}
               </h3>
               <RecentTable entity={'quote'} dataTableColumns={dataTableColumns} />
             </div>
           </Col>
         </Row>
-      </>
+      </div>
     );
   } else {
     return <></>;

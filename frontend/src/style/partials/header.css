@@ -3,7 +3,7 @@
   height: 60px;
 }
 .notification::-webkit-scrollbar-thumb {
-  background: #1b98f5;
+  background: #339393;
   border-radius: 4px;
 }
 .headerIcon {
@@ -19,24 +19,49 @@
 }
 .headerIcon.ant-avatar :hover {
   background: #fff;
-  box-shadow: 0px 0px 10px 4px rgba(150, 190, 238, 0.3);
+  box-shadow: 0px 0px 10px 4px rgba(51, 147, 147, 0.18);
   cursor: pointer;
 }
 
 .headerIcon .last {
-  margin-right: 30px;
+  margin-right: 8px;
 }
 
 .profileDropdown {
   display: flex;
-  min-width: 200px;
+  min-width: 220px;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 0;
 }
 .profileDropdownInfo {
   float: left;
   display: inline;
-  padding-left: 15px;
+  padding-left: 12px;
 }
 
 .profileDropdownInfo p {
   margin: 0;
+  line-height: 1.35;
+}
+
+.profileDropdownInfo p:first-child {
+  font-weight: 600;
+  color: #1f3d3d;
+}
+
+.profileDropdownInfo p:last-child {
+  color: #6b7c93;
+  font-size: 12px;
+}
+
+.app-header {
+  padding: 16px 24px !important;
+  background: #ffffff !important;
+  border-bottom: 1px solid #edf0f5;
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 12px;
 }

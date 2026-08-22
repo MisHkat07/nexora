@@ -1,33 +1,25 @@
-import { Space, Layout, Divider, Typography } from 'antd';
+import { Layout, Typography } from 'antd';
 import useLanguage from '@/locale/useLanguage';
-import { useSelector } from 'react-redux';
 
 const { Content } = Layout;
-const { Title, Text } = Typography;
+const { Title, Text, Paragraph } = Typography;
 
 export default function SideContent() {
   const translate = useLanguage();
 
   return (
-    <Content
-      style={{
-        padding: '150px 30px 30px',
-        width: '100%',
-        maxWidth: '450px',
-        margin: '0 auto',
-      }}
-      className="sideContent"
-    >
-      <div style={{ width: '100%' }}>
-
-        <Title level={1} style={{ fontSize: 28 }}>
-         ERP / CRM
+    <Content className="sideContent auth-side-content">
+      <div className="auth-side-inner">
+        <Text className="auth-brand-mark">ERP / CRM</Text>
+        <Title level={1} className="auth-side-title">
+          {translate('manage_your_company_with')}
         </Title>
-        <Text>
-          Accounting / Invoicing / Quote App <b />
+        <Paragraph className="auth-side-copy">
+          {translate('it_brings_together_your_invoice_clients_and_leads')}
+        </Paragraph>
+        <Text type="secondary" className="auth-side-tagline">
+          Accounting / Invoicing / Quote App
         </Text>
-
-        <div className="space20"></div>
       </div>
     </Content>
   );

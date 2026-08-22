@@ -73,6 +73,7 @@ export default function ReadItem({ config, selectedItem }) {
   return (
     <>
       <PageHeader
+        className="erp-read-actions data-table-toolbar"
         onBack={() => {
           navigate(`/${entity.toLowerCase()}`);
         }}

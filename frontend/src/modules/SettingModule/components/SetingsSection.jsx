@@ -1,14 +1,17 @@
 import { Col, Divider, Row, Typography } from 'antd';
-import { useSelector } from 'react-redux';
 
 const { Title, Text } = Typography;
 
 export default function SetingsSection({ title, description, children }) {
   return (
-    <Row gutter={[24, 24]}>
+    <Row gutter={[24, 24]} className="settings-section">
       <Col span={24}>
-        <Title level={4}>{title}</Title>
-        <Text type="secondary">{description}</Text>
+        <Title level={4} className="settings-section-title">
+          {title}
+        </Title>
+        <Text type="secondary" className="settings-section-desc">
+          {description}
+        </Text>
       </Col>
 
       <Col

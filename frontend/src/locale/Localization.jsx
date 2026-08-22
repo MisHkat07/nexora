@@ -6,8 +6,34 @@ export default function Localization({ children }) {
       theme={{
         token: {
           colorPrimary: '#339393',
-          colorLink: '#1640D6',
-          borderRadius: 0,
+          colorLink: '#2a7a7a',
+          borderRadius: 6,
+          controlHeight: 36,
+          fontFamily:
+            "'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif",
+        },
+        components: {
+          Button: {
+            borderRadius: 6,
+            controlHeight: 36,
+          },
+          Input: {
+            borderRadius: 6,
+          },
+          Select: {
+            borderRadius: 6,
+          },
+          Card: {
+            borderRadius: 8,
+          },
+          Table: {
+            borderRadius: 6,
+            headerBorderRadius: 6,
+          },
+          Menu: {
+            itemBorderRadius: 6,
+            itemHeight: 40,
+          },
         },
       }}
     >

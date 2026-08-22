@@ -34,7 +34,7 @@ export default function Quote() {
       },
     },
     {
-      title: translate('expired Date'),
+      title: translate('expired_date'),
       dataIndex: 'expiredDate',
       render: (date) => {
         return dayjs(date).format(dateFormat);
@@ -72,14 +72,22 @@ export default function Quote() {
     {
       title: translate('Status'),
       dataIndex: 'status',
+      render: (status) => {
+        const color = tagColor(status)?.color || 'default';
+        return (
+          <Tag className="status-tag" color={color}>
+            {translate(status)}
+          </Tag>
+        );
+      },
     },
   ];
 
   const Labels = {
-    PANEL_TITLE: translate('proforma invoice'),
-    DATATABLE_TITLE: translate('proforma invoice_list'),
-    ADD_NEW_ENTITY: translate('add_new_proforma invoice'),
-    ENTITY_NAME: translate('proforma invoice'),
+    PANEL_TITLE: translate('quote'),
+    DATATABLE_TITLE: translate('quote_list'),
+    ADD_NEW_ENTITY: translate('add_new_quote'),
+    ENTITY_NAME: translate('quote'),
   };
 
   const configPage = {

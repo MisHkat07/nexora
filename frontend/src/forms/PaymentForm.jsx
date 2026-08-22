@@ -1,6 +1,6 @@
 import React from 'react';
 import dayjs from 'dayjs';
-import { Form, Input, InputNumber } from 'antd';
+import { Form, Input, InputNumber, Row, Col } from 'antd';
 import { DatePicker } from 'antd';
 import SelectAsync from '@/components/SelectAsync';
 import { useMoney, useDate } from '@/settings';
@@ -14,33 +14,37 @@ export default function PaymentForm({ maxAmount = null, isUpdateForm = false }) 
   const { dateFormat } = useDate();
   return (
     <>
-      <Form.Item
-        label={translate('number')}
-        name="number"
-        initialValue={1}
-        rules={[
-          {
-            required: true,
-          },
-        ]}
-        style={{ width: '50%', float: 'left', paddingRight: '20px' }}
-      >
-        <InputNumber min={1} style={{ width: '100%' }} />
-      </Form.Item>
-      <Form.Item
-        name="date"
-        label={translate('date')}
-        rules={[
-          {
-            required: true,
-            type: 'object',
-          },
-        ]}
-        initialValue={dayjs().add(30, 'days')}
-        style={{ width: '100%' }}
-      >
-        <DatePicker format={dateFormat} style={{ width: '100%' }} />
-      </Form.Item>
+      <Row gutter={16}>
+        <Col span={12}>
+          <Form.Item
+            label={translate('number')}
+            name="number"
+            initialValue={1}
+            rules={[
+              {
+                required: true,
+              },
+            ]}
+          >
+            <InputNumber min={1} style={{ width: '100%' }} />
+          </Form.Item>
+        </Col>
+        <Col span={12}>
+          <Form.Item
+            name="date"
+            label={translate('date')}
+            rules={[
+              {
+                required: true,
+                type: 'object',
+              },
+            ]}
+            initialValue={dayjs().add(30, 'days')}
+          >
+            <DatePicker format={dateFormat} style={{ width: '100%' }} />
+          </Form.Item>
+        </Col>
+      </Row>
       <Form.Item label={translate('amount')} name="amount" rules={[{ required: true }]}>
         <InputNumber
           className="moneyInput"
@@ -52,7 +56,7 @@ export default function PaymentForm({ maxAmount = null, isUpdateForm = false }) 
         />
       </Form.Item>
       <Form.Item
-        label={translate('payment Mode')}
+        label={translate('payment_mode')}
         name="paymentMode"
         rules={[
           {
@@ -72,7 +76,7 @@ export default function PaymentForm({ maxAmount = null, isUpdateForm = false }) 
         <Input />
       </Form.Item>
       <Form.Item label={translate('Description')} name="description">
-        <TextArea />
+        <TextArea rows={3} />
       </Form.Item>
     </>
   );

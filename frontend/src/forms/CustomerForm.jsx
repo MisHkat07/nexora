@@ -1,4 +1,4 @@
-import { Form, Input } from 'antd';
+import { Form, Input, Row, Col } from 'antd';
 import { validatePhoneNumber } from '@/utils/helpers';
 
 import useLanguage from '@/locale/useLanguage';
@@ -29,44 +29,40 @@ export default function CustomerForm({ isUpdateForm = false }) {
       >
         <Input />
       </Form.Item>
-      <Form.Item
-        label={translate('Manager first Name')}
-        name="managerName"
-        rules={[
-          {
-            required: true,
-          },
-          {
-            validator: validateEmptyString,
-          },
-        ]}
-        style={{
-          display: 'inline-block',
-          width: 'calc(50%)',
-          paddingRight: '5px',
-        }}
-      >
-        <Input />
-      </Form.Item>
-      <Form.Item
-        label={translate('Manager Last Name')}
-        name="managerSurname"
-        rules={[
-          {
-            required: true,
-          },
-          {
-            validator: validateEmptyString,
-          },
-        ]}
-        style={{
-          display: 'inline-block',
-          width: 'calc(50%)',
-          paddingLeft: '5px',
-        }}
-      >
-        <Input />
-      </Form.Item>
+      <Row gutter={12}>
+        <Col span={12}>
+          <Form.Item
+            label={translate('manager_first_name')}
+            name="managerName"
+            rules={[
+              {
+                required: true,
+              },
+              {
+                validator: validateEmptyString,
+              },
+            ]}
+          >
+            <Input />
+          </Form.Item>
+        </Col>
+        <Col span={12}>
+          <Form.Item
+            label={translate('manager_last_name')}
+            name="managerSurname"
+            rules={[
+              {
+                required: true,
+              },
+              {
+                validator: validateEmptyString,
+              },
+            ]}
+          >
+            <Input />
+          </Form.Item>
+        </Col>
+      </Row>
 
       <Form.Item
         name="phone"

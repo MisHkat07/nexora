@@ -67,7 +67,7 @@ export default function AdvancedSettingsForm({ isUpdateForm = false }) {
   return (
     <>
       <Form.Item
-        label={translate('Setting Category')}
+        label={translate('setting_category')}
         name="settingCategory"
         rules={[
           {
@@ -76,7 +76,7 @@ export default function AdvancedSettingsForm({ isUpdateForm = false }) {
         ]}
       >
         <Select
-          placeholder={translate('Select')}
+          placeholder={translate('select')}
           options={[
             {
               value: 'app_settings',
@@ -84,7 +84,7 @@ export default function AdvancedSettingsForm({ isUpdateForm = false }) {
             },
             {
               value: 'crm_settings',
-              label: translate('CRM Settings'),
+              label: translate('crm_settings'),
             },
 
             {
@@ -103,7 +103,7 @@ export default function AdvancedSettingsForm({ isUpdateForm = false }) {
         />
       </Form.Item>
       <Form.Item
-        label={translate('Setting Name')}
+        label={translate('setting_name')}
         name="settingKey"
         rules={[
           {

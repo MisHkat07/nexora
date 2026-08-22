@@ -3,7 +3,7 @@ import { Tabs, Row, Col } from 'antd';
 const SettingsLayout = ({ children }) => {
   return (
     <Col className="gutter-row" order={0}>
-      <div className="whiteBox shadow" style={{ minHeight: '480px' }}>
+      <div className="whiteBox shadow preview-card" style={{ minHeight: '480px' }}>
         <div className="pad40">{children}</div>
       </div>
     </Col>
@@ -13,9 +13,9 @@ const SettingsLayout = ({ children }) => {
 const TopCard = ({ pageTitle }) => {
   return (
     <div
-      className="whiteBox shadow"
+      className="whiteBox shadow preview-card"
       style={{
-        color: '#595959',
+        color: '#4f5d75',
         fontSize: 13,
         height: '70px',
         minHeight: 'auto',
@@ -23,7 +23,7 @@ const TopCard = ({ pageTitle }) => {
       }}
     >
       <div className="pad20 strong" style={{ textAlign: 'center', justifyContent: 'center' }}>
-        <h2 style={{ color: '#22075e', marginBottom: 0, marginTop: 0 }}>{pageTitle}</h2>
+        <h2 style={{ color: '#1f3d3d', marginBottom: 0, marginTop: 0 }}>{pageTitle}</h2>
       </div>
     </div>
   );
@@ -40,7 +40,7 @@ const RightMenu = ({ children, pageTitle }) => {
       order={1}
     >
       <TopCard pageTitle={pageTitle} />
-      <div className="whiteBox shadow">
+      <div className="whiteBox shadow preview-card">
         <div className="pad25" style={{ width: '100%', paddingBottom: 0 }}>
           {children}
         </div>
@@ -69,7 +69,7 @@ export default function TabsContent({ content, defaultActiveKey, pageTitle }) {
   );
 
   return (
-    <Row gutter={[24, 24]} className="tabContent">
+    <Row gutter={[24, 24]} className="tabContent page-module">
       <Tabs
         tabPosition="right"
         defaultActiveKey={defaultActiveKey}

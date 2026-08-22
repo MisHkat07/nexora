@@ -35,7 +35,7 @@ export default function Invoice() {
       },
     },
     {
-      title: translate('expired Date'),
+      title: translate('expired_date'),
       dataIndex: 'expiredDate',
       render: (date) => {
         return dayjs(date).format(dateFormat);
@@ -74,10 +74,26 @@ export default function Invoice() {
     {
       title: translate('Status'),
       dataIndex: 'status',
+      render: (status) => {
+        const color = tagColor(status)?.color || 'default';
+        return (
+          <Tag className="status-tag" color={color}>
+            {translate(status)}
+          </Tag>
+        );
+      },
     },
     {
       title: translate('Payment'),
       dataIndex: 'paymentStatus',
+      render: (status) => {
+        const color = tagColor(status)?.color || 'default';
+        return (
+          <Tag className="status-tag" color={color}>
+            {translate(status)}
+          </Tag>
+        );
+      },
     },
   ];
 

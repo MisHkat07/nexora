@@ -15,14 +15,14 @@ export default function AnalyticSummaryCard({ title, tagColor, data, prefix, isL
       lg={{ span: 6 }}
     >
       <div
-        className="whiteBox shadow"
-        style={{ color: '#595959', fontSize: 13, minHeight: '106px', height: '100%' }}
+        className="whiteBox shadow summary-card"
+        style={{ color: '#4f5d75', fontSize: 13, minHeight: '112px', height: '100%' }}
       >
         <div className="pad15 strong" style={{ textAlign: 'center', justifyContent: 'center' }}>
           <h3
             style={{
-              color: '#22075e',
-              fontSize: 'large',
+              color: '#1f3d3d',
+              fontSize: '16px',
               margin: '5px 0',
               textTransform: 'capitalize',
             }}
@@ -34,7 +34,7 @@ export default function AnalyticSummaryCard({ title, tagColor, data, prefix, isL
         <div className="pad15">
           <Row gutter={[0, 0]} justify="space-between" wrap={false}>
             <Col className="gutter-row" flex="85px" style={{ textAlign: 'left' }}>
-              <div className="left" style={{ whiteSpace: 'nowrap' }}>
+              <div className="left" style={{ whiteSpace: 'nowrap', color: '#6b7c93' }}>
                 {prefix}
               </div>
             </Col>
@@ -66,7 +66,8 @@ export default function AnalyticSummaryCard({ title, tagColor, data, prefix, isL
                   }}
                 >
                   <Tag
-                    color={tagColor}
+                    className="status-tag"
+                    color={tagColor || 'cyan'}
                     style={{
                       margin: '0 auto',
                       justifyContent: 'center',

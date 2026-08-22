@@ -1,8 +1,7 @@
-import { useEffect, useState } from 'react';
 import { useProfileContext } from '@/context/profileContext';
 import { generate as uniqueId } from 'shortid';
 import { EditOutlined, LockOutlined, LogoutOutlined } from '@ant-design/icons';
-import { Avatar, Button, Col, Descriptions, Divider, Row } from 'antd';
+import { Avatar, Button, Col, Descriptions, Divider, Row, Space } from 'antd';
 import { PageHeader } from '@ant-design/pro-layout';
 import { useSelector } from 'react-redux';
 
@@ -22,8 +21,9 @@ const AdminInfo = ({ config }) => {
   const currentAdmin = useSelector(selectCurrentAdmin);
 
   return (
-    <>
+    <div className="profile-panel">
       <PageHeader
+        className="data-table-toolbar"
         onBack={() => window.history.back()}
         title={ENTITY_NAME}
         ghost={false}
@@ -49,19 +49,19 @@ const AdminInfo = ({ config }) => {
           </Button>,
         ]}
         style={{
-          padding: '20px 0px',
+          padding: '12px 0 20px',
         }}
       ></PageHeader>
-      <Row align="middle">
+      <Row align="middle" gutter={[24, 24]}>
         <Col xs={{ span: 24 }} sm={{ span: 7 }} md={{ span: 5 }}>
           <Avatar
             className="last left"
             src={currentAdmin?.photo ? FILE_BASE_URL + currentAdmin?.photo : undefined}
             size={96}
             style={{
-              color: '#f56a00',
-              backgroundColor: currentAdmin?.photo ? 'none' : '#fde3cf',
-              boxShadow: 'rgba(150, 190, 238, 0.35) 0px 0px 15px 3px',
+              color: '#1f3d3d',
+              backgroundColor: currentAdmin?.photo ? 'transparent' : '#d7ecec',
+              boxShadow: 'rgba(51, 147, 147, 0.2) 0px 0px 12px 2px',
               fontSize: '48px',
             }}
             alt={`${currentAdmin?.name}`}
@@ -83,15 +83,16 @@ const AdminInfo = ({ config }) => {
         </Col>
       </Row>
       <Divider />
-      <Button
-        key={`${uniqueId()}`}
-        icon={<LogoutOutlined />}
-        className="right"
-        onClick={() => navigate('/logout')}
-      >
-        {translate('Logout')}
-      </Button>
-    </>
+      <Space>
+        <Button
+          key={`${uniqueId()}`}
+          icon={<LogoutOutlined />}
+          onClick={() => navigate('/logout')}
+        >
+          {translate('Logout')}
+        </Button>
+      </Space>
+    </div>
   );
 };
 export default AdminInfo;

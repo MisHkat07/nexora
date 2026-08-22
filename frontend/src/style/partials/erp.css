@@ -5,3 +5,38 @@
 .moneyInput input {
   text-align: right;
 }
+
+.erp-item-header {
+  margin-bottom: 4px;
+}
+
+.erp-item-header-label {
+  margin: 0;
+  font-weight: 600;
+  color: #1f3d3d;
+  font-size: 13px;
+}
+
+.erp-read-actions .ant-page-header-heading-extra {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.settings-section {
+  margin-bottom: 24px;
+}
+
+.settings-section-title {
+  color: #1f3d3d !important;
+  margin-bottom: 4px !important;
+}
+
+.settings-section-desc {
+  color: #6b7c93;
+  margin-bottom: 16px;
+}
+
+.profile-panel {
+  padding: 8px 4px 24px;
+}

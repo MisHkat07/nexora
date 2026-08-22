@@ -5,9 +5,6 @@ import { Button, Drawer, Layout, Menu } from 'antd';
 import { useAppContext } from '@/context/appContext';
 
 import useLanguage from '@/locale/useLanguage';
-import logoIcon from '@/style/images/logo-icon.svg';
-import logoText from '@/style/images/logo-text.svg';
-
 import useResponsive from '@/hooks/useResponsive';
 
 import {
@@ -16,16 +13,10 @@ import {
   ContainerOutlined,
   FileSyncOutlined,
   DashboardOutlined,
-  TagOutlined,
-  TagsOutlined,
-  UserOutlined,
   CreditCardOutlined,
   MenuOutlined,
-  FileOutlined,
   ShopOutlined,
-  FilterOutlined,
   WalletOutlined,
-  ReconciliationOutlined,
 } from '@ant-design/icons';
 
 const { Sider } = Layout;
@@ -126,15 +117,11 @@ function Sidebar({ collapsible, isMobile = false }) {
       width={256}
       style={{
         overflow: 'auto',
-        height: '100vh',
-
+        height: isMobile ? '100vh' : 'calc(100vh - 40px)',
         position: isMobile ? 'absolute' : 'relative',
-        bottom: '20px',
         ...(!isMobile && {
-          // border: 'none',
-          ['left']: '20px',
+          left: '20px',
           top: '20px',
-          // borderRadius: '8px',
         }),
       }}
       theme={'light'}
@@ -146,19 +133,8 @@ function Sidebar({ collapsible, isMobile = false }) {
           cursor: 'pointer',
         }}
       >
-        {/* <img src={logoIcon} alt="Logo" style={{ marginLeft: '-5px', height: '40px' }} /> */}
-
-        {/* {!showLogoApp && (
-          <img
-            src={logoText}
-            alt="Logo"
-            style={{
-              marginTop: '3px',
-              marginLeft: '10px',
-              height: '38px',
-            }}
-          />
-        )} */}
+        <span className="logo-mark">ERP</span>
+        {!showLogoApp && <span>ERP / CRM</span>}
       </div>
       <Menu
         items={items}
@@ -167,6 +143,8 @@ function Sidebar({ collapsible, isMobile = false }) {
         selectedKeys={[currentPath]}
         style={{
           width: 256,
+          borderInlineEnd: 'none',
+          paddingInline: 4,
         }}
       />
     </Sider>

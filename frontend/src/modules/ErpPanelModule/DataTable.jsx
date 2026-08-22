@@ -141,7 +141,8 @@ export default function DataTable({ config, extra = [] }) {
           trigger={['click']}
         >
           <EllipsisOutlined
-            style={{ cursor: 'pointer', fontSize: '24px' }}
+            className="table-action-trigger"
+            style={{ cursor: 'pointer', fontSize: '20px' }}
             onClick={(e) => e.preventDefault()}
           />
         </Dropdown>
@@ -174,8 +175,9 @@ export default function DataTable({ config, extra = [] }) {
   };
 
   return (
-    <>
+    <div className="page-module">
       <PageHeader
+        className="data-table-toolbar"
         title={DATATABLE_TITLE}
         ghost={true}
         onBack={() => window.history.back()}
@@ -187,9 +189,6 @@ export default function DataTable({ config, extra = [] }) {
             displayLabels={['name']}
             searchFields={'name'}
             onChange={filterTable}
-            // redirectLabel={'Add New Client'}
-            // withRedirect
-            // urlToRedirect={'/customer'}
           />,
           <Button onClick={handelDataTableLoad} key={`${uniqueId()}`} icon={<RedoOutlined />}>
             {translate('Refresh')}
@@ -198,7 +197,7 @@ export default function DataTable({ config, extra = [] }) {
           !disableAdd && <AddNewItem config={config} key={`${uniqueId()}`} />,
         ]}
         style={{
-          padding: '20px 0px',
+          padding: '12px 0 20px',
         }}
       ></PageHeader>
 
@@ -210,7 +209,8 @@ export default function DataTable({ config, extra = [] }) {
         loading={listIsLoading}
         onChange={handelDataTableLoad}
         scroll={{ x: true }}
+        size="middle"
       />
-    </>
+    </div>
   );
 }

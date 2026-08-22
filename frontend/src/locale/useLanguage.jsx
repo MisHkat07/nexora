@@ -1,49 +1,34 @@
+import languages from '@/locale/translation/translation';
+
+const DEFAULT_LANG = 'en_us';
+
+const normalizeKey = (key) =>
+  String(key)
+    .toLowerCase()
+    .replace(/[^a-zA-Z0-9]/g, '_')
+    .replace(/_+/g, '_')
+    .replace(/^_|_$/g, '');
+
+const toTitleCaseLabel = (key) => {
+  const remove_underscore_fromKey = String(key).replace(/_/g, ' ').split(' ');
+
+  return remove_underscore_fromKey
+    .filter(Boolean)
+    .map((word) => word[0].toUpperCase() + word.substring(1))
+    .join(' ');
+};
+
 const getLabel = (key) => {
   try {
-    const lowerCaseKey = key
-      .toLowerCase()
-      .replace(/[^a-zA-Z0-9]/g, '_')
-      .replace(/ /g, '_');
+    const lowerCaseKey = normalizeKey(key);
+    const lang = languages[DEFAULT_LANG] || {};
 
-    // if (lang[lowerCaseKey]) return lang[lowerCaseKey];
-
-    // convert no found language label key to label
-
-    const remove_underscore_fromKey = key.replace(/_/g, ' ').split(' ');
-
-    const conversionOfAllFirstCharacterofEachWord = remove_underscore_fromKey.map(
-      (word) => word[0].toUpperCase() + word.substring(1)
-    );
-
-    const label = conversionOfAllFirstCharacterofEachWord.join(' ');
-
-    const result = window.localStorage.getItem('lang');
-    if (!result) {
-      let list = {};
-      list[lowerCaseKey] = label;
-      window.localStorage.setItem('lang', JSON.stringify(list));
-    } else {
-      let list = { ...JSON.parse(result) };
-      list[lowerCaseKey] = label;
-      window.localStorage.removeItem('lang');
-      window.localStorage.setItem('lang', JSON.stringify(list));
+    if (lang[lowerCaseKey] !== undefined && lang[lowerCaseKey] !== null) {
+      return lang[lowerCaseKey];
     }
-    // console.error(
-    //   '🇩🇿 🇧🇷 🇻🇳 🇮🇩 🇨🇳 Language Label Warning : translate("' +
-    //     lowerCaseKey +
-    //     '") failed to get label for this key : ' +
-    //     lowerCaseKey +
-    //     ' please review your language config file and add this label'
-    // );
-    return label;
+
+    return toTitleCaseLabel(key);
   } catch (error) {
-    // console.error(
-    //   '🚨 error getting this label : translate("' +
-    //     key +
-    //     '") failed to get label for this key : ' +
-    //     key +
-    //     ' please review your language config file and add this label'
-    // );
     return 'No translate';
   }
 };
