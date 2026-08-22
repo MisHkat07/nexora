@@ -1,8 +1,34 @@
 # Nexora
 
-Nexora is a full-featured ERP & CRM application built with the **MERN stack** (MongoDB, Express.js, React, Node.js) and **Redux**. It helps you manage customers, quotes, invoices, and payments in one place—with PDF export, email sending, and a dashboard for day-to-day business overview.
+**Nexora** is a modern ERP & CRM platform for managing customers, quotes, invoices, and payments—built with the MERN stack (MongoDB, Express.js, React, Node.js) and Redux.
 
 **Version:** 4.1.0
+
+---
+
+## Brand
+
+| | |
+|--------|--------|
+| **Product** | Nexora |
+| **Mark** | Stylized **N** with upward arrow + 2×2 accent grid |
+| **Assets** | `frontend/public/favicon.png`, `frontend/src/style/images/nexora-icon.png`, `frontend/src/style/images/nexora-logo.png` |
+
+### Color palette
+
+| Token | Hex | Use |
+|--------|------|--------|
+| Primary blue | `#0061FF` | Active nav, primary buttons, links |
+| Purple | `#8833FF` | Accents, “updated” states |
+| Success | `#00D97E` | Success / online / “new” |
+| Warning | `#FD7E14` | Warnings / beta |
+| Danger | `#E63757` | Errors / destructive actions |
+| Text | `#12263F` | Headings & body |
+| Muted | `#6E84A3` | Secondary labels |
+| Surface | `#F5F8FC` | App background |
+| Border | `#E3EBF6` | Dividers & card edges |
+
+UI theme tokens live in [`frontend/src/locale/Localization.jsx`](frontend/src/locale/Localization.jsx) and [`frontend/src/style/partials/brand.css`](frontend/src/style/partials/brand.css).
 
 ---
 
@@ -65,8 +91,8 @@ Nexora is a full-featured ERP & CRM application built with the **MERN stack** (M
 ## Project structure
 
 ```
-erp-crm/
-├── frontend/          # React SPA (Vite) — default port 3000
+nexora/
+├── frontend/          # Nexora SPA (Vite) — default port 3000
 ├── backend/           # Express API — default port 8888
 └── README.md
 ```
@@ -95,7 +121,7 @@ npm install
 Create `backend/.env`:
 
 ```env
-DATABASE="mongodb+srv://USER:PASSWORD@CLUSTER.mongodb.net/?appName=erp-crm"
+DATABASE="mongodb+srv://USER:PASSWORD@CLUSTER.mongodb.net/?appName=nexora"
 JWT_SECRET="your_private_jwt_secret_key"
 PORT=8888
 ```
@@ -147,7 +173,7 @@ Start the UI:
 npm run dev
 ```
 
-App runs at `http://localhost:3000`.
+App runs at `http://localhost:3000` (browser title: **Nexora**).
 
 ### Demo login (after `npm run setup`)
 

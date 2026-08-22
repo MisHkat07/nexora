@@ -13,8 +13,11 @@ export default function ErpLayout({ children }) {
         style={{
           margin: '30px auto',
           width: '100%',
-          maxWidth: '1100px',
+          maxWidth: '100%',
           minHeight: '600px',
+          margin: '0',
+          padding: '24px',
+          boxSizing: 'border-box',
         }}
       >
         {children}

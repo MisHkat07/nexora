@@ -155,6 +155,21 @@
   color: #ffffff !important;
 }
 
+.navigation .ant-menu-item-selected:hover,
+.navigation .ant-menu-item-selected.ant-menu-item-active,
+.navigation .ant-menu-item-selected:hover a,
+.navigation .ant-menu-light .ant-menu-item-selected:hover,
+.navigation .ant-menu-light .ant-menu-item-selected.ant-menu-item-active {
+  background: var(--nx-primary-hover, #0052d9) !important;
+  color: #ffffff !important;
+}
+
+.navigation .ant-menu-item-selected:hover .anticon,
+.navigation .ant-menu-item-selected.ant-menu-item-active .anticon,
+.navigation .ant-menu-light .ant-menu-item-selected:hover .anticon {
+  color: #ffffff !important;
+}
+
 .navigation .ant-menu-item-selected::after {
   display: none !important;
 }

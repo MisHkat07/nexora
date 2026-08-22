@@ -65,6 +65,7 @@ export default function Localization({ children }) {
             itemSelectedBg: nexoraBrand.primary,
             itemSelectedColor: '#ffffff',
             itemHoverBg: nexoraBrand.hoverBg,
+            horizontalItemSelectedBg: nexoraBrand.primary,
           },
           Tag: {
             borderRadiusSM: 999,

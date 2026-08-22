@@ -59,10 +59,10 @@ export default function ErpCrmApp() {
             <Content
               className="app-shell-content"
               style={{
-                margin: '24px auto',
+                margin: '24px 0',
                 overflow: 'initial',
                 width: '100%',
-                padding: '0 20px',
+                padding: '0 24px',
                 maxWidth: 'none',
               }}
             >
@@ -75,11 +75,11 @@ export default function ErpCrmApp() {
             <Content
               className="app-shell-content"
               style={{
-                margin: '24px auto',
+                margin: '24px 0',
                 overflow: 'initial',
                 width: '100%',
                 padding: '0 28px',
-                maxWidth: 1400,
+                maxWidth: 'none',
               }}
             >
               <AppRouter />
