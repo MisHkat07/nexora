@@ -13,3 +13,17 @@
 .wideNavigation {
   margin-left: 220px;
 }
+
+.app-shell {
+  min-height: 100vh;
+  background: #f4f7f7;
+}
+
+.app-shell-main {
+  min-width: 0;
+  background: #f4f7f7 !important;
+}
+
+.app-shell-content {
+  min-height: calc(100vh - 112px);
+}

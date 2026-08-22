@@ -50,18 +50,19 @@ export default function ErpCrmApp() {
 
   if (settingIsloaded)
     return (
-      <Layout hasSider>
+      <Layout hasSider className="app-shell">
         <Navigation />
 
         {isMobile ? (
-          <Layout style={{ marginLeft: 0 }}>
+          <Layout className="app-shell-main">
             <HeaderContent />
             <Content
+              className="app-shell-content"
               style={{
-                margin: '40px auto 30px',
+                margin: '24px auto',
                 overflow: 'initial',
                 width: '100%',
-                padding: '0 25px',
+                padding: '0 20px',
                 maxWidth: 'none',
               }}
             >
@@ -69,14 +70,15 @@ export default function ErpCrmApp() {
             </Content>
           </Layout>
         ) : (
-          <Layout>
+          <Layout className="app-shell-main">
             <HeaderContent />
             <Content
+              className="app-shell-content"
               style={{
-                margin: '40px auto 30px',
+                margin: '24px auto',
                 overflow: 'initial',
                 width: '100%',
-                padding: '0 50px',
+                padding: '0 28px',
                 maxWidth: 1400,
               }}
             >
