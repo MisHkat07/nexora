@@ -23,9 +23,7 @@ const DefaultApp = () => (
 export default function ERP() {
   const { isLoggedIn } = useSelector(selectAuth);
 
-  console.log(
-    ' Welcome to ERP CRM!'
-  );
+  console.log('Welcome to Nexora!');
 
   if (!isLoggedIn)
     return (

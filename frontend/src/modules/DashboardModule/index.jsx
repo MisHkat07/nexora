@@ -174,7 +174,7 @@ export default function DashboardModule() {
         <Row gutter={[24, 24]}>
           <Col className="gutter-row w-full" sm={{ span: 24 }} lg={{ span: 12 }}>
             <div className="whiteBox shadow pad20 preview-card" style={{ height: '100%' }}>
-              <h3 style={{ color: '#1f3d3d', marginBottom: 8, padding: '0 8px 16px' }}>
+              <h3 style={{ color: '#12263F', marginBottom: 8, padding: '0 8px 16px' }}>
                 {translate('Recent Invoices')}
               </h3>
 
@@ -184,7 +184,7 @@ export default function DashboardModule() {
 
           <Col className="gutter-row w-full" sm={{ span: 24 }} lg={{ span: 12 }}>
             <div className="whiteBox shadow pad20 preview-card" style={{ height: '100%' }}>
-              <h3 style={{ color: '#1f3d3d', marginBottom: 8, padding: '0 8px 16px' }}>
+              <h3 style={{ color: '#12263F', marginBottom: 8, padding: '0 8px 16px' }}>
                 {translate('Recent Quotes')}
               </h3>
               <RecentTable entity={'quote'} dataTableColumns={dataTableColumns} />

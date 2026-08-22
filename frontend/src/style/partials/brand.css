@@ -1,0 +1,16 @@
+:root {
+  --nx-primary: #0061ff;
+  --nx-primary-hover: #0052d9;
+  --nx-purple: #8833ff;
+  --nx-success: #00d97e;
+  --nx-warning: #fd7e14;
+  --nx-danger: #e63757;
+  --nx-away: #ff9f00;
+  --nx-neutral: #6e84a3;
+  --nx-text: #12263f;
+  --nx-text-muted: #6e84a3;
+  --nx-border: #e3ebf6;
+  --nx-surface: #f5f8fc;
+  --nx-white: #ffffff;
+  --nx-hover: rgba(0, 97, 255, 0.08);
+}

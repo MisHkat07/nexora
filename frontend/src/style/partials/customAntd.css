@@ -1,5 +1,5 @@
 .ant-layout {
-  background: #f7f9fa !important;
+  background: var(--nx-surface, #f5f8fc) !important;
 }
 .site-layout .site-layout-background {
   background: #fff;
@@ -9,7 +9,7 @@
 }
 
 .headerIcon .ant-dropdown-menu {
-  border-radius: 8px;
+  border-radius: 10px;
   background: none;
   padding: 0;
   box-shadow: none;
@@ -52,6 +52,7 @@ h4,
 h5,
 h6 {
   font-weight: 700 !important;
+  color: var(--nx-text, #12263f);
 }
 
 .ant-menu-inline {
@@ -74,16 +75,6 @@ h6 {
   cursor: pointer;
 }
 
-.ant-menu-item {
-  height: 40px !important;
-  margin-inline: 8px !important;
-  width: calc(100% - 16px) !important;
-}
-
-.ant-menu-item-selected {
-  font-weight: 600;
-}
-
 .page-module {
   padding: 8px 4px 24px;
 }
@@ -91,9 +82,9 @@ h6 {
 .summary-card,
 .preview-card,
 .customer-preview-card {
-  border-radius: 8px;
-  border: 1px solid #edf0f5;
-  box-shadow: 0 1px 2px rgba(31, 61, 61, 0.04);
+  border-radius: 12px;
+  border: 1px solid var(--nx-border, #e3ebf6);
+  box-shadow: 0 1px 2px rgba(18, 38, 63, 0.04);
 }
 
 .data-table-toolbar .ant-page-header-heading-extra {
@@ -109,19 +100,32 @@ h6 {
 }
 
 .table-action-trigger {
-  color: #4f5d75;
+  color: var(--nx-neutral, #6e84a3);
   padding: 4px 8px;
-  border-radius: 6px;
+  border-radius: 8px;
 }
 
 .table-action-trigger:hover {
-  color: #339393;
-  background: rgba(51, 147, 147, 0.08);
+  color: var(--nx-primary, #0061ff);
+  background: var(--nx-hover, rgba(0, 97, 255, 0.08));
 }
 
 .status-tag {
-  border-radius: 4px;
+  border-radius: 999px;
   font-weight: 500;
+}
+
+.badge-new {
+  background: var(--nx-success, #00d97e);
+  color: #fff;
+}
+.badge-updated {
+  background: var(--nx-purple, #8833ff);
+  color: #fff;
+}
+.badge-beta {
+  background: var(--nx-warning, #fd7e14);
+  color: #fff;
 }
 
 @media (max-width: 768px) {

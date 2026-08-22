@@ -81,8 +81,8 @@ const PreviewState = ({ tag, value }) => {
         percent={value}
         showInfo={false}
         strokeColor={{
-          '0%': '#339393',
-          '100%': '#1f3d3d',
+          '0%': '#0061FF',
+          '100%': '#8833FF',
         }}
       />
     </div>
@@ -130,7 +130,7 @@ export default function PreviewCard({
       <div className="pad20">
         <h3
           style={{
-            color: '#1f3d3d',
+            color: '#12263F',
             fontSize: '16px',
             marginBottom: 32,
             marginTop: 0,

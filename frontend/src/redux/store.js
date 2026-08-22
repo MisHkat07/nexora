@@ -24,8 +24,6 @@ const store = configureStore({
   devTools: import.meta.env.PROD === false, // Enable Redux DevTools in development mode
 });
 
-console.log(
-  '🚀 Welcome to ERP CRM!.'
-);
+console.log('🚀 Welcome to Nexora!');
 
 export default store;

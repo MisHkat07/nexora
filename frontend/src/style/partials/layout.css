@@ -16,12 +16,12 @@
 
 .app-shell {
   min-height: 100vh;
-  background: #f4f7f7;
+  background: var(--nx-surface, #f5f8fc);
 }
 
 .app-shell-main {
   min-width: 0;
-  background: #f4f7f7 !important;
+  background: var(--nx-surface, #f5f8fc) !important;
 }
 
 .app-shell-content {

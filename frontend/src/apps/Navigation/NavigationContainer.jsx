@@ -6,6 +6,7 @@ import { useAppContext } from '@/context/appContext';
 
 import useLanguage from '@/locale/useLanguage';
 import useResponsive from '@/hooks/useResponsive';
+import nexoraLogo from '@/style/images/nexora-logo.png';
 
 import {
   SettingOutlined,
@@ -150,10 +151,14 @@ function Sidebar({ collapsible, isMobile = false }) {
     >
       <div className="navigation-inner">
         <div className="logo" onClick={() => navigate('/')} role="button" tabIndex={0}>
-          <span className="logo-mark">ERP</span>
+          <img
+            className="logo-brand-img"
+            src={nexoraLogo}
+            alt="Nexora"
+          />
           {!showLogoApp && (
             <div className="logo-text-wrap">
-              <span className="logo-text">ERP / CRM</span>
+              <span className="logo-text">Nexora</span>
               <Text className="logo-sub">{translate('business_workspace')}</Text>
             </div>
           )}

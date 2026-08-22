@@ -23,7 +23,7 @@ const TopCard = ({ pageTitle }) => {
       }}
     >
       <div className="pad20 strong" style={{ textAlign: 'center', justifyContent: 'center' }}>
-        <h2 style={{ color: '#1f3d3d', marginBottom: 0, marginTop: 0 }}>{pageTitle}</h2>
+        <h2 style={{ color: '#12263F', marginBottom: 0, marginTop: 0 }}>{pageTitle}</h2>
       </div>
     </div>
   );

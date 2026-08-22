@@ -51,8 +51,8 @@ export default function HeaderContent() {
           className="last"
           src={currentAdmin?.photo ? FILE_BASE_URL + currentAdmin?.photo : undefined}
           style={{
-            color: '#1f3d3d',
-            backgroundColor: currentAdmin?.photo ? 'transparent' : '#d7ecec',
+            color: '#12263F',
+            backgroundColor: currentAdmin?.photo ? 'transparent' : '#E8F0FF',
           }}
         >
           {currentAdmin?.name?.charAt(0)?.toUpperCase()}
@@ -126,8 +126,8 @@ export default function HeaderContent() {
             <Avatar
               src={currentAdmin?.photo ? FILE_BASE_URL + currentAdmin?.photo : undefined}
               style={{
-                color: '#1f3d3d',
-                backgroundColor: currentAdmin?.photo ? 'transparent' : '#d7ecec',
+                color: '#12263F',
+                backgroundColor: currentAdmin?.photo ? 'transparent' : '#E8F0FF',
               }}
               size={36}
             >

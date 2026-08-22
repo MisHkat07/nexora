@@ -59,9 +59,9 @@ const AdminInfo = ({ config }) => {
             src={currentAdmin?.photo ? FILE_BASE_URL + currentAdmin?.photo : undefined}
             size={96}
             style={{
-              color: '#1f3d3d',
-              backgroundColor: currentAdmin?.photo ? 'transparent' : '#d7ecec',
-              boxShadow: 'rgba(51, 147, 147, 0.2) 0px 0px 12px 2px',
+              color: '#12263F',
+              backgroundColor: currentAdmin?.photo ? 'transparent' : '#E8F0FF',
+              boxShadow: 'rgba(0, 97, 255, 0.18) 0px 0px 12px 2px',
               fontSize: '48px',
             }}
             alt={`${currentAdmin?.name}`}

@@ -3,7 +3,7 @@
   height: 60px;
 }
 .notification::-webkit-scrollbar-thumb {
-  background: #339393;
+  background: var(--nx-primary, #0061ff);
   border-radius: 4px;
 }
 .headerIcon {
@@ -14,12 +14,12 @@
   float: right;
   margin-left: 10px;
   margin-top: 15px;
-  color: #4f5d75;
+  color: var(--nx-neutral, #6e84a3);
   background: transparent;
 }
 .headerIcon.ant-avatar :hover {
   background: #fff;
-  box-shadow: 0px 0px 10px 4px rgba(51, 147, 147, 0.18);
+  box-shadow: 0px 0px 10px 4px rgba(0, 97, 255, 0.16);
   cursor: pointer;
 }
 
@@ -48,11 +48,11 @@
 
 .profileDropdownInfo p:first-child {
   font-weight: 600;
-  color: #1f3d3d;
+  color: var(--nx-text, #12263f);
 }
 
 .profileDropdownInfo p:last-child {
-  color: #6b7c93;
+  color: var(--nx-text-muted, #6e84a3);
   font-size: 12px;
 }
 
@@ -60,8 +60,8 @@
   height: 64px !important;
   line-height: 64px !important;
   padding: 0 28px !important;
-  background: #ffffff !important;
-  border-bottom: 1px solid #e6ecec;
+  background: var(--nx-white, #ffffff) !important;
+  border-bottom: 1px solid var(--nx-border, #e3ebf6);
   display: flex !important;
   flex-direction: row !important;
   justify-content: space-between !important;
@@ -86,7 +86,7 @@
   font-weight: 600;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: #7a8a99 !important;
+  color: var(--nx-text-muted, #6e84a3) !important;
   line-height: 1.2 !important;
   margin-bottom: 2px;
 }
@@ -95,7 +95,7 @@
   display: block;
   font-size: 18px !important;
   font-weight: 700 !important;
-  color: #1f3d3d !important;
+  color: var(--nx-text, #12263f) !important;
   line-height: 1.2 !important;
 }
 
@@ -108,10 +108,10 @@
 .app-header-settings {
   width: 36px;
   height: 36px;
-  border: 1px solid #e6ecec;
+  border: 1px solid var(--nx-border, #e3ebf6);
   border-radius: 10px;
-  background: #f7fafa;
-  color: #4f5d75;
+  background: var(--nx-surface, #f5f8fc);
+  color: var(--nx-neutral, #6e84a3);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -120,9 +120,9 @@
 }
 
 .app-header-settings:hover {
-  background: #eaf4f4;
-  border-color: #cfe3e3;
-  color: #339393;
+  background: var(--nx-hover, rgba(0, 97, 255, 0.08));
+  border-color: #c9d8f0;
+  color: var(--nx-primary, #0061ff);
 }
 
 .app-header-profile {
@@ -131,7 +131,7 @@
   gap: 10px;
   height: 44px;
   padding: 4px 10px 4px 4px;
-  border: 1px solid #e6ecec;
+  border: 1px solid var(--nx-border, #e3ebf6);
   border-radius: 999px;
   background: #ffffff;
   cursor: pointer;
@@ -139,8 +139,8 @@
 }
 
 .app-header-profile:hover {
-  border-color: #cfe3e3;
-  box-shadow: 0 2px 8px rgba(31, 61, 61, 0.06);
+  border-color: #c9d8f0;
+  box-shadow: 0 2px 8px rgba(0, 97, 255, 0.08);
 }
 
 .app-header-profile-meta {
@@ -155,7 +155,7 @@
 .app-header-profile-name {
   font-size: 13px;
   font-weight: 600;
-  color: #1f3d3d;
+  color: var(--nx-text, #12263f);
   max-width: 140px;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -164,13 +164,13 @@
 
 .app-header-profile-role {
   font-size: 11px;
-  color: #7a8a99;
+  color: var(--nx-text-muted, #6e84a3);
   text-transform: capitalize;
 }
 
 .app-header-caret {
   font-size: 10px;
-  color: #7a8a99;
+  color: var(--nx-text-muted, #6e84a3);
   margin-right: 4px;
 }
 

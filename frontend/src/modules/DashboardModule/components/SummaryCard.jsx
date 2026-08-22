@@ -21,7 +21,7 @@ export default function AnalyticSummaryCard({ title, tagColor, data, prefix, isL
         <div className="pad15 strong" style={{ textAlign: 'center', justifyContent: 'center' }}>
           <h3
             style={{
-              color: '#1f3d3d',
+              color: '#12263F',
               fontSize: '16px',
               margin: '5px 0',
               textTransform: 'capitalize',
@@ -34,7 +34,7 @@ export default function AnalyticSummaryCard({ title, tagColor, data, prefix, isL
         <div className="pad15">
           <Row gutter={[0, 0]} justify="space-between" wrap={false}>
             <Col className="gutter-row" flex="85px" style={{ textAlign: 'left' }}>
-              <div className="left" style={{ whiteSpace: 'nowrap', color: '#6b7c93' }}>
+              <div className="left" style={{ whiteSpace: 'nowrap', color: '#6E84A3' }}>
                 {prefix}
               </div>
             </Col>

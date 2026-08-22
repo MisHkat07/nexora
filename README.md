@@ -1,6 +1,6 @@
-# ERP CRM System
+# Nexora
 
-A full-featured ERP & CRM application built with the **MERN stack** (MongoDB, Express.js, React, Node.js) and **Redux**. It helps you manage customers, quotes, invoices, and payments in one place—with PDF export, email sending, and a dashboard for day-to-day business overview.
+Nexora is a full-featured ERP & CRM application built with the **MERN stack** (MongoDB, Express.js, React, Node.js) and **Redux**. It helps you manage customers, quotes, invoices, and payments in one place—with PDF export, email sending, and a dashboard for day-to-day business overview.
 
 **Version:** 4.1.0
 

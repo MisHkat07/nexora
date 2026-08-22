@@ -18,7 +18,7 @@ export default function CustomerPreviewCard({
             justifyContent: 'center',
           }}
         >
-          <h3 style={{ color: '#1f3d3d', marginBottom: 32, marginTop: 12, fontSize: '16px' }}>
+          <h3 style={{ color: '#12263F', marginBottom: 32, marginTop: 12, fontSize: '16px' }}>
             {translate('Customers')}
           </h3>
 
@@ -31,8 +31,8 @@ export default function CustomerPreviewCard({
                 justifyContent: 'center',
               }}
             >
-              <Progress type="dashboard" percent={newCustomer} size={148} strokeColor="#339393" />
-              <p style={{ color: '#6b7c93', marginTop: 12 }}>
+              <Progress type="dashboard" percent={newCustomer} size={148} strokeColor="#0061FF" />
+              <p style={{ color: '#6E84A3', marginTop: 12 }}>
                 {translate('New Customer this Month')}
               </p>
               <Divider />
@@ -40,7 +40,7 @@ export default function CustomerPreviewCard({
                 title={translate('Active Customer')}
                 value={activeCustomer}
                 precision={2}
-                valueStyle={{ color: '#1f3d3d' }}
+                valueStyle={{ color: '#12263F' }}
                 prefix={
                   activeCustomer > 0 ? (
                     <ArrowUpOutlined />
