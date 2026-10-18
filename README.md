@@ -184,6 +184,37 @@ App runs at `http://localhost:3000` (browser title: **Nexora**).
 
 ---
 
+## Deployment (single server)
+
+In production the backend serves the built frontend from `frontend/dist`, so the API and UI share one origin and one port — no CORS or separate frontend host needed.
+
+### Node host (Render, Railway, VPS, etc.)
+
+From the repo root:
+
+```bash
+npm install        # installs backend + frontend deps
+npm run build      # builds frontend → frontend/dist
+npm start          # starts Express on $PORT (default 8888), serving API + UI
+```
+
+Set the backend env vars (`DATABASE`, `JWT_SECRET`, optional extras) in the host's dashboard. Run `npm run setup` once against a fresh database.
+
+### Docker
+
+```bash
+docker build -t nexora .
+docker run -p 8888:8888 -e DATABASE="mongodb+srv://..." -e JWT_SECRET="..." nexora
+```
+
+### Notes
+
+- Leave `VITE_BACKEND_SERVER` empty for same-origin deploys. Set it (with a trailing `/`) only if the API is hosted on a different domain.
+- `FRONTEND_DIST` overrides the path Express serves the UI from.
+- Local development is unchanged: run `npm run dev:backend` and `npm run dev:frontend` (ports 8888 / 3000).
+
+---
+
 ## Main modules (UI routes)
 
 | Module | Path |

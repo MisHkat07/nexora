@@ -1,0 +1,19 @@
+{
+  "name": "nexora",
+  "version": "4.1.0",
+  "private": true,
+  "description": "Nexora ERP & CRM — backend (Express) serves the built frontend (Vite)",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "install:backend": "npm --prefix backend install",
+    "install:frontend": "npm --prefix frontend install --include=dev",
+    "postinstall": "npm run install:backend && npm run install:frontend",
+    "build": "npm --prefix frontend run build",
+    "start": "npm --prefix backend start",
+    "setup": "npm --prefix backend run setup",
+    "dev:backend": "npm --prefix backend run dev",
+    "dev:frontend": "npm --prefix frontend run dev"
+  }
+}
