@@ -12,8 +12,8 @@
 
 .erp-item-header-label {
   margin: 0;
-  font-weight: 600;
-  color: #12263F;
+  font-weight: 500;
+  color: var(--nx-text);
   font-size: 13px;
 }
 
@@ -28,12 +28,12 @@
 }
 
 .settings-section-title {
-  color: #12263F !important;
+  color: var(--nx-text) !important;
   margin-bottom: 4px !important;
 }
 
 .settings-section-desc {
-  color: #6b7c93;
+  color: var(--nx-text-muted);
   margin-bottom: 16px;
 }
 

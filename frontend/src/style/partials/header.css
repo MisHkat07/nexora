@@ -82,10 +82,8 @@
 
 .app-header-eyebrow {
   display: block;
-  font-size: 11px !important;
-  font-weight: 600;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
+  font-size: 12px !important;
+  font-weight: 500;
   color: var(--nx-text-muted, #6e84a3) !important;
   line-height: 1.2 !important;
   margin-bottom: 2px;
@@ -93,8 +91,9 @@
 
 .app-header-title {
   display: block;
-  font-size: 18px !important;
-  font-weight: 700 !important;
+  font-size: 17px !important;
+  font-weight: 600 !important;
+  letter-spacing: -0.015em;
   color: var(--nx-text, #12263f) !important;
   line-height: 1.2 !important;
 }
@@ -109,8 +108,8 @@
   width: 36px;
   height: 36px;
   border: 1px solid var(--nx-border, #e3ebf6);
-  border-radius: 10px;
-  background: var(--nx-surface, #f5f8fc);
+  border-radius: 8px;
+  background: transparent;
   color: var(--nx-neutral, #6e84a3);
   display: inline-flex;
   align-items: center;
@@ -140,7 +139,7 @@
 
 .app-header-profile:hover {
   border-color: #c9d8f0;
-  box-shadow: 0 2px 8px rgba(0, 97, 255, 0.08);
+  background: var(--nx-surface, #f5f8fc);
 }
 
 .app-header-profile-meta {
@@ -154,7 +153,7 @@
 
 .app-header-profile-name {
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 500;
   color: var(--nx-text, #12263f);
   max-width: 140px;
   overflow: hidden;

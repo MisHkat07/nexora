@@ -39,11 +39,8 @@
   width: 100%;
 }
 
-.ant-table-thead > tr > th {
-  font-weight: 700;
-}
 .ant-typography strong {
-  font-weight: 700;
+  font-weight: 600;
 }
 h1,
 h2,
@@ -51,7 +48,8 @@ h3,
 h4,
 h5,
 h6 {
-  font-weight: 700 !important;
+  font-weight: 600 !important;
+  letter-spacing: -0.015em;
   color: var(--nx-text, #12263f);
 }
 
@@ -84,7 +82,7 @@ h6 {
 .customer-preview-card {
   border-radius: 12px;
   border: 1px solid var(--nx-border, #e3ebf6);
-  box-shadow: 0 1px 2px rgba(18, 38, 63, 0.04);
+  box-shadow: none;
 }
 
 .data-table-toolbar .ant-page-header-heading-extra {

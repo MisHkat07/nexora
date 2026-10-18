@@ -19,7 +19,6 @@ export default function UpgradeButton() {
           cursor: 'pointer',
           background: '#0061FF',
           borderColor: '#0061FF',
-          boxShadow: '0 4px 12px rgba(0, 97, 255, 0.25)',
         }}
         icon={<RocketOutlined />}
         onClick={() => {

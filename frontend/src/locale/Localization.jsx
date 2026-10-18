@@ -34,37 +34,43 @@ export default function Localization({ children }) {
           colorText: nexoraBrand.text,
           colorTextSecondary: nexoraBrand.textMuted,
           colorBorder: nexoraBrand.border,
+          colorBorderSecondary: '#EDF1F7',
           colorBgLayout: nexoraBrand.surface,
-          borderRadius: 10,
+          borderRadius: 8,
+          borderRadiusLG: 12,
           controlHeight: 36,
+          fontSize: 14,
+          fontWeightStrong: 600,
           fontFamily:
-            "'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif",
+            "'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif",
+          boxShadow: '0 4px 16px rgba(18, 38, 63, 0.08)',
+          boxShadowSecondary: '0 8px 24px rgba(18, 38, 63, 0.10)',
         },
         components: {
           Button: {
-            borderRadius: 10,
-            controlHeight: 36,
-            primaryShadow: '0 4px 12px rgba(0, 97, 255, 0.25)',
+            fontWeight: 500,
+            primaryShadow: 'none',
+            defaultShadow: 'none',
+            dangerShadow: 'none',
           },
           Input: {
-            borderRadius: 10,
+            activeShadow: '0 0 0 3px rgba(0, 97, 255, 0.12)',
           },
           Select: {
-            borderRadius: 10,
+            optionSelectedFontWeight: 500,
           },
           Card: {
-            borderRadius: 12,
+            borderRadiusLG: 12,
           },
           Table: {
-            borderRadius: 10,
-            headerBorderRadius: 10,
             headerBg: nexoraBrand.surface,
             headerColor: nexoraBrand.textMuted,
             rowHoverBg: '#F8FAFF',
+            cellPaddingBlock: 14,
           },
           Menu: {
-            itemBorderRadius: 10,
-            itemHeight: 42,
+            itemBorderRadius: 8,
+            itemHeight: 40,
             itemSelectedBg: '#E8F0FF',
             itemSelectedColor: nexoraBrand.primary,
             itemHoverBg: nexoraBrand.hoverBg,
@@ -72,6 +78,9 @@ export default function Localization({ children }) {
           },
           Tag: {
             borderRadiusSM: 999,
+          },
+          Modal: {
+            borderRadiusLG: 14,
           },
         },
       }}
