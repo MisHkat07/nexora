@@ -42,6 +42,8 @@ body {
   width: 100%;
   min-width: 0;
   box-sizing: border-box;
+  /* contain floated blocks (invoice totals, form footers) like the old overflow:hidden box did */
+  display: flow-root;
 }
 
 .page-module {

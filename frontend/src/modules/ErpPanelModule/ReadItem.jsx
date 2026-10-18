@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Divider } from 'antd';
 
 import { Button, Row, Col, Descriptions, Statistic, Tag } from 'antd';
+import { tagColor } from '@/utils/statusTagColor';
 import { PageHeader } from '@ant-design/pro-layout';
 import {
   EditOutlined,
@@ -134,12 +135,16 @@ export default function ReadItem({ config, selectedItem }) {
         ghost={false}
         tags={[
           currentErp.status && (
-            <Tag className="status-tag" key="status" color="cyan">
+            <Tag className="status-tag" key="status" color={tagColor(currentErp.status)?.color}>
               {translate(currentErp.status)}
             </Tag>
           ),
           currentErp.paymentStatus && (
-            <Tag className="status-tag" key="paymentStatus" color="blue">
+            <Tag
+              className="status-tag"
+              key="paymentStatus"
+              color={tagColor(currentErp.paymentStatus)?.color}
+            >
               {translate(currentErp.paymentStatus)}
             </Tag>
           ),
@@ -209,7 +214,7 @@ export default function ReadItem({ config, selectedItem }) {
         }}
       >
         <Row>
-          <Statistic title={translate('Status')} value={currentErp.status} />
+          <Statistic title={translate('Status')} value={translate(currentErp.status)} />
           <Statistic
             title={translate('SubTotal')}
             value={moneyFormatter({
