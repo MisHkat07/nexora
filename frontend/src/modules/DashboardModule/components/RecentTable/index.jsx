@@ -53,33 +53,40 @@ export default function RecentTable({ ...props }) {
       title: '',
       key: 'action',
       render: (_, record) => (
-        <Dropdown
-          menu={{
-            items,
-            onClick: ({ key }) => {
-              switch (key) {
-                case 'read':
-                  handleRead(record);
-                  break;
-                case 'edit':
-                  handleEdit(record);
-                  break;
-                case 'download':
-                  handleDownload(record);
-                  break;
+        // stop clicks (including portal menu clicks) from reaching the row's onClick
+        <span onClick={(e) => e.stopPropagation()}>
+          <Dropdown
+            menu={{
+              items,
+              onClick: ({ key }) => {
+                switch (key) {
+                  case 'read':
+                    handleRead(record);
+                    break;
+                  case 'edit':
+                    handleEdit(record);
+                    break;
+                  case 'download':
+                    handleDownload(record);
+                    break;
 
-                default:
-                  break;
-              }
-            },
-          }}
-          trigger={['click']}
-        >
-          <EllipsisOutlined
-            style={{ cursor: 'pointer', fontSize: '24px' }}
-            onClick={(e) => e.preventDefault()}
-          />
-        </Dropdown>
+                  default:
+                    break;
+                }
+              },
+            }}
+            trigger={['click']}
+          >
+            <EllipsisOutlined
+              className="table-action-trigger"
+              style={{ cursor: 'pointer', fontSize: '20px' }}
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+              }}
+            />
+          </Dropdown>
+        </span>
       ),
     },
   ];
@@ -100,6 +107,9 @@ export default function RecentTable({ ...props }) {
       dataSource={isSuccess && firstFiveItems()}
       pagination={false}
       loading={isLoading}
+      size="middle"
+      rowClassName="clickable-row"
+      onRow={(record) => ({ onClick: () => handleRead(record) })}
       scroll={{ x: true }}
     />
   );

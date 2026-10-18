@@ -1,4 +1,10 @@
 import { Layout, Typography } from 'antd';
+import {
+  ContainerOutlined,
+  FileSyncOutlined,
+  CreditCardOutlined,
+  TeamOutlined,
+} from '@ant-design/icons';
 import useLanguage from '@/locale/useLanguage';
 import nexoraLogo from '@/style/images/nexora-logo.png';
 
@@ -7,6 +13,13 @@ const { Title, Text, Paragraph } = Typography;
 
 export default function SideContent() {
   const translate = useLanguage();
+
+  const features = [
+    { icon: <TeamOutlined />, label: translate('auth_feature_customers') },
+    { icon: <ContainerOutlined />, label: translate('auth_feature_invoices') },
+    { icon: <FileSyncOutlined />, label: translate('auth_feature_quotes') },
+    { icon: <CreditCardOutlined />, label: translate('auth_feature_payments') },
+  ];
 
   return (
     <Content className="sideContent auth-side-content">
@@ -21,9 +34,14 @@ export default function SideContent() {
         <Paragraph className="auth-side-copy">
           {translate('it_brings_together_your_invoice_clients_and_leads')}
         </Paragraph>
-        <Text type="secondary" className="auth-side-tagline">
-          Accounting / Invoicing / Quote App
-        </Text>
+        <ul className="auth-feature-list">
+          {features.map((feature) => (
+            <li key={feature.label} className="auth-feature">
+              <span className="auth-feature-icon">{feature.icon}</span>
+              <span>{feature.label}</span>
+            </li>
+          ))}
+        </ul>
       </div>
     </Content>
   );

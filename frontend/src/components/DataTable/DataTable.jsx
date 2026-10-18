@@ -6,8 +6,8 @@ import {
   DeleteOutlined,
   EllipsisOutlined,
   RedoOutlined,
+  SearchOutlined,
   ArrowRightOutlined,
-  ArrowLeftOutlined,
 } from '@ant-design/icons';
 import { Dropdown, Table, Button, Input } from 'antd';
 import { PageHeader } from '@ant-design/pro-layout';
@@ -180,8 +180,6 @@ export default function DataTable({ config, extra = [] }) {
     <div className="page-module">
       <PageHeader
         className="data-table-toolbar"
-        onBack={() => window.history.back()}
-        backIcon={<ArrowLeftOutlined />}
         title={DATATABLE_TITLE}
         ghost={false}
         extra={[
@@ -189,6 +187,7 @@ export default function DataTable({ config, extra = [] }) {
             key={`searchFilterDataTable}`}
             onChange={filterTable}
             placeholder={translate('search')}
+            prefix={<SearchOutlined />}
             allowClear
           />,
           <Button onClick={handelDataTableLoad} key={`${uniqueId()}`} icon={<RedoOutlined />}>
@@ -197,9 +196,6 @@ export default function DataTable({ config, extra = [] }) {
 
           <AddNewItem key={`${uniqueId()}`} config={config} />,
         ]}
-        style={{
-          padding: '12px 0 20px',
-        }}
       ></PageHeader>
 
       <Table

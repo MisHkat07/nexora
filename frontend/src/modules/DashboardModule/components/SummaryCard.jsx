@@ -1,98 +1,39 @@
-import { Tag, Divider, Row, Col, Spin, Tooltip } from 'antd';
+import { Col, Skeleton, Tooltip } from 'antd';
 import { useMoney } from '@/settings';
 import { selectMoneyFormat } from '@/redux/settings/selectors';
 import { useSelector } from 'react-redux';
 
-export default function AnalyticSummaryCard({ title, tagColor, data, prefix, isLoading = false }) {
+export default function AnalyticSummaryCard({
+  title,
+  icon,
+  tone = 'primary',
+  data,
+  prefix,
+  isLoading = false,
+}) {
   const { moneyFormatter } = useMoney();
   const money_format_settings = useSelector(selectMoneyFormat);
+
+  const formatted = moneyFormatter({
+    amount: data || 0,
+    currency_code: money_format_settings?.default_currency_code,
+  });
+
   return (
-    <Col
-      className="gutter-row"
-      xs={{ span: 24 }}
-      sm={{ span: 12 }}
-      md={{ span: 12 }}
-      lg={{ span: 6 }}
-    >
-      <div
-        className="whiteBox shadow summary-card"
-        style={{ color: '#4f5d75', fontSize: 13, minHeight: '112px', height: '100%' }}
-      >
-        <div className="pad15 strong" style={{ textAlign: 'center', justifyContent: 'center' }}>
-          <h3
-            style={{
-              color: '#12263F',
-              fontSize: '16px',
-              margin: '5px 0',
-              textTransform: 'capitalize',
-            }}
-          >
-            {title}
-          </h3>
+    <Col className="gutter-row" xs={{ span: 24 }} sm={{ span: 12 }} lg={{ span: 6 }}>
+      <div className={`kpi-card kpi-card--${tone}`}>
+        <div className="kpi-card-head">
+          <span className="kpi-card-title">{title}</span>
+          {icon && <span className="kpi-card-icon">{icon}</span>}
         </div>
-        <Divider style={{ padding: 0, margin: 0 }}></Divider>
-        <div className="pad15">
-          <Row gutter={[0, 0]} justify="space-between" wrap={false}>
-            <Col className="gutter-row" flex="85px" style={{ textAlign: 'left' }}>
-              <div className="left" style={{ whiteSpace: 'nowrap', color: '#6E84A3' }}>
-                {prefix}
-              </div>
-            </Col>
-            <Divider
-              style={{
-                height: '100%',
-                padding: '10px 0',
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}
-              type="vertical"
-            ></Divider>
-            <Col
-              className="gutter-row"
-              flex="auto"
-              style={{
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}
-            >
-              {isLoading ? (
-                <Spin />
-              ) : (
-                <Tooltip
-                  title={data}
-                  style={{
-                    direction: 'ltr',
-                  }}
-                >
-                  <Tag
-                    className="status-tag"
-                    color={tagColor || 'cyan'}
-                    style={{
-                      margin: '0 auto',
-                      justifyContent: 'center',
-                      maxWidth: '110px',
-                      overflow: 'hidden',
-                      whiteSpace: 'nowrap',
-                      textOverflow: 'ellipsis',
-                      direction: 'ltr',
-                    }}
-                  >
-                    {data
-                      ? moneyFormatter({
-                          amount: data,
-                          currency_code: money_format_settings?.default_currency_code,
-                        })
-                      : moneyFormatter({
-                          amount: 0,
-                          currency_code: money_format_settings?.default_currency_code,
-                        })}
-                  </Tag>
-                </Tooltip>
-              )}
-            </Col>
-          </Row>
-        </div>
+        {isLoading ? (
+          <Skeleton.Input active size="small" className="kpi-card-skeleton" />
+        ) : (
+          <Tooltip title={formatted}>
+            <div className="kpi-card-value">{formatted}</div>
+          </Tooltip>
+        )}
+        <div className="kpi-card-caption">{prefix}</div>
       </div>
     </Col>
   );

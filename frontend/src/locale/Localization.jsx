@@ -58,12 +58,15 @@ export default function Localization({ children }) {
           Table: {
             borderRadius: 10,
             headerBorderRadius: 10,
+            headerBg: nexoraBrand.surface,
+            headerColor: nexoraBrand.textMuted,
+            rowHoverBg: '#F8FAFF',
           },
           Menu: {
             itemBorderRadius: 10,
             itemHeight: 42,
-            itemSelectedBg: nexoraBrand.primary,
-            itemSelectedColor: '#ffffff',
+            itemSelectedBg: '#E8F0FF',
+            itemSelectedColor: nexoraBrand.primary,
             itemHoverBg: nexoraBrand.hoverBg,
             horizontalItemSelectedBg: nexoraBrand.primary,
           },

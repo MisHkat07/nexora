@@ -1,6 +1,12 @@
 import { useEffect, useState } from 'react';
 
 import { Tag, Row, Col } from 'antd';
+import {
+  ContainerOutlined,
+  FileSyncOutlined,
+  CheckCircleOutlined,
+  ClockCircleOutlined,
+} from '@ant-design/icons';
 import useLanguage from '@/locale/useLanguage';
 
 import { useMoney } from '@/settings';
@@ -17,6 +23,7 @@ import CustomerPreviewCard from './components/CustomerPreviewCard';
 
 import { selectMoneyFormat } from '@/redux/settings/selectors';
 import { useSelector } from 'react-redux';
+import { tagColor } from '@/utils/statusTagColor';
 
 export default function DashboardModule() {
   const translate = useLanguage();
@@ -85,6 +92,11 @@ export default function DashboardModule() {
     {
       title: translate('Status'),
       dataIndex: 'status',
+      render: (status) => (
+        <Tag className="status-tag" color={tagColor(status)?.color || 'default'}>
+          {translate(status)}
+        </Tag>
+      ),
     },
   ];
 
@@ -126,43 +138,48 @@ export default function DashboardModule() {
 
   if (money_format_settings) {
     return (
-      <div className="page-module">
-        <Row gutter={[24, 24]}>
+      <div className="page-module dashboard">
+        <Row gutter={[20, 20]}>
           <SummaryCard
             title={translate('Invoices')}
             prefix={translate('This month')}
+            icon={<ContainerOutlined />}
+            tone="primary"
             isLoading={invoiceLoading}
             data={invoiceResult?.total}
           />
           <SummaryCard
             title={translate('Quote')}
             prefix={translate('This month')}
+            icon={<FileSyncOutlined />}
+            tone="purple"
             isLoading={quoteLoading}
             data={quoteResult?.total}
           />
           <SummaryCard
             title={translate('paid')}
             prefix={translate('This month')}
+            icon={<CheckCircleOutlined />}
+            tone="success"
             isLoading={paymentLoading}
             data={paymentResult?.total}
           />
           <SummaryCard
             title={translate('Unpaid')}
             prefix={translate('Not Paid')}
+            icon={<ClockCircleOutlined />}
+            tone="danger"
             isLoading={invoiceLoading}
             data={invoiceResult?.total_undue}
           />
         </Row>
-        <div className="space30"></div>
-        <Row gutter={[24, 24]}>
-          <Col className="gutter-row w-full" sm={{ span: 24 }} md={{ span: 24 }} lg={{ span: 18 }}>
-            <div className="whiteBox shadow preview-card" style={{ height: 458 }}>
-              <Row className="pad20" gutter={[0, 0]}>
-                {statisticCards}
-              </Row>
+        <Row gutter={[20, 20]} className="dashboard-row">
+          <Col className="gutter-row w-full" xs={{ span: 24 }} xl={{ span: 17 }}>
+            <div className="dash-card">
+              <Row gutter={[40, 24]}>{statisticCards}</Row>
             </div>
           </Col>
-          <Col className="gutter-row w-full" sm={{ span: 24 }} md={{ span: 24 }} lg={{ span: 6 }}>
+          <Col className="gutter-row w-full" xs={{ span: 24 }} xl={{ span: 7 }}>
             <CustomerPreviewCard
               isLoading={clientLoading}
               activeCustomer={clientResult?.active}
@@ -170,23 +187,21 @@ export default function DashboardModule() {
             />
           </Col>
         </Row>
-        <div className="space30"></div>
-        <Row gutter={[24, 24]}>
-          <Col className="gutter-row w-full" sm={{ span: 24 }} lg={{ span: 12 }}>
-            <div className="whiteBox shadow pad20 preview-card" style={{ height: '100%' }}>
-              <h3 style={{ color: '#12263F', marginBottom: 8, padding: '0 8px 16px' }}>
-                {translate('Recent Invoices')}
-              </h3>
-
+        <Row gutter={[20, 20]} className="dashboard-row">
+          <Col className="gutter-row w-full" xs={{ span: 24 }} xl={{ span: 12 }}>
+            <div className="dash-card dash-card--table">
+              <div className="dash-card-header">
+                <h3 className="dash-card-title">{translate('Recent Invoices')}</h3>
+              </div>
               <RecentTable entity={'invoice'} dataTableColumns={dataTableColumns} />
             </div>
           </Col>
 
-          <Col className="gutter-row w-full" sm={{ span: 24 }} lg={{ span: 12 }}>
-            <div className="whiteBox shadow pad20 preview-card" style={{ height: '100%' }}>
-              <h3 style={{ color: '#12263F', marginBottom: 8, padding: '0 8px 16px' }}>
-                {translate('Recent Quotes')}
-              </h3>
+          <Col className="gutter-row w-full" xs={{ span: 24 }} xl={{ span: 12 }}>
+            <div className="dash-card dash-card--table">
+              <div className="dash-card-header">
+                <h3 className="dash-card-title">{translate('Recent Quotes')}</h3>
+              </div>
               <RecentTable entity={'quote'} dataTableColumns={dataTableColumns} />
             </div>
           </Col>

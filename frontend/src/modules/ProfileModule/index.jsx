@@ -7,16 +7,7 @@ export default function ProfileModule({ config }) {
   return (
     <ProfileLayout>
       <Layout className="site-layout">
-        <Content
-          className="whiteBox shadow"
-          style={{
-            padding: '50px 40px',
-            margin: '100px auto',
-            width: '100%',
-            maxWidth: '100%',
-            margin: '24px 0',
-          }}
-        >
+        <Content className="page-card">
           <Profile config={config} />
         </Content>
       </Layout>

@@ -3,29 +3,8 @@ import { Tabs, Row, Col } from 'antd';
 const SettingsLayout = ({ children }) => {
   return (
     <Col className="gutter-row" order={0}>
-      <div className="whiteBox shadow preview-card" style={{ minHeight: '480px' }}>
-        <div className="pad40">{children}</div>
-      </div>
+      <div className="page-card settings-content">{children}</div>
     </Col>
-  );
-};
-
-const TopCard = ({ pageTitle }) => {
-  return (
-    <div
-      className="whiteBox shadow preview-card"
-      style={{
-        color: '#4f5d75',
-        fontSize: 13,
-        height: '70px',
-        minHeight: 'auto',
-        marginBottom: '24px',
-      }}
-    >
-      <div className="pad20 strong" style={{ textAlign: 'center', justifyContent: 'center' }}>
-        <h2 style={{ color: '#12263F', marginBottom: 0, marginTop: 0 }}>{pageTitle}</h2>
-      </div>
-    </div>
   );
 };
 
@@ -39,11 +18,9 @@ const RightMenu = ({ children, pageTitle }) => {
       lg={{ span: 6 }}
       order={1}
     >
-      <TopCard pageTitle={pageTitle} />
-      <div className="whiteBox shadow preview-card">
-        <div className="pad25" style={{ width: '100%', paddingBottom: 0 }}>
-          {children}
-        </div>
+      <div className="page-card settings-nav">
+        <h2 className="settings-nav-title">{pageTitle}</h2>
+        {children}
       </div>
     </Col>
   );
@@ -54,8 +31,8 @@ export default function TabsContent({ content, defaultActiveKey, pageTitle }) {
     return {
       key: item.key ? item.key : index + '_' + item.label.replace(/ /g, '_'),
       label: (
-        <div style={{ display: 'flex', alignItems: 'center' }}>
-          {item.icon} <span style={{ paddingRight: 30 }}>{item.label}</span>
+        <div className="settings-nav-item">
+          {item.icon} <span>{item.label}</span>
         </div>
       ),
       children: <SettingsLayout>{item.children}</SettingsLayout>,

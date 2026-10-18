@@ -1,34 +1,35 @@
 import useLanguage from '@/locale/useLanguage';
 
-import { Layout, Col, Divider, Typography } from 'antd';
+import { Layout, Typography } from 'antd';
 
 import AuthLayout from '@/layout/AuthLayout';
 import SideContent from './SideContent';
+import nexoraLogo from '@/style/images/nexora-logo.png';
 
 const { Content } = Layout;
-const { Title } = Typography;
+const { Title, Text } = Typography;
 
-const AuthModule = ({ authContent, AUTH_TITLE, isForRegistre = false }) => {
+const AuthModule = ({ authContent, AUTH_TITLE, AUTH_SUBTITLE, isForRegistre = false }) => {
   const translate = useLanguage();
   return (
     <AuthLayout sideContent={<SideContent />}>
       <Content
         className="auth-form-content"
         style={{
-          padding: isForRegistre ? '48px 32px 32px' : '96px 32px 32px',
+          padding: isForRegistre ? '48px 32px 32px' : '48px 32px',
           maxWidth: '440px',
           margin: '0 auto',
           width: '100%',
         }}
       >
-        <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 0 }} span={0}>
-          <div className="space10" />
-        </Col>
+        <div className="auth-mobile-brand">
+          <img src={nexoraLogo} alt="Nexora" />
+          <span>Nexora</span>
+        </div>
         <Title level={2} className="auth-form-title">
           {translate(AUTH_TITLE)}
         </Title>
-
-        <Divider className="auth-form-divider" />
+        {AUTH_SUBTITLE && <Text className="auth-form-subtitle">{translate(AUTH_SUBTITLE)}</Text>}
         <div className="site-layout-content">{authContent}</div>
       </Content>
     </AuthLayout>

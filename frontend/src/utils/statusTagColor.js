@@ -1,14 +1,14 @@
 const colors = [
   { value: 'default', label: 'default', icon: '🌟' },
   { value: 'draft', label: 'draft', icon: '📝' },
-  { value: 'pending', label: 'pending', color: 'magenta', icon: '⏳' },
-  { value: 'cancelled', label: 'cancelled', color: 'volcano', icon: '❌' },
-  { value: 'sent', label: 'sent', color: 'gold', icon: '✉️' },
+  { value: 'pending', label: 'pending', color: 'gold', icon: '⏳' },
+  { value: 'cancelled', label: 'cancelled', color: 'red', icon: '❌' },
+  { value: 'sent', label: 'sent', color: 'blue', icon: '✉️' },
   { value: 'refunded', label: 'refunded', color: 'purple', icon: '💰' },
-  { value: 'on hold', label: 'On hold', color: 'blue', icon: '🛑' },
+  { value: 'on hold', label: 'On hold', color: 'orange', icon: '🛑' },
 
   { value: 'accepted', label: 'accepted', color: 'green', icon: '✅' },
-  { value: 'declined', label: 'declined', color: 'volcano', icon: '❎' },
+  { value: 'declined', label: 'declined', color: 'red', icon: '❎' },
   { value: 'rejected', label: 'rejected', color: 'red', icon: '🚫' },
   { value: 'expired', label: 'expired', color: 'orange', icon: '⏰' },
 
@@ -18,9 +18,9 @@ const colors = [
 
   { value: 'arrived', label: 'arrived', color: 'blue', icon: '🚚' },
 
-  { value: 'unpaid', label: 'unpaid', color: 'volcano', icon: '💵' },
+  { value: 'unpaid', label: 'unpaid', color: 'red', icon: '💵' },
   { value: 'paid', label: 'paid', color: 'green', icon: '💳' },
-  { value: 'partially', label: 'partially paid', color: 'purple', icon: '💰' },
+  { value: 'partially', label: 'partially paid', color: 'geekblue', icon: '💰' },
   { value: 'overdue', label: 'overdue', color: 'red', icon: '💰' },
 
   { value: 'processing', label: 'processing', color: 'geekblue', icon: '⌛' },

@@ -1,11 +1,16 @@
 const lang = {
   sign_up: 'Sign Up',
-  manage_your_company_with: 'Manage Your Company With',
+  manage_your_company_with: 'Run your whole business from one workspace',
   all_in_one_tool: 'All In One Tool',
   run_and_scale_your_erp_crm_apps: 'Run And Scale Your Erp Crm Apps',
   easily_add_and_manage_your_services: 'Easily Add And Manage Your Services',
   it_brings_together_your_invoice_clients_and_leads:
-    'It Brings Together Your Invoice Clients And Leads',
+    'Nexora brings your customers, invoices, quotes and payments together, so you always know where your money stands.',
+  auth_form_subtitle: 'Welcome back. Enter your details to continue.',
+  auth_feature_customers: 'Keep every customer and their history in one place',
+  auth_feature_invoices: 'Create, send and track invoices in minutes',
+  auth_feature_quotes: 'Turn accepted quotes into invoices in one click',
+  auth_feature_payments: 'Record payments and see what is still unpaid',
   select_language: 'Select Language',
   register: 'Register',
   or: 'Or',

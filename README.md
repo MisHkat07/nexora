@@ -211,7 +211,7 @@ docker run -p 8888:8888 -e DATABASE="mongodb+srv://..." -e JWT_SECRET="..." nexo
 
 - Leave `VITE_BACKEND_SERVER` empty for same-origin deploys. Set it (with a trailing `/`) only if the API is hosted on a different domain.
 - `FRONTEND_DIST` overrides the path Express serves the UI from.
-- Local development is unchanged: run `npm run dev:backend` and `npm run dev:frontend` (ports 8888 / 3000).
+- Local development: `npm run dev` from the repo root starts the API (8888, nodemon) and the UI (3000, Vite) together; Ctrl+C stops both. Use `npm run dev:backend` or `npm run dev:frontend` to run one on its own.
 
 ---
 

@@ -113,61 +113,44 @@
 }
 
 .navigation .ant-menu-item {
-  height: 42px !important;
-  line-height: 42px !important;
-  margin: 2px 4px !important;
+  height: 40px !important;
+  line-height: 40px !important;
+  margin: 1px 4px !important;
   width: calc(100% - 8px) !important;
-  border-radius: 10px !important;
-  color: var(--nx-text, #12263f) !important;
+  border-radius: 8px !important;
+  color: var(--nx-text-soft, #3b506c) !important;
   font-weight: 500;
-}
-
-.navigation .ant-menu-item .anticon {
-  font-size: 16px !important;
-  color: var(--nx-primary, #0061ff) !important;
+  transition: background-color 0.15s ease, color 0.15s ease;
 }
 
 .navigation .ant-menu-item a {
   color: inherit !important;
+  background: none !important;
 }
 
-.navigation .ant-menu-item:hover {
-  background: var(--nx-hover, rgba(0, 97, 255, 0.08)) !important;
+.navigation .ant-menu-item .anticon {
+  font-size: 16px !important;
+  color: var(--nx-text-muted, #6e84a3) !important;
+}
+
+.navigation .ant-menu-item:not(.ant-menu-item-selected):hover {
+  background: rgba(18, 38, 63, 0.05) !important;
   color: var(--nx-text, #12263f) !important;
 }
 
-.navigation .ant-menu-item:hover .anticon {
+.navigation .ant-menu-item:not(.ant-menu-item-selected):hover .anticon {
+  color: var(--nx-text, #12263f) !important;
+}
+
+.navigation .ant-menu-item.ant-menu-item-selected {
+  background: var(--nx-primary-soft, #e8f0ff) !important;
   color: var(--nx-primary, #0061ff) !important;
+  font-weight: 600;
+  box-shadow: none !important;
 }
 
-.navigation .ant-menu-item-selected {
-  background: var(--nx-primary, #0061ff) !important;
-  color: #ffffff !important;
-  font-weight: 600 !important;
-  box-shadow: 0 6px 16px rgba(0, 97, 255, 0.25);
-}
-
-.navigation .ant-menu-item-selected .anticon {
-  color: #ffffff !important;
-}
-
-.navigation .ant-menu-item-selected a {
-  color: #ffffff !important;
-}
-
-.navigation .ant-menu-item-selected:hover,
-.navigation .ant-menu-item-selected.ant-menu-item-active,
-.navigation .ant-menu-item-selected:hover a,
-.navigation .ant-menu-light .ant-menu-item-selected:hover,
-.navigation .ant-menu-light .ant-menu-item-selected.ant-menu-item-active {
-  background: var(--nx-primary-hover, #0052d9) !important;
-  color: #ffffff !important;
-}
-
-.navigation .ant-menu-item-selected:hover .anticon,
-.navigation .ant-menu-item-selected.ant-menu-item-active .anticon,
-.navigation .ant-menu-light .ant-menu-item-selected:hover .anticon {
-  color: #ffffff !important;
+.navigation .ant-menu-item.ant-menu-item-selected .anticon {
+  color: var(--nx-primary, #0061ff) !important;
 }
 
 .navigation .ant-menu-item-selected::after {

@@ -3,18 +3,16 @@ import { Col, Progress, Spin } from 'antd';
 import useLanguage from '@/locale/useLanguage';
 
 const colours = {
-  draft: '#595959',
-  sent: '#1890ff',
-  pending: '#1890ff',
-  unpaid: '#ffa940',
-  overdue: '#ff4d4f',
-  partially: '#13c2c2',
-  paid: '#95de64',
-  declined: '#ff4d4f',
-  accepted: '#95de64',
-  cyan: '#13c2c2',
-  purple: '#722ed1',
-  expired: '#614700',
+  draft: '#A6B5CC',
+  sent: '#0061FF',
+  pending: '#FF9F00',
+  unpaid: '#E63757',
+  overdue: '#B4233F',
+  partially: '#8833FF',
+  paid: '#00D97E',
+  declined: '#E63757',
+  accepted: '#00D97E',
+  expired: '#FD7E14',
 };
 
 const defaultStatistics = [
@@ -73,18 +71,15 @@ const defaultInvoiceStatistics = [
 
 const PreviewState = ({ tag, value }) => {
   const translate = useLanguage();
+  const color = colours[tag] || '#0061FF';
   return (
-    <div style={{ color: '#4f5d75', marginBottom: 8 }}>
-      <div className="left alignLeft capitalize">{translate(tag)}</div>
-      <div className="right alignRight">{value} %</div>
-      <Progress
-        percent={value}
-        showInfo={false}
-        strokeColor={{
-          '0%': '#0061FF',
-          '100%': '#8833FF',
-        }}
-      />
+    <div className="status-row">
+      <div className="status-row-label">
+        <span className="status-dot" style={{ background: color }} />
+        <span className="capitalize">{translate(tag)}</span>
+        <span className="status-row-value">{value}%</span>
+      </div>
+      <Progress percent={value} showInfo={false} strokeColor={color} size="small" />
     </div>
   );
 };
@@ -113,12 +108,6 @@ export default function PreviewCard({
     }
   }, [statistics, entity]);
 
-  const customSort = (a, b) => {
-    const colorOrder = Object.values(colours);
-    const indexA = colorOrder.indexOf(a.props.color);
-    const indexB = colorOrder.indexOf(b.props.color);
-    return indexA - indexB;
-  };
   return (
     <Col
       className="gutter-row"
@@ -127,28 +116,16 @@ export default function PreviewCard({
       md={{ span: 12 }}
       lg={{ span: 12 }}
     >
-      <div className="pad20">
-        <h3
-          style={{
-            color: '#12263F',
-            fontSize: '16px',
-            marginBottom: 32,
-            marginTop: 0,
-          }}
-        >
-          {title}
-        </h3>
+      <div className="status-breakdown">
+        <h3 className="dash-card-title">{title}</h3>
         {isLoading ? (
-          <div style={{ textAlign: 'center' }}>
+          <div className="dash-card-loading">
             <Spin />
           </div>
         ) : (
-          statisticsMap
-            ?.map((status, index) => (
-              <PreviewState key={index} tag={status.tag} value={status?.value} />
-              // sort by colours
-            ))
-            .sort(customSort)
+          statisticsMap?.map((status, index) => (
+            <PreviewState key={index} tag={status.tag} value={status?.value} />
+          ))
         )}
       </div>
     </Col>

@@ -1,6 +1,22 @@
-import { Statistic, Progress, Divider, Row, Spin } from 'antd';
-import { ArrowUpOutlined, ArrowDownOutlined } from '@ant-design/icons';
+import { Progress, Spin } from 'antd';
+import { TeamOutlined } from '@ant-design/icons';
 import useLanguage from '@/locale/useLanguage';
+import { nexoraBrand } from '@/locale/Localization';
+
+const CustomerStat = ({ label, value, color }) => (
+  <div className="customer-stat">
+    <Progress
+      type="circle"
+      percent={Number(value) || 0}
+      size={88}
+      strokeWidth={9}
+      strokeColor={color}
+      trailColor={nexoraBrand.border}
+      format={(percent) => <span className="customer-stat-value">{Math.round(percent)}%</span>}
+    />
+    <span className="customer-stat-label">{label}</span>
+  </div>
+);
 
 export default function CustomerPreviewCard({
   isLoading = false,
@@ -9,51 +25,32 @@ export default function CustomerPreviewCard({
 }) {
   const translate = useLanguage();
   return (
-    <Row className="gutter-row">
-      <div className="whiteBox shadow customer-preview-card" style={{ height: 458, width: '100%' }}>
-        <div
-          className="pad20"
-          style={{
-            textAlign: 'center',
-            justifyContent: 'center',
-          }}
-        >
-          <h3 style={{ color: '#12263F', marginBottom: 32, marginTop: 12, fontSize: '16px' }}>
-            {translate('Customers')}
-          </h3>
-
-          {isLoading ? (
-            <Spin />
-          ) : (
-            <div
-              style={{
-                display: 'grid',
-                justifyContent: 'center',
-              }}
-            >
-              <Progress type="dashboard" percent={newCustomer} size={148} strokeColor="#0061FF" />
-              <p style={{ color: '#6E84A3', marginTop: 12 }}>
-                {translate('New Customer this Month')}
-              </p>
-              <Divider />
-              <Statistic
-                title={translate('Active Customer')}
-                value={activeCustomer}
-                precision={2}
-                valueStyle={{ color: '#12263F' }}
-                prefix={
-                  activeCustomer > 0 ? (
-                    <ArrowUpOutlined />
-                  ) : activeCustomer < 0 ? (
-                    <ArrowDownOutlined />
-                  ) : null
-                }
-                suffix="%"
-              />
-            </div>
-          )}
-        </div>
+    <div className="dash-card customer-preview-card">
+      <div className="dash-card-header">
+        <h3 className="dash-card-title">{translate('Customers')}</h3>
+        <span className="kpi-card-icon">
+          <TeamOutlined />
+        </span>
       </div>
-    </Row>
+
+      {isLoading ? (
+        <div className="dash-card-loading">
+          <Spin />
+        </div>
+      ) : (
+        <div className="customer-stats">
+          <CustomerStat
+            label={translate('New Customer this Month')}
+            value={newCustomer}
+            color={nexoraBrand.primary}
+          />
+          <CustomerStat
+            label={translate('Active Customer')}
+            value={activeCustomer}
+            color={nexoraBrand.success}
+          />
+        </div>
+      )}
+    </div>
   );
 }
