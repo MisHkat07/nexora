@@ -10,8 +10,8 @@ export default function Payment() {
   const { moneyFormatter } = useMoney();
   const searchConfig = {
     entity: 'client',
-    displayLabels: ['number'],
-    searchFields: 'number',
+    displayLabels: ['name'],
+    searchFields: 'name',
     outputValue: '_id',
   };
 

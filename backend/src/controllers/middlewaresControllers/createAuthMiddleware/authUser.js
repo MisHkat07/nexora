@@ -1,5 +1,6 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const crypto = require('crypto');
 
 const authUser = async (req, res, { user, databasePassword, password, UserPasswordModel }) => {
   const isMatch = await bcrypt.compare(databasePassword.salt + password, databasePassword.password);
@@ -17,7 +18,8 @@ const authUser = async (req, res, { user, databasePassword, password, UserPasswo
         id: user._id,
       },
       process.env.JWT_SECRET,
-      { expiresIn: req.body.remember ? 365 * 24 + 'h' : '24h' }
+      // jwtid keeps every session token unique, so sessions can be revoked one by one
+      { expiresIn: req.body.remember ? 365 * 24 + 'h' : '24h', jwtid: crypto.randomUUID() }
     );
 
     await UserPasswordModel.findOneAndUpdate(

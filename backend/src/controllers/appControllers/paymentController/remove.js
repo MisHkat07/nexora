@@ -1,62 +1,32 @@
 const mongoose = require('mongoose');
 
 const Model = mongoose.model('Payment');
-const Invoice = mongoose.model('Invoice');
+
+const HttpError = require('@/handlers/httpError');
+const { applyPaymentDelta } = require('./invoiceBalance');
 
 const remove = async (req, res) => {
-  // Find document by id and updates with the required fields
-  const previousPayment = await Model.findOne({
-    _id: req.params.id,
-    removed: false,
-  });
+  let result;
+  const session = await mongoose.startSession();
+  try {
+    await session.withTransaction(async () => {
+      result = await Model.findOneAndUpdate(
+        { _id: req.params.id, removed: false },
+        { $set: { removed: true } },
+        { new: true, session, autopopulate: false }
+      ).exec();
+      if (!result) throw new HttpError(404, 'No document found ');
 
-  if (!previousPayment) {
-    return res.status(404).json({
-      success: false,
-      result: null,
-      message: 'No document found ',
+      await applyPaymentDelta({
+        invoiceId: result.invoice,
+        delta: -result.amount,
+        session,
+        pull: result._id,
+      });
     });
+  } finally {
+    await session.endSession();
   }
-
-  const { _id: paymentId, amount: previousAmount } = previousPayment;
-  const { id: invoiceId, total, discount, credit: previousCredit } = previousPayment.invoice;
-
-  // Find the document by id and delete it
-  let updates = {
-    removed: true,
-  };
-  // Find the document by id and delete it
-  const result = await Model.findOneAndUpdate(
-    { _id: req.params.id, removed: false },
-    { $set: updates },
-    {
-      new: true, // return the new result instead of the old one
-    }
-  ).exec();
-  // If no results found, return document not found
-
-  let paymentStatus =
-    total - discount === previousCredit - previousAmount
-      ? 'paid'
-      : previousCredit - previousAmount > 0
-      ? 'partially'
-      : 'unpaid';
-
-  const updateInvoice = await Invoice.findOneAndUpdate(
-    { _id: invoiceId },
-    {
-      $pull: {
-        payment: paymentId,
-      },
-      $inc: { credit: -previousAmount },
-      $set: {
-        paymentStatus: paymentStatus,
-      },
-    },
-    {
-      new: true, // return the new result instead of the old one
-    }
-  ).exec();
 
   return res.status(200).json({
     success: true,

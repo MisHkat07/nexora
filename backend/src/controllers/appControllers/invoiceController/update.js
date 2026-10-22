@@ -2,15 +2,13 @@ const mongoose = require('mongoose');
 
 const Model = mongoose.model('Invoice');
 
-const custom = require('@/controllers/pdfController');
-
 const { calculate } = require('@/helpers');
 const schema = require('./schemaValidate');
 
 const update = async (req, res) => {
   let body = req.body;
 
-  const { error, value } = schema.validate(body);
+  const { error } = schema.validate(body);
   if (error) {
     const { details } = error;
     return res.status(400).json({
@@ -58,7 +56,7 @@ const update = async (req, res) => {
   body['total'] = total;
   body['items'] = items;
   body['pdf'] = 'invoice-' + req.params.id + '.pdf';
-  if (body.hasOwnProperty('currency')) {
+  if (Object.hasOwn(body, 'currency')) {
     delete body.currency;
   }
   // Find document by id and updates with the required fields

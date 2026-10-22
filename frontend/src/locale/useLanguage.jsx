@@ -28,7 +28,7 @@ const getLabel = (key) => {
     }
 
     return toTitleCaseLabel(key);
-  } catch (error) {
+  } catch {
     return 'No translate';
   }
 };

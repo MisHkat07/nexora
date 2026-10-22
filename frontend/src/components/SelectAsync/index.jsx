@@ -3,7 +3,6 @@ import { request } from '@/request';
 import useFetch from '@/hooks/useFetch';
 import { Select, Tag } from 'antd';
 import { useNavigate } from 'react-router-dom';
-import { generate as uniqueId } from 'shortid';
 import color from '@/utils/color';
 import useLanguage from '@/locale/useLanguage';
 
@@ -82,7 +81,7 @@ const SelectAsync = ({
     >
       {optionsList()?.map((option) => {
         return (
-          <Select.Option key={`${uniqueId()}`} value={option.value}>
+          <Select.Option key={option.value} value={option.value}>
             <Tag bordered={false} color={option.color}>
               {option.label}
             </Tag>

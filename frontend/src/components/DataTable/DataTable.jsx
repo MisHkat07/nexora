@@ -7,7 +7,6 @@ import {
   EllipsisOutlined,
   RedoOutlined,
   SearchOutlined,
-  ArrowRightOutlined,
 } from '@ant-design/icons';
 import { Dropdown, Table, Button, Input } from 'antd';
 import { PageHeader } from '@ant-design/pro-layout';
@@ -19,7 +18,6 @@ import useLanguage from '@/locale/useLanguage';
 import { dataForTable } from '@/utils/dataStructure';
 import { useMoney, useDate } from '@/settings';
 
-import { generate as uniqueId } from 'shortid';
 
 import { useCrudContext } from '@/context/crud';
 
@@ -190,11 +188,11 @@ export default function DataTable({ config, extra = [] }) {
             prefix={<SearchOutlined />}
             allowClear
           />,
-          <Button onClick={handelDataTableLoad} key={`${uniqueId()}`} icon={<RedoOutlined />}>
+          <Button onClick={handelDataTableLoad} key="refresh" icon={<RedoOutlined />}>
             {translate('Refresh')}
           </Button>,
 
-          <AddNewItem key={`${uniqueId()}`} config={config} />,
+          <AddNewItem key="add-new-item" config={config} />,
         ]}
       ></PageHeader>
 

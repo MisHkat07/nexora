@@ -48,9 +48,6 @@ export default function AutoCompleteAsync({
     }
   };
 
-  const handleOnSelect = (value) => {
-    setCurrentValue(value[outputValue] || value); // set nested value or value
-  };
 
   const [, cancel] = useDebounce(
     () => {

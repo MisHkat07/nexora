@@ -15,7 +15,8 @@
     "setup": "npm --prefix backend run setup",
     "dev:backend": "npm --prefix backend run dev",
     "dev:frontend": "npm --prefix frontend run dev",
-    "dev": "concurrently -k -n api,web -c blue,magenta \"npm:dev:backend\" \"npm:dev:frontend\""
+    "dev": "concurrently -k -n api,web -c blue,magenta \"npm:dev:backend\" \"npm:dev:frontend\"",
+    "test": "npm --prefix backend test"
   },
   "devDependencies": {
     "concurrently": "^9.2.5"

@@ -5,14 +5,6 @@ import errorHandler from './errorHandler';
 import successHandler from './successHandler';
 import storePersist from '@/redux/storePersist';
 
-function findKeyByPrefix(object, prefix) {
-  for (var property in object) {
-    if (object.hasOwnProperty(property) && property.toString().startsWith(prefix)) {
-      return property;
-    }
-  }
-}
-
 function includeToken() {
   axios.defaults.baseURL = API_BASE_URL;
 

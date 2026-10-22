@@ -2,10 +2,14 @@ require('dotenv').config({ path: '.env' });
 require('dotenv').config({ path: '.env.local' });
 const { globSync } = require('glob');
 const fs = require('fs');
-const { generate: uniqueId } = require('shortid');
+const crypto = require('crypto');
 
 const mongoose = require('mongoose');
 mongoose.connect(process.env.DATABASE);
+
+// Override the demo login for real installs: SETUP_ADMIN_EMAIL=you@company.com SETUP_ADMIN_PASSWORD=... npm run setup
+const adminEmail = (process.env.SETUP_ADMIN_EMAIL || 'admin@demo.com').toLowerCase();
+const adminPassword = process.env.SETUP_ADMIN_PASSWORD || 'admin123';
 
 async function setupApp() {
   try {
@@ -13,14 +17,14 @@ async function setupApp() {
     const AdminPassword = require('../models/coreModels/AdminPassword');
     const newAdminPassword = new AdminPassword();
 
-    const salt = uniqueId();
+    const salt = crypto.randomUUID();
 
-    const passwordHash = newAdminPassword.generateHash(salt, 'admin123');
+    const passwordHash = newAdminPassword.generateHash(salt, adminPassword);
 
     const demoAdmin = {
-      email: 'admin@demo.com',
-      name: 'AB MisHkat',
-      surname: 'Admin',
+      email: adminEmail,
+      name: process.env.SETUP_ADMIN_NAME || 'Admin',
+      surname: '',
       enabled: true,
       role: 'owner',
     };
@@ -34,7 +38,10 @@ async function setupApp() {
     };
     await new AdminPassword(AdminPasswordData).save();
 
-    console.log('👍 Admin created : Done!');
+    console.log(`👍 Admin created : Done! Login: ${adminEmail}`);
+    if (!process.env.SETUP_ADMIN_PASSWORD) {
+      console.log('⚠️  Using the demo password "admin123". Change it in Profile after logging in.');
+    }
 
     const Setting = require('../models/coreModels/Setting');
 

@@ -40,10 +40,10 @@ router
   .get(catchErrors(settingController.readBySettingKey));
 router.route('/setting/listBySettingKey').get(catchErrors(settingController.listBySettingKey));
 router
-  .route('/setting/updateBySettingKey/:settingKey?')
+  .route('/setting/updateBySettingKey{/:settingKey}')
   .patch(catchErrors(settingController.updateBySettingKey));
 router
-  .route('/setting/upload/:settingKey?')
+  .route('/setting/upload{/:settingKey}')
   .patch(
     catchErrors(
       singleStorageUpload({ entity: 'setting', fieldName: 'settingValue', fileType: 'image' })

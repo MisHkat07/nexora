@@ -1,28 +1,40 @@
 require('module-alias/register');
+
+// Make sure we are running node 20+
+const [major] = process.versions.node.split('.').map(parseFloat);
+if (major < 20) {
+  console.log('Please upgrade your node.js version at least 20 or greater. 👌\n ');
+  process.exit(1);
+}
+
+// Loads .env and exits with a helpful message if required variables are missing
+const config = require('./config');
+// Error tracking must start before express and mongoose are loaded
+const Sentry = require('./instrument');
+
 const mongoose = require('mongoose');
 const { globSync } = require('glob');
 const path = require('path');
+const logger = require('./logger');
 
-// Make sure we are running node 7.6+
-const [major, minor] = process.versions.node.split('.').map(parseFloat);
-if (major < 20) {
-  console.log('Please upgrade your node.js version at least 20 or greater. 👌\n ');
-  process.exit();
+if (!config.database) {
+  logger.fatal('DATABASE is not set. Add your MongoDB connection string to backend/.env');
+  process.exit(1);
 }
 
-// import environmental variables from our variables.env file
-require('dotenv').config({ path: '.env' });
-require('dotenv').config({ path: '.env.local' });
+if (config.isProduction && config.storage.driver === 'local') {
+  logger.warn(
+    'STORAGE_DRIVER is "local": uploaded logos and photos are lost when the container is replaced. Configure an S3 bucket (see backend/.env.example).'
+  );
+}
 
-mongoose.connect(process.env.DATABASE);
-
-const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
+mongoose.connect(config.database).catch((error) => {
+  logger.fatal({ err: error }, 'Could not connect to MongoDB. Check DATABASE in backend/.env');
+  process.exit(1);
+});
 
 mongoose.connection.on('error', (error) => {
-  console.log(
-    `1. 🔥 Common Error caused issue → : check your .env file first and add your mongodb url`
-  );
-  console.error(`2. 🚫 Error → : ${error.message}`);
+  logger.error({ err: error }, 'MongoDB connection error');
 });
 
 const modelsFiles = globSync('./src/models/**/*.js');
@@ -33,7 +45,22 @@ for (const filePath of modelsFiles) {
 
 // Start our app!
 const app = require('./app');
-app.set('port', process.env.PORT || 8888);
+app.set('port', config.port);
 const server = app.listen(app.get('port'), () => {
-  console.log(`Express running → On PORT : ${server.address().port}`);
+  logger.info(`Express running → On PORT : ${server.address().port}`);
 });
+
+// Finish in-flight requests before exiting when the platform stops the container
+const shutdown = (signal) => {
+  logger.info(`${signal} received, shutting down`);
+  server.close(async () => {
+    await require('@/controllers/pdfController').closeBrowser();
+    await mongoose.disconnect();
+    await Sentry.close(2000);
+    process.exit(0);
+  });
+  // Don't hang forever on keep-alive connections
+  setTimeout(() => process.exit(1), 10000).unref();
+};
+process.on('SIGTERM', () => shutdown('SIGTERM'));
+process.on('SIGINT', () => shutdown('SIGINT'));

@@ -1,59 +1,32 @@
-const mongoose = require('mongoose');
-const bcrypt = require('bcryptjs');
+const setPassword = require('./setPassword');
 
-const { generate: uniqueId } = require('shortid');
-
+// Changes the signed-in user's own password; their other sessions are signed out.
 const updateProfilePassword = async (userModel, req, res) => {
-  const UserPassword = mongoose.model(userModel + 'Password');
-
   const reqUserName = userModel.toLowerCase();
   const userProfile = req[reqUserName];
-  let { password, passwordCheck } = req.body;
+  const { password, passwordCheck } = req.body;
 
-  if (!password || !passwordCheck)
-    return res.status(400).json({ msg: 'Not all fields have been entered.' });
+  if (!password || !passwordCheck) {
+    return res
+      .status(400)
+      .json({ success: false, result: null, message: 'Not all fields have been entered.' });
+  }
 
-  if (password.length < 8)
+  if (password !== passwordCheck) {
     return res.status(400).json({
-      msg: 'The password needs to be at least 8 characters long.',
-    });
-
-  if (password !== passwordCheck)
-    return res.status(400).json({ msg: 'Enter the same password twice for verification.' });
-
-  // Find document by id and updates with the required fields
-
-  const salt = uniqueId();
-
-  const passwordHash = bcrypt.hashSync(salt + password);
-
-  const UserPasswordData = {
-    password: passwordHash,
-    salt: salt,
-  };
-
-  if (userProfile.email === 'admin@demo.com') {
-    return res.status(403).json({
       success: false,
       result: null,
-      message: "you couldn't update demo password",
+      message: 'Enter the same password twice for verification.',
     });
   }
-  const resultPassword = await UserPassword.findOneAndUpdate(
-    { user: userProfile._id, removed: false },
-    { $set: UserPasswordData },
-    {
-      new: true, // return the new result instead of the old one
-    }
-  ).exec();
 
-  if (!resultPassword) {
-    return res.status(403).json({
-      success: false,
-      result: null,
-      message: "User Password couldn't save correctly",
-    });
-  }
+  await setPassword({
+    userModel,
+    userId: userProfile._id,
+    user: userProfile,
+    password,
+    keepSessionToken: req.authToken,
+  });
 
   return res.status(200).json({
     success: true,

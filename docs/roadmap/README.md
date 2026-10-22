@@ -30,9 +30,9 @@ scripts/create-github-issues.sh                # create labels, milestones, issu
 The milestones overlap. With 2–3 developers, M4, M5 and M6 can run in parallel once M2 is done.
 
 ### Launch-ready cut (≈ 4–5 months solo)
-You don't need all 53 issues to start selling. This subset is enough to launch:
+You don't need all 55 issues to start selling. This subset is enough to launch:
 
-**M1:** all · **M2:** 15–20, 23 · **M3:** 24–28 · **M4:** 31, 32 · **M5:** 36 · **M6:** 41, 45 · **M7:** 50–52
+**M1:** all · **M2:** 15–20, 23 · **M3:** 24–28, 54, 55 · **M4:** 31, 32 · **M5:** 36 · **M6:** 41, 45 · **M7:** 50–52
 
 Everything else ships after launch, guided by customer feedback.
 
@@ -56,8 +56,10 @@ The work on **#15 (tenant scoping)** gets harder the longer it waits, because ev
 
 ---
 
-## M1 — Foundation & Security
+## M1 — Foundation & Security ✅
 *Exit criteria: no known security holes, CI green with tests on the main flows, PDFs and uploads survive a redeploy.*
+
+**Status:** all 14 issues implemented on branch `m1/foundation-security` (87 backend API tests; both apps lint clean; 0 production audit findings). Production uploads still need an S3 bucket configured (`STORAGE_DRIVER=s3`), and Sentry needs a DSN.
 
 | # | Issue | Size | Pri |
 |---|---|---|---|
@@ -103,6 +105,8 @@ The work on **#15 (tenant scoping)** gets harder the longer it waits, because ev
 | [28](issues/28-payment-reminders.md) | Automatic payment reminders | M | P1 |
 | [29](issues/29-credit-notes-refunds.md) | Credit notes and refunds | M | P2 |
 | [30](issues/30-multi-currency.md) | Multi-currency with exchange rates | M | P2 |
+| [54](issues/54-real-email-sending.md) | Implement document email sending (currently a stub) | M | P0 |
+| [55](issues/55-quote-to-invoice-conversion.md) | Implement quote → invoice conversion (currently a stub) | S | P0 |
 
 ## M4 — CRM
 *Exit criteria: a sales rep manages their week (leads, deals, follow-ups) entirely in Nexora.*

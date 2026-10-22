@@ -1,8 +1,13 @@
+const { validateBody } = require('./queryPolicy');
+
 const create = async (Model, req, res) => {
+  const body = validateBody(Model.modelName, req.body);
+
   // Creating a new document in the collection
-  req.body.removed = false;
   const result = await new Model({
-    ...req.body,
+    ...body,
+    removed: false,
+    createdBy: req.admin?._id,
   }).save();
 
   // Returning successfull response

@@ -1,61 +1,31 @@
 const mongoose = require('mongoose');
-const bcrypt = require('bcryptjs');
-const { generate: uniqueId } = require('shortid');
 
+const setPassword = require('./setPassword');
+
+// Sets another user's password (admin action). That user is signed out everywhere.
 const updatePassword = async (userModel, req, res) => {
-  const UserPassword = mongoose.model(userModel + 'Password');
-
+  const User = mongoose.model(userModel);
   const reqUserName = userModel.toLowerCase();
   const userProfile = req[reqUserName];
 
-  let { password } = req.body;
-
-  if (password.length < 8)
-    return res.status(400).json({
-      msg: 'The password needs to be at least 8 characters long.',
-    });
-
-  // Find document by id and updates with the required fields
-
-  if (userProfile.email === 'admin@demo.com') {
-    return res.status(403).json({
-      success: false,
-      result: null,
-      message: "you couldn't update demo password",
-    });
+  const target = await User.findOne({ _id: req.params.id, removed: false }).exec();
+  if (!target) {
+    return res.status(404).json({ success: false, result: null, message: 'User not found' });
   }
 
-  const salt = uniqueId();
-
-  const passwordHash = bcrypt.hashSync(salt + password);
-
-  const UserPasswordData = {
-    password: passwordHash,
-    salt: salt,
-  };
-
-  const resultPassword = await UserPassword.findOneAndUpdate(
-    { user: req.params.id, removed: false },
-    { $set: UserPasswordData },
-    {
-      new: true, // return the new result instead of the old one
-    }
-  ).exec();
-
-  // Code to handle the successful response
-
-  if (!resultPassword) {
-    return res.status(403).json({
-      success: false,
-      result: null,
-      message: "User Password couldn't save correctly",
-    });
-  }
+  const isSelf = String(target._id) === String(userProfile._id);
+  await setPassword({
+    userModel,
+    userId: target._id,
+    user: target,
+    password: req.body.password,
+    keepSessionToken: isSelf ? req.authToken : undefined,
+  });
 
   return res.status(200).json({
     success: true,
     result: {},
-    message: 'we update the password by this id: ' + userProfile._id,
+    message: 'we update the password by this id: ' + target._id,
   });
 };
 

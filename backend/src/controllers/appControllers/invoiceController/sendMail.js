@@ -1,6 +1,4 @@
-const fs = require('fs');
 
-const mongoose = require('mongoose');
 
 const mail = async (req, res) => {
   return res.status(200).json({

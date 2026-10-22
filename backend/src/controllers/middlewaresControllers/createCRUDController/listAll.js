@@ -1,26 +1,12 @@
 const listAll = async (Model, req, res) => {
-  const sort = req.query.sort || 'desc';
-  const enabled = req.query.enabled || undefined;
+  const sort = req.query.sort === 'asc' ? 1 : -1;
+  const conditions = { removed: false };
+  if (req.query.enabled === 'true' || req.query.enabled === 'false') {
+    conditions.enabled = req.query.enabled === 'true';
+  }
 
   //  Query the database for a list of all results
-
-  let result;
-  if (enabled === undefined) {
-    result = await Model.find({
-      removed: false,
-    })
-      .sort({ created: sort })
-      .populate()
-      .exec();
-  } else {
-    result = await Model.find({
-      removed: false,
-      enabled: enabled,
-    })
-      .sort({ created: sort })
-      .populate()
-      .exec();
-  }
+  const result = await Model.find(conditions).sort({ created: sort }).exec();
 
   if (result.length > 0) {
     return res.status(200).json({

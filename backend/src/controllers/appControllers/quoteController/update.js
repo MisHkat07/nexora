@@ -2,12 +2,20 @@ const mongoose = require('mongoose');
 
 const Model = mongoose.model('Quote');
 
-const custom = require('@/controllers/pdfController');
-
 const { calculate } = require('@/helpers');
+const schema = require('./schemaValidate');
 
 const update = async (req, res) => {
-  const { items = [], taxRate = 0, discount = 0 } = req.body;
+  const { error, value } = schema.validate(req.body);
+  if (error) {
+    return res.status(400).json({
+      success: false,
+      result: null,
+      message: error.details[0]?.message,
+    });
+  }
+
+  const { items = [], taxRate = 0 } = value;
 
   if (items.length === 0) {
     return res.status(400).json({
@@ -33,7 +41,7 @@ const update = async (req, res) => {
   taxTotal = calculate.multiply(subTotal, taxRate / 100);
   total = calculate.add(subTotal, taxTotal);
 
-  let body = req.body;
+  let body = value;
 
   body['subTotal'] = subTotal;
   body['taxTotal'] = taxTotal;
@@ -41,7 +49,7 @@ const update = async (req, res) => {
   body['items'] = items;
   body['pdf'] = 'quote-' + req.params.id + '.pdf';
 
-  if (body.hasOwnProperty('currency')) {
+  if (Object.hasOwn(body, 'currency')) {
     delete body.currency;
   }
   // Find document by id and updates with the required fields

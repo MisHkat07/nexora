@@ -6,7 +6,6 @@ import useLanguage from '@/locale/useLanguage';
 import { useMoney, useDate } from '@/settings';
 import AutoCompleteAsync from '@/components/AutoCompleteAsync';
 import SelectAsync from '@/components/SelectAsync';
-import { generate as uniqueId } from 'shortid';
 
 import { countryList } from '@/utils/countryList';
 
@@ -63,7 +62,7 @@ function FormElement({ field, feedback, setFeedback }) {
       >
         {field.options?.map((option) => {
           return (
-            <Select.Option key={`${uniqueId()}`} value={option.value}>
+            <Select.Option key={option.value} value={option.value}>
               {option.label}
             </Select.Option>
           );
@@ -91,7 +90,7 @@ function FormElement({ field, feedback, setFeedback }) {
       >
         {field.options?.map((option) => {
           return (
-            <Select.Option key={`${uniqueId()}`} value={option.value}>
+            <Select.Option key={option.value} value={option.value}>
               <Tag bordered={false} color={option.color}>
                 {translate(option.label)}
               </Tag>
@@ -120,7 +119,7 @@ function FormElement({ field, feedback, setFeedback }) {
         }}
       >
         {field.options?.map((option) => (
-          <Select.Option key={`${uniqueId()}`} value={option.value}>
+          <Select.Option key={option.value} value={option.value}>
             {translate(option.label)}
           </Select.Option>
         ))}
@@ -153,7 +152,7 @@ function FormElement({ field, feedback, setFeedback }) {
       >
         {field.options?.map((option) => {
           return (
-            <Select.Option key={`${uniqueId()}`} value={option.value} label={option.label}>
+            <Select.Option key={option.value} value={option.value} label={option.label}>
               <Tag bordered={false} color={option.color}>
                 {option.label}
               </Tag>
@@ -181,7 +180,7 @@ function FormElement({ field, feedback, setFeedback }) {
         }}
       >
         {field.options?.map((option) => (
-          <Select.Option key={`${uniqueId()}`} value={option.value}>
+          <Select.Option key={option.value} value={option.value}>
             <Tag bordered={false} color={option.color}>
               {translate(option.label)}
             </Tag>
@@ -209,7 +208,7 @@ function FormElement({ field, feedback, setFeedback }) {
         }}
       >
         {field.options?.map((option) => (
-          <Select.Option key={`${uniqueId()}`} value={option.value}>
+          <Select.Option key={option.value} value={option.value}>
             {option.label}
           </Select.Option>
         ))}

@@ -7,7 +7,6 @@ import {
   RedoOutlined,
   PlusOutlined,
   EllipsisOutlined,
-  ArrowRightOutlined,
 } from '@ant-design/icons';
 import { Dropdown, Table, Button } from 'antd';
 import { PageHeader } from '@ant-design/pro-layout';
@@ -18,10 +17,9 @@ import useLanguage from '@/locale/useLanguage';
 import { erp } from '@/redux/erp/actions';
 import { selectListItems } from '@/redux/erp/selectors';
 import { useErpContext } from '@/context/erp';
-import { generate as uniqueId } from 'shortid';
 import { useNavigate } from 'react-router-dom';
 
-import { DOWNLOAD_BASE_URL } from '@/config/serverApiConfig';
+import { downloadPdf } from '@/request';
 
 function AddNewItem({ config }) {
   const navigate = useNavigate();
@@ -91,7 +89,7 @@ export default function DataTable({ config, extra = [] }) {
     navigate(`/${entity}/update/${record._id}`);
   };
   const handleDownload = (record) => {
-    window.open(`${DOWNLOAD_BASE_URL}${entity}/${entity}-${record._id}.pdf`, '_blank');
+    downloadPdf({ entity, id: record._id });
   };
 
   const handleDelete = (record) => {
@@ -181,17 +179,17 @@ export default function DataTable({ config, extra = [] }) {
         ghost={true}
         extra={[
           <AutoCompleteAsync
-            key={`${uniqueId()}`}
+            key="refresh"
             entity={searchConfig?.entity}
             displayLabels={['name']}
             searchFields={'name'}
             onChange={filterTable}
           />,
-          <Button onClick={handelDataTableLoad} key={`${uniqueId()}`} icon={<RedoOutlined />}>
+          <Button onClick={handelDataTableLoad} key="refresh-2" icon={<RedoOutlined />}>
             {translate('Refresh')}
           </Button>,
 
-          !disableAdd && <AddNewItem config={config} key={`${uniqueId()}`} />,
+          !disableAdd && <AddNewItem config={config} key="add-new-item" />,
         ]}
       ></PageHeader>
 

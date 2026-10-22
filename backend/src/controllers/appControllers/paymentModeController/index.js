@@ -1,12 +1,14 @@
 const mongoose = require('mongoose');
 const Model = mongoose.model('PaymentMode');
 const createCRUDController = require('@/controllers/middlewaresControllers/createCRUDController');
+const { validateBody } = require('@/controllers/middlewaresControllers/createCRUDController/queryPolicy');
 const methods = createCRUDController('PaymentMode');
 
 delete methods['delete'];
 
 methods.create = async (req, res) => {
-  const { isDefault } = req.body;
+  const body = validateBody('PaymentMode', req.body);
+  const { isDefault } = body;
 
   if (isDefault) {
     await Model.updateMany({}, { isDefault: false });
@@ -17,7 +19,7 @@ methods.create = async (req, res) => {
   });
 
   const result = await new Model({
-    ...req.body,
+    ...body,
 
     isDefault: countDefault < 1 ? true : false,
   }).save();
@@ -39,11 +41,15 @@ methods.delete = async (req, res) => {
 
 methods.update = async (req, res) => {
   const { id } = req.params;
+  const body = validateBody('PaymentMode', req.body, { partial: true });
   const paymentMode = await Model.findOne({
     _id: req.params.id,
     removed: false,
   }).exec();
-  const { isDefault = paymentMode.isDefault, enabled = paymentMode.enabled } = req.body;
+  if (!paymentMode) {
+    return res.status(404).json({ success: false, result: null, message: 'No document found ' });
+  }
+  const { isDefault = paymentMode.isDefault, enabled = paymentMode.enabled } = body;
 
   // if isDefault:false , we update first - isDefault:true
   // if enabled:false and isDefault:true , we update first - isDefault:true
@@ -67,9 +73,13 @@ methods.update = async (req, res) => {
     });
   }
 
-  const result = await Model.findOneAndUpdate({ _id: id }, req.body, {
-    new: true,
-  });
+  const result = await Model.findOneAndUpdate(
+    { _id: id, removed: false },
+    { $set: body },
+    {
+      new: true,
+    }
+  );
 
   return res.status(200).json({
     success: true,
