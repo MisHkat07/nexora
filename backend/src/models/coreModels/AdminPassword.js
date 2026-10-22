@@ -17,7 +17,9 @@ const AdminPasswordSchema = new Schema({
     type: String,
     required: true,
   },
+  // sha256 of the emailed address-verification token
   emailToken: String,
+  emailTokenExpires: Date,
   // sha256 of the emailed reset token
   resetToken: String,
   resetTokenExpires: Date,

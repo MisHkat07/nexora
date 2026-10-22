@@ -54,6 +54,20 @@ exports.passwordReset = ({ name, link, companyName = 'Nexora' }) => ({
   text: `Hello ${name},\n\nReset your password (valid for 1 hour): ${link}\n\nIf you didn't ask for this, ignore this email.`,
 });
 
+exports.verifyEmail = ({ name, link, companyName }) => ({
+  subject: 'Confirm your email address',
+  html: layout({
+    companyName: 'Nexora',
+    preview: 'Confirm your email address',
+    body: `
+      <p style="margin:0 0 16px">Hello ${escape(name)},</p>
+      <p style="margin:0 0 24px">Welcome to Nexora! Confirm your email address to finish setting up ${escape(companyName)}. This link is valid for 24 hours.</p>
+      <p style="margin:0 0 24px">${button(link, 'Confirm email address')}</p>
+      <p style="margin:0;color:#6e84a3;font-size:13px">If you didn't create an account, you can ignore this email.</p>`,
+  }),
+  text: `Hello ${name},\n\nConfirm your email address to finish setting up ${companyName} (valid for 24 hours): ${link}\n\nIf you didn't create an account, ignore this email.`,
+});
+
 /**
  * Email that delivers an invoice, quote or payment receipt.
  * `details` is a list of [label, value] rows shown in a summary table.

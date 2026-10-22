@@ -14,6 +14,7 @@ import { settingsAction } from '@/redux/settings/actions';
 import { selectSettings } from '@/redux/settings/selectors';
 
 import AppRouter from '@/router/AppRouter';
+import VerifyEmailBanner from '@/components/VerifyEmailBanner';
 
 import useResponsive from '@/hooks/useResponsive';
 
@@ -62,6 +63,7 @@ export default function ErpCrmApp() {
                 maxWidth: 'none',
               }}
             >
+              <VerifyEmailBanner />
               <AppRouter />
             </Content>
           </Layout>
@@ -78,6 +80,7 @@ export default function ErpCrmApp() {
                 maxWidth: 'none',
               }}
             >
+              <VerifyEmailBanner />
               <AppRouter />
             </Content>
           </Layout>

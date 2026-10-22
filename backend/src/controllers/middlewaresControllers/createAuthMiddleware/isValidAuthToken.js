@@ -55,6 +55,7 @@ const isValidAuthToken = async (req, res, next, { userModel, jwtSecret = 'JWT_SE
     const reqUserName = userModel.toLowerCase();
     req[reqUserName] = user;
     req.authToken = token;
+    req.emailVerified = Boolean(userPassword.emailVerified);
     // From here on, every query in this request is limited to the user's organization
     setCurrentTenant(user.organizationId);
     next();

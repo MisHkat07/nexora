@@ -45,6 +45,7 @@ export default function RegisterForm({ userLocation }) {
           {
             required: true,
           },
+          { min: 8, message: 'Use at least 8 characters' },
         ]}
       >
         <Input.Password prefix={<LockOutlined className="site-form-item-icon" />} size="large" />

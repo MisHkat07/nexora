@@ -26,6 +26,7 @@ const PaymentMode = lazy(() => import('@/pages/PaymentMode'));
 const Taxes = lazy(() => import('@/pages/Taxes'));
 
 const Profile = lazy(() => import('@/pages/Profile'));
+const VerifyEmail = lazy(() => import('@/pages/VerifyEmail'));
 
 let routes = {
   expense: [],
@@ -33,6 +34,15 @@ let routes = {
     {
       path: '/login',
       element: <Navigate to="/" />,
+    },
+    {
+      path: '/register',
+      element: <Navigate to="/" />,
+    },
+    {
+      // The signup email link can be opened while already logged in
+      path: '/verify-email/:userId/:token',
+      element: <VerifyEmail />,
     },
     {
       path: '/logout',

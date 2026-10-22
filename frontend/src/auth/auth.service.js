@@ -4,10 +4,14 @@ import axios from 'axios';
 import errorHandler from '@/request/errorHandler';
 import successHandler from '@/request/successHandler';
 
+// Own instance: '@/request' sets axios.defaults.baseURL after login, which would double the
+// /api/ prefix on these calls (e.g. logging out and back in without reloading the page)
+const http = axios.create({ baseURL: API_BASE_URL, withCredentials: true });
+
 export const login = async ({ loginData }) => {
   try {
-    const response = await axios.post(
-      API_BASE_URL + `login?timestamp=${new Date().getTime()}`,
+    const response = await http.post(
+      `login?timestamp=${new Date().getTime()}`,
       loginData
     );
 
@@ -28,7 +32,7 @@ export const login = async ({ loginData }) => {
 
 export const register = async ({ registerData }) => {
   try {
-    const response = await axios.post(API_BASE_URL + `register`, registerData);
+    const response = await http.post(`register`, registerData);
 
     const { status, data } = response;
 
@@ -45,28 +49,30 @@ export const register = async ({ registerData }) => {
   }
 };
 
-export const verify = async ({ userId, emailToken }) => {
+// Confirms the email address from the link in the signup email
+export const verify = async ({ userId, token }) => {
   try {
-    const response = await axios.get(API_BASE_URL + `verify/${userId}/${emailToken}`);
-
-    const { status, data } = response;
-
-    successHandler(
-      { data, status },
-      {
-        notifyOnSuccess: true,
-        notifyOnFailed: true,
-      }
-    );
-    return data;
+    const response = await http.post('verify-email', { userId, token });
+    return response.data;
   } catch (error) {
-    return errorHandler(error);
+    // The page shows the message itself
+    return error.response?.data || { success: false, message: 'Could not reach the server' };
+  }
+};
+
+// What the login page needs before anyone is logged in (e.g. whether signup is on)
+export const publicConfig = async () => {
+  try {
+    const response = await http.get('public-config');
+    return response.data?.result || {};
+  } catch {
+    return {};
   }
 };
 
 export const resetPassword = async ({ resetPasswordData }) => {
   try {
-    const response = await axios.post(API_BASE_URL + `resetpassword`, resetPasswordData);
+    const response = await http.post(`resetpassword`, resetPasswordData);
 
     const { status, data } = response;
 
@@ -82,11 +88,12 @@ export const resetPassword = async ({ resetPasswordData }) => {
     return errorHandler(error);
   }
 };
-export const logout = async () => {
-  axios.defaults.withCredentials = true;
+// The caller passes the token: the stored session is already cleared when this runs
+export const logout = async ({ token } = {}) => {
   try {
-    // window.localStorage.clear();
-    const response = await axios.post(API_BASE_URL + `logout?timestamp=${new Date().getTime()}`);
+    const response = await http.post(`logout?timestamp=${new Date().getTime()}`, null, {
+      headers: token ? { Authorization: `Bearer ${token}` } : {},
+    });
     const { status, data } = response;
 
     successHandler(

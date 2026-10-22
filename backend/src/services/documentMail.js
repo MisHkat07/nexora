@@ -77,9 +77,13 @@ const DOCUMENTS = {
  * 7-day download link. Records the send on the document; invoices and quotes in draft or
  * pending become "sent".
  */
-const sendDocumentEmail = async ({ entity, body, user }) => {
+const sendDocumentEmail = async ({ entity, body, user, senderVerified }) => {
   const doc = DOCUMENTS[entity];
   if (!doc) throw new HttpError(404, 'Unknown document type');
+  // New signups can't email customers until they confirm their own address (anti-spam)
+  if (!senderVerified) {
+    throw new HttpError(403, 'Confirm your email address before sending emails to customers.');
+  }
 
   const { error, value } = schema.validate(body);
   if (error) throw new HttpError(400, error.details[0].message);

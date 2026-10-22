@@ -1,6 +1,6 @@
 const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-const crypto = require('crypto');
+
+const { startSession, sessionResult } = require('./session');
 
 const authUser = async (req, res, { user, databasePassword, password, UserPasswordModel }) => {
   const isMatch = await bcrypt.compare(databasePassword.salt + password, databasePassword.password);
@@ -12,54 +12,14 @@ const authUser = async (req, res, { user, databasePassword, password, UserPasswo
       message: 'Invalid credentials.',
     });
 
-  if (isMatch === true) {
-    const token = jwt.sign(
-      {
-        id: user._id,
-      },
-      process.env.JWT_SECRET,
-      // jwtid keeps every session token unique, so sessions can be revoked one by one
-      { expiresIn: req.body.remember ? 365 * 24 + 'h' : '24h', jwtid: crypto.randomUUID() }
-    );
+  const remember = Boolean(req.body.remember);
+  const token = await startSession({ user, UserPasswordModel, remember });
 
-    await UserPasswordModel.findOneAndUpdate(
-      { user: user._id },
-      { $push: { loggedSessions: token } },
-      {
-        new: true,
-      }
-    ).exec();
-
-    // .cookie(`token_${user.cloud}`, token, {
-    //     maxAge: req.body.remember ? 365 * 24 * 60 * 60 * 1000 : null,
-    //     sameSite: 'None',
-    //     httpOnly: true,
-    //     secure: true,
-    //     domain: req.hostname,
-    //     path: '/',
-    //     Partitioned: true,
-    //   })
-    res.status(200).json({
-      success: true,
-      result: {
-        _id: user._id,
-        name: user.name,
-        surname: user.surname,
-        role: user.role,
-        email: user.email,
-        photo: user.photo,
-        token: token,
-        maxAge: req.body.remember ? 365 : null,
-      },
-      message: 'Successfully login user',
-    });
-  } else {
-    return res.status(403).json({
-      success: false,
-      result: null,
-      message: 'Invalid credentials.',
-    });
-  }
+  return res.status(200).json({
+    success: true,
+    result: sessionResult({ user, token, remember, emailVerified: databasePassword.emailVerified }),
+    message: 'Successfully login user',
+  });
 };
 
 module.exports = authUser;

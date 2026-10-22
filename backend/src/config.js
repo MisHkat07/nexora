@@ -32,6 +32,8 @@ const schema = Joi.object({
   S3_ENDPOINT: Joi.string().uri({ scheme: ['http', 'https'] }),
   S3_FORCE_PATH_STYLE: Joi.boolean().default(false),
   UPLOAD_MAX_BYTES: Joi.number().integer().min(1024).default(5 * 1024 * 1024),
+  // Lets anyone create a new organization at /register (SaaS). Off for single-company installs.
+  SIGNUP_ENABLED: Joi.boolean().default(false),
   // Error tracking (optional)
   SENTRY_DSN: Joi.string().uri(),
   SENTRY_TRACES_SAMPLE_RATE: Joi.number().min(0).max(1),
@@ -62,6 +64,7 @@ module.exports = {
   trustProxy: env.TRUST_PROXY,
   frontendDist: env.FRONTEND_DIST,
   appUrl: env.APP_URL ? env.APP_URL.replace(/\/+$/, '') : undefined,
+  signupEnabled: env.SIGNUP_ENABLED,
   email: {
     apiKey: env.RESEND_API,
     from: env.EMAIL_FROM,

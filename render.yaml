@@ -35,3 +35,5 @@ services:
         sync: false # public URL of this service, e.g. https://nexora.onrender.com
       - key: EMAIL_FROM
         sync: false # e.g. "Acme Billing <billing@acme.com>"
+      - key: SIGNUP_ENABLED
+        value: "false" # set to "true" to allow self-serve signup at /register

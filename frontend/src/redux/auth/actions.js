@@ -38,25 +38,7 @@ export const register =
     });
     const data = await authService.register({ registerData });
 
-    if (data.success === true) {
-      dispatch({
-        type: actionTypes.REGISTER_SUCCESS,
-      });
-    } else {
-      dispatch({
-        type: actionTypes.REQUEST_FAILED,
-      });
-    }
-  };
-
-export const verify =
-  ({ userId, emailToken }) =>
-  async (dispatch) => {
-    dispatch({
-      type: actionTypes.REQUEST_LOADING,
-    });
-    const data = await authService.verify({ userId, emailToken });
-
+    // Signup logs the new owner straight in
     if (data.success === true) {
       const auth_state = {
         current: data.result,
@@ -76,6 +58,16 @@ export const verify =
       });
     }
   };
+
+// After the address is confirmed, update the stored session (if logged in) so the banner disappears
+export const markEmailVerified = () => async (dispatch, getState) => {
+  const { auth } = getState();
+  if (!auth.isLoggedIn) return;
+  const current = { ...auth.current, emailVerified: true };
+  const stored = JSON.parse(window.localStorage.getItem('auth') || '{}');
+  window.localStorage.setItem('auth', JSON.stringify({ ...stored, current }));
+  dispatch({ type: actionTypes.REQUEST_SUCCESS, payload: current });
+};
 
 export const resetPassword =
   ({ resetPasswordData }) =>
@@ -116,7 +108,8 @@ export const logout = () => async (dispatch) => {
   window.localStorage.removeItem('auth');
   window.localStorage.removeItem('settings');
   window.localStorage.setItem('isLogout', JSON.stringify({ isLogout: true }));
-  const data = await authService.logout();
+  // Revoke this session on the server (the token was read before the stored session was cleared)
+  const data = await authService.logout({ token: tmpAuth?.current?.token });
   if (data.success === false) {
     const auth_state = {
       current: tmpAuth,

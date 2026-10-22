@@ -51,3 +51,14 @@ describe('auth', () => {
     expect((await auth(request(app).get('/api/client/list'))).status).toBe(401);
   });
 });
+
+describe('#17 signup on a single-company install', () => {
+  test('is off by default', async () => {
+    const config = await request(app).get('/api/public-config');
+    expect(config.body.result).toEqual({ signupEnabled: false });
+    const res = await request(app)
+      .post('/api/register')
+      .send({ companyName: 'X', name: 'Y', email: 'y@example.com', password: 'long-password' });
+    expect(res.status).toBe(404);
+  });
+});

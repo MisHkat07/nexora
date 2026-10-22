@@ -13,7 +13,7 @@ The plan to make Nexora a market-ready SaaS is split into 7 milestones and 55 is
 | Milestone | Goal | Status |
 |---|---|---|
 | **M1 Foundation & Security** | Safe for real customer data, tested, deploys reliably | ✅ Done (branch `m1/foundation-security`) |
-| M2 SaaS Core | Many companies and users per deployment, roles, audit log | In progress — #15 multi-tenancy ✅, #16 data migration ✅ (branch `m2/multi-tenancy`) |
+| M2 SaaS Core | Many companies and users per deployment, roles, audit log | In progress — #15 multi-tenancy ✅, #16 data migration ✅, #17 self-serve signup ✅ |
 | M3 Get Paid | Online payments, recurring invoices, client portal, reminders, email sending, quote → invoice | In progress — #54 email ✅, #55 quote → invoice ✅ (branch `m3/email-and-quote-conversion`) |
 | M4 CRM | Contacts, leads → deals pipeline, activities, import | Planned |
 | M5 ERP | Products, inventory, expenses, purchase orders, reports | Planned |
@@ -74,6 +74,7 @@ The plan to make Nexora a market-ready SaaS is split into 7 milestones and 55 is
 
 ### Authentication
 - ✅ Login / logout (JWT), forgot and reset password
+- ✅ Self-serve signup at `/register` when `SIGNUP_ENABLED=true`: creates a new organization with its owner and defaults, logs them in, and emails a confirmation link (24 h). Until confirmed, the account works but can't email customers.
 
 ---
 
@@ -263,6 +264,9 @@ S3_REGION=auto
 S3_ENDPOINT=https://<account-id>.r2.cloudflarestorage.com   # leave empty for AWS
 
 SENTRY_DSN=
+
+# Allow anyone to create a new organization at /register (SaaS mode). Off by default.
+SIGNUP_ENABLED=false
 ```
 
 After switching an existing install to S3, copy the current uploads once with `npm run storage:migrate` (inside `backend/`).
@@ -423,6 +427,9 @@ Base URL: `http://localhost:8888/api/` — every route except auth needs `Author
 - `POST /forgetpassword`
 - `POST /resetpassword`
 - `POST /logout`
+- `GET /public-config` → `{ signupEnabled }`
+- `POST /register` `{ companyName, name, email, password, country? }` (only with `SIGNUP_ENABLED=true`; 5 per hour per IP)
+- `POST /verify-email` `{ userId, token }`, `POST /resend-verification` (logged in)
 
 **Entities**: `client`, `invoice`, `quote`, `payment`, `paymentmode`, `taxes`
 

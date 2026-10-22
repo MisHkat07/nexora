@@ -116,7 +116,17 @@ const apiLimiter = rateLimit({
   message: rateLimitResponse,
 });
 
-app.use(['/api/login', '/api/forgetpassword', '/api/resetpassword'], authLimiter);
+// Every signup and verification email counts (successful ones too), to stop mass account creation
+const signupLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000,
+  limit: 5,
+  standardHeaders: 'draft-7',
+  legacyHeaders: false,
+  message: rateLimitResponse,
+});
+
+app.use(['/api/login', '/api/forgetpassword', '/api/resetpassword', '/api/verify-email'], authLimiter);
+app.use(['/api/register', '/api/resend-verification'], signupLimiter);
 app.use(['/api', '/download'], apiLimiter);
 
 // Here our API Routes

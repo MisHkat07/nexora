@@ -5,6 +5,8 @@ import NotFound from '@/pages/NotFound';
 
 import ForgetPassword from '@/pages/ForgetPassword';
 import ResetPassword from '@/pages/ResetPassword';
+import Register from '@/pages/Register';
+import VerifyEmail from '@/pages/VerifyEmail';
 
 
 export default function AuthRouter() {
@@ -16,6 +18,8 @@ export default function AuthRouter() {
       <Route element={<Navigate to="/login" replace />} path="/logout" />
       <Route element={<ForgetPassword />} path="/forgetpassword" />
       <Route element={<ResetPassword />} path="/resetpassword/:userId/:resetToken" />
+      <Route element={<Register />} path="/register" />
+      <Route element={<VerifyEmail />} path="/verify-email/:userId/:token" />
       <Route path="*" element={<NotFound />} />
     </Routes>
   );

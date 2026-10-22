@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
@@ -12,6 +12,7 @@ import { selectAuth } from '@/redux/auth/selectors';
 import LoginForm from '@/forms/LoginForm';
 import Loading from '@/components/Loading';
 import AuthModule from '@/modules/AuthModule';
+import { publicConfig } from '@/auth/auth.service';
 
 const LoginPage = () => {
   const translate = useLanguage();
@@ -27,6 +28,12 @@ const LoginPage = () => {
   useEffect(() => {
     if (isSuccess) navigate('/');
   }, [isSuccess]);
+
+  // Only show "Create an account" when this server allows self-serve signup
+  const [signupEnabled, setSignupEnabled] = useState(false);
+  useEffect(() => {
+    publicConfig().then((config) => setSignupEnabled(Boolean(config.signupEnabled)));
+  }, []);
 
   const FormContainer = () => {
     return (
@@ -51,6 +58,11 @@ const LoginPage = () => {
             >
               {translate('Log in')}
             </Button>
+            {signupEnabled && (
+              <div style={{ marginTop: 12 }}>
+                New to Nexora? <a href="/register">Create an account</a>
+              </div>
+            )}
           </Form.Item>
         </Form>
       </Loading>
