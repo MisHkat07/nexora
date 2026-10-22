@@ -48,6 +48,7 @@ const isValidAuthToken = async (req, res, next, { userModel, jwtSecret = 'JWT_SE
 
     const reqUserName = userModel.toLowerCase();
     req[reqUserName] = user;
+    req.authToken = token;
     next();
   } catch (error) {
     return sendError(error, req, res);

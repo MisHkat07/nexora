@@ -1,44 +1,8 @@
 /*
-  This is a file of data and helper functions that we can expose and use in our templating function
+  Money arithmetic with correct decimal rounding (avoids 0.1 + 0.2 floating point errors)
 */
 
-const fs = require('fs');
 const currency = require('currency.js');
-exports.moment = require('moment');
-
-// Making a static map is really long - this is a handy helper function to make one
-
-// inserting an SVG
-exports.icon = (name) => {
-  try {
-    return fs.readFileSync(`./public/images/icons/${name}.svg`);
-  } catch (error) {
-    return null;
-  }
-};
-
-exports.image = (name) => fs.readFileSync(`./public/images/photos/${name}.jpg`);
-
-// Some details about the site
-exports.siteName = `Express.js / MongoBD / Rest Api`;
-
-exports.timeRange = (start, end, format, interval) => {
-  if (format == undefined) {
-    format = 'HH:mm';
-  }
-
-  if (interval == undefined) {
-    interval = 60;
-  }
-  interval = interval > 0 ? interval : 60;
-
-  const range = [];
-  while (moment(start).isBefore(moment(end))) {
-    range.push(moment(start).format(format));
-    start = moment(start).add(interval, 'minutes');
-  }
-  return range;
-};
 
 exports.calculate = {
   add: (firstValue, secondValue) => {

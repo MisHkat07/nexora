@@ -29,6 +29,11 @@ describe('auth', () => {
     expect(res.body.message).toBe('Invalid credentials.');
   });
 
+  test('a login request without a body is rejected cleanly', async () => {
+    const res = await request(app).post('/api/login');
+    expect(res.status).toBe(400);
+  });
+
   test('protected routes need a token', async () => {
     const res = await request(app).get('/api/client/list');
     expect(res.status).toBe(401);

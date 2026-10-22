@@ -1,6 +1,5 @@
 const pug = require('pug');
-const moment = require('moment');
-const puppeteer = require('puppeteer');
+const dayjs = require('dayjs');
 
 const storage = require('@/storage');
 const { loadSettings } = require('@/middlewares/settings');
@@ -14,19 +13,21 @@ const pugFiles = ['invoice', 'offer', 'quote', 'payment'];
 const MAX_CONCURRENT_RENDERS = 2;
 const RENDER_TIMEOUT_MS = 20000;
 
-
 let browserPromise = null;
 
 /** One shared headless Chrome, relaunched if it crashes. */
 const getBrowser = () => {
   if (!browserPromise) {
-    browserPromise = puppeteer
-      .launch({
+    // Puppeteer is ESM-only, so it is imported (once) rather than required
+    browserPromise = import('puppeteer')
+      .then(({ default: puppeteer }) =>
+        puppeteer.launch({
         headless: true,
         // Set PUPPETEER_EXECUTABLE_PATH to use a system Chromium (as the Docker image does)
         executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || undefined,
         args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage', '--font-render-hinting=none'],
-      })
+        })
+      )
       .then((browser) => {
         browser.on('disconnected', () => {
           browserPromise = null;
@@ -91,7 +92,7 @@ const renderHtml = async (modelName, result) => {
     translate,
     dateFormat,
     moneyFormatter,
-    moment: moment,
+    dayjs,
   });
 };
 

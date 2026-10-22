@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const moment = require('moment');
+const dayjs = require('dayjs');
 
 const Model = mongoose.model('Quote');
 const { loadSettings } = require('@/middlewares/settings');
@@ -23,7 +23,7 @@ const summary = async (req, res) => {
     }
   }
 
-  const currentDate = moment();
+  const currentDate = dayjs();
   let startDate = currentDate.clone().startOf(defaultType);
   let endDate = currentDate.clone().endOf(defaultType);
 

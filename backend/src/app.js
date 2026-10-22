@@ -82,6 +82,11 @@ app.use(
 app.use(cookieParser());
 app.use(express.json({ limit: '1mb' }));
 app.use(express.urlencoded({ extended: true, limit: '1mb' }));
+// Express 5 leaves req.body undefined when there is no body; handlers expect an object
+app.use((req, res, next) => {
+  req.body ??= {};
+  next();
+});
 
 app.use(compression());
 
