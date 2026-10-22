@@ -45,6 +45,7 @@ const server = app.listen(app.get('port'), () => {
 const shutdown = (signal) => {
   logger.info(`${signal} received, shutting down`);
   server.close(async () => {
+    await require('@/controllers/pdfController').closeBrowser();
     await mongoose.disconnect();
     process.exit(0);
   });

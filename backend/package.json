@@ -27,7 +27,6 @@
     "express-rate-limit": "^7.1.5",
     "glob": "10.3.10",
     "helmet": "^8.3.0",
-    "html-pdf": "^3.0.1",
     "joi": "^17.11.0",
     "jsonwebtoken": "^9.0.2",
     "lodash": "^4.17.21",
@@ -41,6 +40,7 @@
     "pino": "^9.14.0",
     "pino-http": "^10.5.0",
     "pug": "^3.0.2",
+    "puppeteer": "^23.11.1",
     "resend": "^2.0.0",
     "shortid": "^2.2.16",
     "transliteration": "^2.3.5"

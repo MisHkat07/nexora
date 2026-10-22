@@ -2,7 +2,6 @@ const mongoose = require('mongoose');
 
 const Model = mongoose.model('Quote');
 
-const custom = require('@/controllers/pdfController');
 const { increaseBySettingKey } = require('@/middlewares/settings');
 const { calculate } = require('@/helpers');
 const schema = require('./schemaValidate');

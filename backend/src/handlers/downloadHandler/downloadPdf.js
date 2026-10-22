@@ -14,18 +14,16 @@ const downloadPdf = async (req, res, { directory, id }) => {
       return res.status(404).json({ success: false, result: null, message: 'Document not found' });
     }
 
-    const fileId = directory + '-' + result._id + '.pdf';
-    const targetLocation = `src/public/download/${directory}/${fileId}`;
-    await custom.generatePdf(
-      modelName,
-      { filename: directory, format: 'A4', targetLocation },
-      result,
-      async () => {
-        return res.download(targetLocation, (error) => {
-          if (error) sendError(error, req, res);
-        });
-      }
-    );
+    // Rendered on demand and streamed back; nothing is written to disk
+    const pdf = await custom.generatePdf(modelName, result);
+    const fileName = `${directory}-${result._id}.pdf`;
+    res.set({
+      'Content-Type': 'application/pdf',
+      'Content-Disposition': `attachment; filename="${fileName}"`,
+      'Content-Length': pdf.length,
+      'Cache-Control': 'private, no-store',
+    });
+    return res.send(pdf);
   } catch (error) {
     return sendError(error, req, res);
   }

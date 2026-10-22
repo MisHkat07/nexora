@@ -1,15 +1,9 @@
-const fs = require('fs');
-const path = require('path');
 const request = require('supertest');
 const mongoose = require('mongoose');
 
-// PDF rendering is covered separately; here we only care about who may download
+// PDF rendering is covered in pdf.test.js; here we only care about who may download
 jest.mock('@/controllers/pdfController', () => ({
-  generatePdf: jest.fn(async (modelName, { targetLocation }, result, callback) => {
-    require('fs').mkdirSync(require('path').dirname(targetLocation), { recursive: true });
-    require('fs').writeFileSync(targetLocation, '%PDF-1.4 test');
-    callback();
-  }),
+  generatePdf: jest.fn(async () => Buffer.from('%PDF-1.4 test')),
 }));
 
 const { createTestApp, closeTestApp } = require('./helpers/app');
@@ -22,10 +16,7 @@ beforeAll(async () => {
   const client = await createClient();
   invoice = await createInvoice(admin, client);
 });
-afterAll(async () => {
-  fs.rmSync(path.resolve('src/public/download/invoice', `invoice-${invoice._id}.pdf`), { force: true });
-  await closeTestApp();
-});
+afterAll(closeTestApp);
 
 describe('#01 PDF downloads', () => {
   const pdfPath = () => `/download/invoice/invoice-${invoice._id}.pdf`;
