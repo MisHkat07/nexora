@@ -3,11 +3,12 @@ const crypto = require('crypto');
 
 const mongoose = require('mongoose');
 
-const checkAndCorrectURL = require('./checkAndCorrectURL');
-const sendMail = require('./sendMail');
 const { hashResetToken, RESET_TOKEN_TTL_MS } = require('./resetToken');
 
-const { useAppSettings } = require('@/settings');
+const { sendEmail, appLink } = require('@/services/email');
+const { passwordReset } = require('@/emailTemplate');
+const { loadSettings } = require('@/middlewares/settings');
+const logger = require('@/logger');
 
 // Same response whether or not the account exists, so this can't be used to discover emails
 const genericResponse = {
@@ -52,22 +53,17 @@ const forgetPassword = async (req, res, { userModel }) => {
   ).exec();
   if (!updated) return res.status(200).json(genericResponse);
 
-  const settings = useAppSettings();
-  const idurar_app_email = settings['idurar_app_email'];
-  const idurar_base_url = settings['idurar_base_url'];
+  // The link must point at this app (APP_URL); the token is only valid for one hour
+  const link = appLink(`/resetpassword/${user._id}/${resetToken}`);
+  const { company_name } = await loadSettings();
+  const message = passwordReset({ name: user.name, link, companyName: company_name || 'Nexora' });
 
-  const url = checkAndCorrectURL(idurar_base_url);
-
-  const link = url + '/resetpassword/' + user._id + '/' + resetToken;
-
-  await sendMail({
-    email: user.email,
-    name: user.name,
-    link,
-    subject: 'Reset your password',
-    idurar_app_email,
-    type: 'passwordVerfication',
-  });
+  try {
+    await sendEmail({ to: user.email, subject: message.subject, html: message.html, text: message.text });
+  } catch (error) {
+    // Same response either way (no account discovery), but make the failure visible to operators
+    (req.log || logger).error({ err: error }, 'Password reset email could not be sent');
+  }
 
   return res.status(200).json(genericResponse);
 };

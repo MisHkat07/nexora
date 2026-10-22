@@ -1,8 +1,11 @@
 const request = require('supertest');
 const mongoose = require('mongoose');
 
-jest.mock('@/controllers/middlewaresControllers/createAuthMiddleware/sendMail', () => jest.fn());
-const sendMail = require('@/controllers/middlewaresControllers/createAuthMiddleware/sendMail');
+jest.mock('@/services/email', () => ({
+  ...jest.requireActual('@/services/email'),
+  sendEmail: jest.fn(async () => ({ id: 'email-id' })),
+}));
+const { sendEmail: sendMail } = require('@/services/email');
 
 const { createTestApp, closeTestApp } = require('./helpers/app');
 const { createAdmin, loginAs } = require('./helpers/factories');
@@ -18,12 +21,28 @@ beforeEach(() => sendMail.mockClear());
 const requestReset = async (email) => {
   const res = await request(app).post('/api/forgetpassword').send({ email });
   expect(res.status).toBe(200);
-  const { link } = sendMail.mock.calls[0][0];
-  const [userId, resetToken] = link.split('/resetpassword/')[1].split('/');
+  const { text } = sendMail.mock.calls[0][0];
+  const [, userId, resetToken] = text.match(/\/resetpassword\/([0-9a-f]{24})\/([0-9a-f]{64})/);
   return { userId, resetToken };
 };
 
 describe('password reset', () => {
+  test('the email goes to the user and links to this app (APP_URL), not a third-party site', async () => {
+    await createAdmin({ email: 'link@test.com' });
+    await request(app).post('/api/forgetpassword').send({ email: 'link@test.com' });
+    const { to, html, text } = sendMail.mock.calls[0][0];
+    expect(to).toBe('link@test.com');
+    expect(text).toMatch(/http:\/\/localhost:3000\/resetpassword\/[0-9a-f]{24}\/[0-9a-f]{64}/);
+    expect(html + text).not.toMatch(/idurar/i);
+  });
+
+  test('a failing email provider still returns the generic response', async () => {
+    await createAdmin({ email: 'fail@test.com' });
+    sendMail.mockRejectedValueOnce(new Error('provider down'));
+    const res = await request(app).post('/api/forgetpassword').send({ email: 'fail@test.com' });
+    expect(res.status).toBe(200);
+  });
+
   test('unknown emails get the same response and no email is sent', async () => {
     const res = await request(app).post('/api/forgetpassword').send({ email: 'nobody@test.com' });
     expect(res.status).toBe(200);
