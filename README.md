@@ -1,78 +1,79 @@
 # Nexora
 
-**Nexora** is a modern ERP & CRM platform for managing customers, quotes, invoices, and payments—built with the MERN stack (MongoDB, Express.js, React, Node.js) and Redux.
+**Nexora** is an ERP & CRM platform for managing customers, quotes, invoices, and payments — built with the MERN stack (MongoDB, Express, React, Node.js).
 
-**Version:** 4.1.0
+**Version:** 4.1.0 · **Roadmap:** [`docs/roadmap/README.md`](docs/roadmap/README.md)
 
 ---
 
-## Brand
+## Roadmap status
 
-| | |
-|--------|--------|
-| **Product** | Nexora |
-| **Mark** | Stylized **N** with upward arrow + 2×2 accent grid |
-| **Assets** | `frontend/public/favicon.png`, `frontend/src/style/images/nexora-icon.png`, `frontend/src/style/images/nexora-logo.png` |
+The plan to make Nexora a market-ready SaaS is split into 7 milestones and 55 issues ([details](docs/roadmap/README.md), one file per issue in [`docs/roadmap/issues/`](docs/roadmap/issues)).
 
-### Color palette
+| Milestone | Goal | Status |
+|---|---|---|
+| **M1 Foundation & Security** | Safe for real customer data, tested, deploys reliably | ✅ Done (branch `m1/foundation-security`) |
+| M2 SaaS Core | Many companies and users per deployment, roles, audit log | Planned |
+| M3 Get Paid | Online payments, recurring invoices, client portal, reminders, **real email sending (#54)**, **quote → invoice (#55)** | In progress (#54, #55) |
+| M4 CRM | Contacts, leads → deals pipeline, activities, import | Planned |
+| M5 ERP | Products, inventory, expenses, purchase orders, reports | Planned |
+| M6 UX & AI | Analytics dashboard, search, dark mode, notifications, AI features | Planned |
+| M7 Launch | Subscriptions, marketing site, API docs, compliance | Planned |
 
-| Token | Hex | Use |
-|--------|------|--------|
-| Primary blue | `#0061FF` | Active nav, primary buttons, links |
-| Purple | `#8833FF` | Accents, “updated” states |
-| Success | `#00D97E` | Success / online / “new” |
-| Warning | `#FD7E14` | Warnings / beta |
-| Danger | `#E63757` | Errors / destructive actions |
-| Text | `#12263F` | Headings & body |
-| Muted | `#6E84A3` | Secondary labels |
-| Surface | `#F5F8FC` | App background |
-| Border | `#E3EBF6` | Dividers & card edges |
+### What Milestone 1 changed
 
-UI theme tokens live in [`frontend/src/locale/Localization.jsx`](frontend/src/locale/Localization.jsx) and [`frontend/src/style/partials/brand.css`](frontend/src/style/partials/brand.css).
+**Security**
+- PDF downloads need a short-lived link signed for one document (`/download` was public before).
+- CORS only allows configured origins; `helmet` security headers; rate limits on login and password reset.
+- Every create/update/list/search request is checked against a per-model allowlist (no mass assignment, no NoSQL or regex injection, page size capped).
+- Error responses never include stack traces or database errors; each 500 carries a request ID.
+- Password reset tokens are random, stored hashed, single-use and expire after 1 hour; a reset or password change signs out other sessions.
+- Login and forgot-password don't reveal whether an email has an account.
+- Uploads: only PNG/JPEG/GIF/WebP (checked from the file bytes, not the name), 5 MB limit, random file names.
+
+**Reliability**
+- Payments and invoice balances are written in one MongoDB transaction, so concurrent payments can't overpay an invoice.
+- PDFs are rendered by headless Chrome (Puppeteer) instead of the abandoned PhantomJS.
+- Uploads can live in any S3-compatible bucket, so they survive redeploys.
+- The server validates its configuration on startup, logs structured JSON with request IDs, exposes `/health` and `/ready`, and shuts down cleanly.
+
+**Engineering**
+- 87 backend API tests, GitHub Actions CI (lint, tests, build, Docker image, dependency audit), Dependabot.
+- Dependencies upgraded (Express 5, React 19, React Router 7, Vite 6, ESLint 9, Puppeteer 25); `npm audit --omit=dev` reports 0 vulnerabilities in both apps.
+- Optional Sentry error tracking for backend and frontend.
 
 ---
 
 ## Features
 
-### Dashboard & reports
-- Monthly invoice, quote, and payment totals
-- Unpaid amount and status performance
-- Customer counts
-- Recent invoices and quotes at a glance
+✅ works · 🚧 not implemented yet (tracked in the roadmap)
 
-### Customer management
-- Create, read, update, and delete customers (clients)
-- Store name, country, address, phone, and email
+### Dashboard
+- ✅ Invoice, quote and payment totals, unpaid amount, status breakdown, customer counts
+- ✅ Recent invoices and quotes
+- 🚧 Totals are all-time although the cards say "This Month" (#41)
 
-### Sales & invoicing
-- Create and manage invoices with line items, tax, and status
-- Record payments against an invoice
-- Download invoice PDFs
-- Send invoices by email
-- Support for recurring invoice fields
+### Customers
+- ✅ Create, read, update, delete and search customers (name, country, address, phone, email)
 
-### Quotes
-- Create and manage quotes
-- Download quote PDFs and send by email
-- Convert a quote into an invoice in one step
+### Invoices & quotes
+- ✅ Line items, tax, status; totals are always computed on the server
+- ✅ PDF download
+- 🚧 Send by email — the endpoint is still a placeholder (#54)
+- 🚧 Convert a quote into an invoice — the endpoint is still a placeholder (#55)
+- 🚧 Recurring invoices — the field exists, no scheduler yet (#25)
 
 ### Payments
-- Track payments linked to invoices and payment modes
-- Download payment PDFs and send by email
-- Configure **payment modes** (e.g. cash, wire transfer)
-- Configure **taxes** (default 0% tax included after setup)
+- ✅ Record, edit and delete payments against an invoice; the invoice balance and paid / partially / unpaid status update automatically
+- ✅ Payment modes and taxes
+- ✅ Payment receipt PDF
 
 ### Settings & profile
-- General, company, logo, currency/money format, and finance settings (document prefixes & numbering)
-- Admin profile: update info, upload photo, change password
+- ✅ Company details, logo, currency and number formats, document prefixes and numbering
+- ✅ Profile with photo upload and password change
 
 ### Authentication
-- Login / logout with JWT
-- Forgot password and reset password flow
-- Protected API routes for authenticated users
-
-### State management
-- Redux Toolkit for predictable, scalable client state
+- ✅ Login / logout (JWT), forgot and reset password
 
 ---
 
@@ -80,11 +81,81 @@ UI theme tokens live in [`frontend/src/locale/Localization.jsx`](frontend/src/lo
 
 | Layer | Stack |
 |--------|--------|
-| **Frontend** | React 18, Vite 5, React Router 6, Redux Toolkit, Ant Design 5, Axios |
-| **Backend** | Node.js, Express.js, Mongoose |
-| **Database** | MongoDB (local or Atlas) |
-| **Auth** | JWT, bcrypt |
-| **Extras** | PDF (Pug + html-pdf), Resend (email), optional DigitalOcean Spaces / S3 uploads |
+| **Frontend** | React 19, Vite 6, React Router 7, Redux Toolkit, Ant Design 5, Axios |
+| **Backend** | Node.js 20.19+, Express 5, Mongoose 8 |
+| **Database** | MongoDB (Atlas or a local replica set — transactions need a replica set) |
+| **PDF** | Pug templates rendered by headless Chrome (Puppeteer) |
+| **Files** | Local disk (development) or any S3-compatible bucket |
+| **Email** | Resend |
+| **Monitoring** | pino structured logs, optional Sentry |
+
+### Backend packages
+
+| Package | Used for | Why this one |
+|---|---|---|
+| `express` 5 | HTTP server and routing | Standard Node web framework; v5 forwards async errors and has a safer router |
+| `mongoose` | MongoDB models, validation, transactions | Schemas and validation on top of MongoDB, and session support for transactions |
+| `mongoose-autopopulate` | Loads related documents (e.g. an invoice's client) automatically | Keeps the many read endpoints short |
+| `joi` | Validates request bodies, query parameters and environment variables | One declarative schema per input; unknown fields are rejected by default |
+| `jsonwebtoken` | Login session tokens and 5-minute signed PDF download links | Stateless, signed tokens; each session token has a unique ID so it can be revoked |
+| `bcryptjs` | Password hashing | Slow, salted hashing; pure JavaScript, so nothing native to compile |
+| `helmet` | Security headers (CSP, HSTS, frame and MIME protections) | Sensible defaults in one middleware |
+| `cors` | Allows only the origins in `CORS_ORIGINS` to call the API from a browser | Standard Express CORS middleware |
+| `express-rate-limit` | Brute-force protection on login and password reset; general API limit | Simple in-memory limiter, enough for a single instance |
+| `compression` | gzip responses | Smaller JSON and frontend assets |
+| `multer` 2 | Parses file uploads into memory before they are checked and stored | Maintained multipart parser; v2 fixes denial-of-service advisories |
+| `@aws-sdk/client-s3` | Stores uploads in S3, Cloudflare R2, DigitalOcean Spaces or MinIO | One client for every S3-compatible provider |
+| `transliteration` | Turns uploaded file names in any language into safe ASCII | Keeps non-English names readable in URLs |
+| `puppeteer` 25 | Renders invoice, quote and payment PDFs in headless Chrome | Modern CSS and fonts; replaces the abandoned PhantomJS (`html-pdf`) |
+| `pug` | HTML templates for the PDFs | Already used by the existing templates |
+| `currency.js` | Money arithmetic (totals, tax, balances) | Avoids floating-point rounding errors such as 0.1 + 0.2 |
+| `dayjs` | Dates in PDFs and dashboard summaries | Small, maintained replacement for `moment` |
+| `lodash` | Escaping user search text before it is used in a regex | `escapeRegExp` prevents regex injection |
+| `resend` | Sends password-reset emails (and invoice emails, #54) | Simple transactional email API |
+| `pino`, `pino-http` | JSON request and error logs with request IDs | Fast structured logging that log platforms can search |
+| `@sentry/node` | Error tracking (when `SENTRY_DSN` is set) | Groups errors with stack traces and the deployed commit; sensitive data is scrubbed |
+| `dotenv` | Loads `backend/.env` | Standard local configuration |
+| `module-alias` | `@/…` import paths inside `src/` | Avoids long `../../..` paths |
+| `glob` | Finds and registers every model and controller on startup | Lets new models be added without editing a central list |
+
+**Backend dev tools**
+
+| Package | Used for |
+|---|---|
+| `jest`, `supertest` | API tests that send real HTTP requests to the app |
+| `mongodb-memory-server` | A throwaway MongoDB replica set for each test run (no database setup needed) |
+| `aws-sdk-client-mock`, `@smithy/util-stream` | Tests the S3 storage driver without a real bucket |
+| `eslint`, `@eslint/js`, `globals` | Linting (ESLint 9 flat config) |
+| `nodemon` | Restarts the API on file changes during development |
+| `pino-pretty` | Readable, colored logs in development |
+
+### Frontend packages
+
+| Package | Used for | Why this one |
+|---|---|---|
+| `react` 19, `react-dom` | UI | Current React |
+| `vite` 6, `@vitejs/plugin-react` | Dev server and production build | Fast builds and hot reload |
+| `antd` 5, `@ant-design/icons` | UI components (tables, forms, modals, notifications) | Complete business UI kit; the existing screens use it |
+| `@ant-design/v5-patch-for-react-19` | Makes antd 5's notifications, modals and wave effects work on React 19 | Official compatibility patch from the antd team |
+| `@ant-design/pro-layout` | Page headers | Used by the existing list and detail pages |
+| `react-router-dom` 7 | Client-side routing | Same API as v6 for this app, with security fixes |
+| `@reduxjs/toolkit`, `react-redux`, `redux`, `reselect` | App state (lists, current record, settings, auth) | Existing state management; toolkit reduces boilerplate |
+| `axios` | API requests (adds the auth header, shows error notifications) | Interceptors and multipart uploads |
+| `currency.js` | Money formatting and line-item totals in forms | Same rounding as the backend |
+| `dayjs` | Date pickers and date formatting | antd's date library |
+| `@sentry/react` | Browser error tracking and the crash fallback screen (when `VITE_SENTRY_DSN` is set) | Same tool as the backend |
+| `cross-env` | Sets env variables in npm scripts on any OS | Used by `npm run dev:remote` |
+
+**Frontend dev tools:** `eslint` 9 with `eslint-plugin-react`, `eslint-plugin-react-hooks`, `eslint-plugin-react-refresh` and `eslint-plugin-unused-imports` (unused imports are removed by `npm run lint -- --fix`), `prettier`.
+
+### Removed in Milestone 1 (and why)
+
+| Package | Reason |
+|---|---|
+| `html-pdf` | Depends on PhantomJS, abandoned since 2018, with known vulnerabilities |
+| `moment` | In maintenance mode; replaced by `dayjs` |
+| `shortid` | Deprecated and not cryptographically random; replaced by `crypto.randomUUID` and stable React keys |
+| `openai`, `node-cache`, `cookie-parser`, `express-fileupload`, `react-quill`, `just-compare` | Installed but never used (`react-quill` also carried a vulnerable Quill 1.x) |
 
 ---
 
@@ -92,18 +163,31 @@ UI theme tokens live in [`frontend/src/locale/Localization.jsx`](frontend/src/lo
 
 ```
 nexora/
-├── frontend/          # Nexora SPA (Vite) — default port 3000
-├── backend/           # Express API — default port 8888
-└── README.md
+├── backend/                 # Express API — default port 8888
+│   ├── src/
+│   │   ├── controllers/     # Request handlers (generic CRUD + per-entity overrides)
+│   │   ├── models/          # Mongoose models
+│   │   ├── routes/          # API, download and public-file routes
+│   │   ├── storage/         # Local disk / S3 file storage
+│   │   ├── pdf/             # Pug templates for PDFs
+│   │   ├── config.js        # Environment validation
+│   │   └── server.js        # Entry point
+│   └── tests/               # Jest + Supertest API tests
+├── frontend/                # React SPA (Vite) — default port 3000
+├── docs/roadmap/            # Milestones and one file per issue
+├── scripts/                 # create-github-issues.sh (pushes roadmap issues to GitHub)
+├── .github/                 # CI workflow and Dependabot
+├── Dockerfile               # Single image: API + built frontend + Chromium
+└── render.yaml              # Render blueprint
 ```
 
 ---
 
 ## Prerequisites
 
-- **Node.js 20+** (project engines pin `20.9.0`; backend exits if Node major &lt; 20)
-- **npm** 10.x recommended
-- **MongoDB** — local instance or [MongoDB Atlas](https://www.mongodb.com/atlas)
+- **Node.js 20.19+** (required by Sentry 11; the backend exits on Node < 20)
+- **npm** 10.x
+- **MongoDB** — [MongoDB Atlas](https://www.mongodb.com/atlas) or a local **replica set** (payments use transactions, which a standalone `mongod` doesn't support)
 
 > **Atlas tip:** Under **Network Access**, allow your current IP (or `0.0.0.0/0` for local development). Resume the cluster if it is paused.
 
@@ -130,7 +214,7 @@ The server validates its configuration on startup and exits with a clear message
 In production `JWT_SECRET` must be at least 32 characters, and browsers may only call the API from the same origin
 unless you list others in `CORS_ORIGINS`.
 
-Optional (email / cloud uploads):
+Optional (email, cloud uploads, error tracking) — all documented in `backend/.env.example`:
 
 ```env
 RESEND_API=
@@ -143,6 +227,8 @@ S3_ACCESS_KEY_ID=
 S3_SECRET_ACCESS_KEY=
 S3_REGION=auto
 S3_ENDPOINT=https://<account-id>.r2.cloudflarestorage.com   # leave empty for AWS
+
+SENTRY_DSN=
 ```
 
 After switching an existing install to S3, copy the current uploads once with `npm run storage:migrate` (inside `backend/`).
@@ -150,6 +236,10 @@ After switching an existing install to S3, copy the current uploads once with `n
 Seed the database (admin user, settings, default tax & payment mode):
 
 ```bash
+# Real install: choose your own login
+SETUP_ADMIN_EMAIL=you@company.com SETUP_ADMIN_PASSWORD='a-strong-password' npm run setup
+
+# Demo install: admin@demo.com / admin123
 npm run setup
 ```
 
@@ -169,11 +259,12 @@ cd frontend
 npm install
 ```
 
-Create `frontend/.env` (local API is used automatically in Vite dev):
+Optionally copy `frontend/.env.example` to `frontend/.env`. In Vite dev mode the local API is used automatically.
 
 ```env
 VITE_FILE_BASE_URL=http://localhost:8888/
 VITE_BACKEND_SERVER=http://localhost:8888/
+VITE_SENTRY_DSN=
 ```
 
 Start the UI:
@@ -182,14 +273,16 @@ Start the UI:
 npm run dev
 ```
 
-App runs at `http://localhost:3000` (browser title: **Nexora**).
+App runs at `http://localhost:3000`. From the repo root, `npm run dev` starts the API and the UI together.
 
-### Demo login (after `npm run setup`)
+### Demo login (after `npm run setup` without SETUP_ADMIN_*)
 
 | Field | Value |
 |--------|--------|
 | **Email** | `admin@demo.com` |
 | **Password** | `admin123` |
+
+Change this password in **Profile** after logging in. With `DEMO_MODE=true` (public demo sites) the demo account's password is locked.
 
 ---
 
@@ -197,15 +290,17 @@ App runs at `http://localhost:3000` (browser title: **Nexora**).
 
 ```bash
 npm test          # from the repo root, or `npm test` inside backend/
+npm run lint      # inside backend/ or frontend/
 ```
 
 Backend API tests use Jest + Supertest against an in-memory MongoDB replica set (`mongodb-memory-server`),
-so no database or `.env` is needed. The first run downloads a MongoDB binary (~100 MB) and caches it.
+so no database or `.env` is needed. The first run downloads a MongoDB binary (~100 MB) and Chrome for Puppeteer, and caches them.
 
 - `backend/tests/helpers/app.js` gives each test file its own fresh database
 - `backend/tests/helpers/factories.js` creates admins (and logs in), clients and invoices
 
-CI (`.github/workflows/ci.yml`) runs the backend tests, lints and builds the frontend, and builds the Docker image on every PR.
+CI (`.github/workflows/ci.yml`) runs on every pull request: backend lint and tests, frontend lint and build,
+a Docker image build, and `npm audit` (fails on high-severity production advisories).
 
 ---
 
@@ -232,11 +327,18 @@ docker build -t nexora .
 docker run -p 8888:8888 -e DATABASE="mongodb+srv://..." -e JWT_SECRET="..." nexora
 ```
 
+The image includes Chromium and Noto fonts for PDF rendering and runs as the non-root `node` user.
+
+### Render checklist
+
+- `render.yaml` sets up the service; the health check is `/health`.
+- Set `DATABASE`, then `STORAGE_DRIVER=s3` with the `S3_*` keys — without a bucket, uploaded logos and photos are lost on every deploy (the server logs a warning).
+- Optional: `RESEND_API`, `SENTRY_DSN`.
+
 ### Notes
 
-- Leave `VITE_BACKEND_SERVER` empty for same-origin deploys. Set it (with a trailing `/`) only if the API is hosted on a different domain.
+- Leave `VITE_BACKEND_SERVER` empty for same-origin deploys. Set it (with a trailing `/`) only if the API is hosted on a different domain, and add that frontend's origin to `CORS_ORIGINS`.
 - `FRONTEND_DIST` overrides the path Express serves the UI from.
-- Local development: `npm run dev` from the repo root starts the API (8888, nodemon) and the UI (3000, Vite) together; Ctrl+C stops both. Use `npm run dev:backend` or `npm run dev:frontend` to run one on its own.
 
 ---
 
@@ -258,51 +360,51 @@ Auth routes: `/login`, `/forgetpassword`, `/resetpassword/:userId/:resetToken`.
 
 ---
 
-## Backend scripts
+## Scripts
 
-| Script | Description |
-|--------|-------------|
-| `npm run dev` | Start API with nodemon |
-| `npm start` | Start API with Node |
-| `npm run setup` | Seed admin, settings, tax, payment mode |
-| `npm run reset` | Reset setup data |
-
----
-
-## Frontend scripts
-
-| Script | Description |
-|--------|-------------|
-| `npm run dev` | Vite dev server (port 3000) |
-| `npm run build` | Production build |
-| `npm run preview` | Preview production build |
-| `npm run dev:remote` | Dev against remote backend (`VITE_DEV_REMOTE`) |
+| Where | Script | Description |
+|--------|--------|-------------|
+| root | `npm run dev` | API (nodemon) and UI (Vite) together |
+| root | `npm run build` / `npm start` | Build the UI / start the API serving it |
+| root | `npm test` | Backend tests |
+| backend | `npm run setup` | Seed admin, settings, tax, payment mode (`SETUP_ADMIN_EMAIL`, `SETUP_ADMIN_PASSWORD`) |
+| backend | `npm run reset` | Reset setup data |
+| backend | `npm run storage:migrate` | Copy local uploads to the S3 bucket |
+| backend | `npm run lint` | ESLint |
+| frontend | `npm run dev` | Vite dev server (port 3000) |
+| frontend | `npm run build` / `npm run preview` | Production build / preview it |
+| frontend | `npm run lint` | ESLint (`-- --fix` removes unused imports) |
+| frontend | `npm run dev:remote` | Dev against a remote backend (`VITE_DEV_REMOTE`) |
 
 ---
 
 ## API overview
 
-Base URL: `http://localhost:8888/api/`
+Base URL: `http://localhost:8888/api/` — every route except auth needs `Authorization: Bearer <token>`.
 
-**Auth**
+**Auth** (rate limited)
 - `POST /login`
 - `POST /forgetpassword`
 - `POST /resetpassword`
-- `POST /logout` (authenticated)
+- `POST /logout`
 
-**Entities** (typical CRUD + helpers): `client`, `invoice`, `quote`, `payment`, `paymentmode`, `taxes`
+**Entities**: `client`, `invoice`, `quote`, `payment`, `paymentmode`, `taxes`
 
 - `POST /:entity/create`
 - `GET /:entity/read/:id`
 - `PATCH /:entity/update/:id`
 - `DELETE /:entity/delete/:id`
-- `GET /:entity/list`, `/search`, `/filter`, `/summary`
+- `GET /:entity/list` (`page`, `items` ≤ 100, `filter`/`equal`, `q`/`fields`, `sortBy`/`sortValue` — only allowlisted fields)
+- `GET /:entity/listAll`, `/search`, `/filter`, `/summary`
 
-**Notable extras**
-- Invoice / quote / payment: mail + PDF download
-- Quote: `GET /quote/convert/:id` → convert to invoice
+**Documents**
+- `GET /invoice|quote|payment/download-link/:id` → a 5-minute signed URL; open it to download the PDF
+- `POST /invoice|quote|payment/mail` — placeholder until #54
+- `GET /quote/convert/:id` — placeholder until #55
 
-PDFs: `GET /download/:directory/:file`
+**Other**
+- `GET /health`, `GET /ready` — liveness and readiness probes (no auth)
+- `GET /public/uploads/:entity/:file` — uploaded images
 
 ---
 
@@ -310,10 +412,13 @@ PDFs: `GET /download/:directory/:file`
 
 | Issue | What to check |
 |--------|----------------|
+| Server exits with "Invalid environment configuration" | The message lists the missing or invalid variables; see `backend/.env.example` |
 | Login fails / connection refused | Backend running on port **8888**? |
-| `DATABASE` undefined / mongoose URI error | `backend/.env` exists and includes `DATABASE` |
 | Atlas TLS / server selection error | Network Access IP allowlist; cluster not paused |
+| Recording a payment fails with a transaction error | MongoDB must be a replica set (Atlas always is) |
 | Empty / invalid login after fresh DB | Run `npm run setup` in `backend/` |
+| Logos disappear after deploy | Set `STORAGE_DRIVER=s3` and the bucket keys |
+| PDF download fails in Docker | Chromium is installed in the image; check the logs for the request ID |
 
 ---
 
