@@ -23,7 +23,7 @@ const remove = async (req, res) => {
       message: 'Invoice not found',
     });
   }
-  const paymentsInvoices = await ModelPayment.updateMany(
+  await ModelPayment.updateMany(
     { invoice: deletedInvoice._id },
     { $set: { removed: true } }
   );

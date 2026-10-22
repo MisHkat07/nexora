@@ -17,7 +17,7 @@ const login = async (req, res, { userModel }) => {
     password: Joi.string().required(),
   });
 
-  const { error, value } = objectSchema.validate({ email, password });
+  const { error } = objectSchema.validate({ email, password });
   if (error) {
     return res.status(400).json({
       success: false,

@@ -15,7 +15,7 @@ const update = async (req, res) => {
     });
   }
 
-  const { items = [], taxRate = 0, discount = 0 } = value;
+  const { items = [], taxRate = 0 } = value;
 
   if (items.length === 0) {
     return res.status(400).json({
@@ -49,7 +49,7 @@ const update = async (req, res) => {
   body['items'] = items;
   body['pdf'] = 'quote-' + req.params.id + '.pdf';
 
-  if (body.hasOwnProperty('currency')) {
+  if (Object.hasOwn(body, 'currency')) {
     delete body.currency;
   }
   // Find document by id and updates with the required fields

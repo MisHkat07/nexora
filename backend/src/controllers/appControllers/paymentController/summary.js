@@ -1,15 +1,12 @@
 const mongoose = require('mongoose');
-const dayjs = require('dayjs');
 
 const Model = mongoose.model('Payment');
-const { loadSettings } = require('@/middlewares/settings');
 
 const summary = async (req, res) => {
   let defaultType = 'month';
 
   const { type } = req.query;
 
-  const settings = await loadSettings();
 
   if (type) {
     if (['week', 'month', 'year'].includes(type)) {
@@ -23,9 +20,8 @@ const summary = async (req, res) => {
     }
   }
 
-  const currentDate = dayjs();
-  let startDate = currentDate.clone().startOf(defaultType);
-  let endDate = currentDate.clone().endOf(defaultType);
+  // TODO(#41): totals are all-time although the dashboard labels them "This Month";
+  // filter by date >= dayjs().startOf(defaultType) once the dashboard is redesigned.
 
   // get total amount of invoices
   const result = await Model.aggregate([

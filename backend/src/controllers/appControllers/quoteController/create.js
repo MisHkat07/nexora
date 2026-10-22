@@ -16,7 +16,7 @@ const create = async (req, res) => {
     });
   }
 
-  const { items = [], taxRate = 0, discount = 0 } = value;
+  const { items = [], taxRate = 0 } = value;
 
   // default
   let subTotal = 0;

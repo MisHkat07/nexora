@@ -56,8 +56,10 @@ The work on **#15 (tenant scoping)** gets harder the longer it waits, because ev
 
 ---
 
-## M1 — Foundation & Security
+## M1 — Foundation & Security ✅
 *Exit criteria: no known security holes, CI green with tests on the main flows, PDFs and uploads survive a redeploy.*
+
+**Status:** all 14 issues implemented on branch `m1/foundation-security` (87 backend API tests; both apps lint clean; 0 production audit findings). Production uploads still need an S3 bucket configured (`STORAGE_DRIVER=s3`), and Sentry needs a DSN.
 
 | # | Issue | Size | Pri |
 |---|---|---|---|
