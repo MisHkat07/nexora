@@ -118,13 +118,17 @@ cd backend
 npm install
 ```
 
-Create `backend/.env`:
+Copy `backend/.env.example` to `backend/.env` and fill in at least:
 
 ```env
 DATABASE="mongodb+srv://USER:PASSWORD@CLUSTER.mongodb.net/?appName=nexora"
-JWT_SECRET="your_private_jwt_secret_key"
+JWT_SECRET="at-least-32-random-characters"   # node -e "console.log(require('crypto').randomBytes(48).toString('hex'))"
 PORT=8888
 ```
+
+The server validates its configuration on startup and exits with a clear message if something required is missing.
+In production `JWT_SECRET` must be at least 32 characters, and browsers may only call the API from the same origin
+unless you list others in `CORS_ORIGINS`.
 
 Optional (email / cloud uploads):
 
@@ -181,6 +185,22 @@ App runs at `http://localhost:3000` (browser title: **Nexora**).
 |--------|--------|
 | **Email** | `admin@demo.com` |
 | **Password** | `admin123` |
+
+---
+
+## Testing
+
+```bash
+npm test          # from the repo root, or `npm test` inside backend/
+```
+
+Backend API tests use Jest + Supertest against an in-memory MongoDB replica set (`mongodb-memory-server`),
+so no database or `.env` is needed. The first run downloads a MongoDB binary (~100 MB) and caches it.
+
+- `backend/tests/helpers/app.js` gives each test file its own fresh database
+- `backend/tests/helpers/factories.js` creates admins (and logs in), clients and invoices
+
+CI (`.github/workflows/ci.yml`) runs the backend tests, lints and builds the frontend, and builds the Docker image on every PR.
 
 ---
 
