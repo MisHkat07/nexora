@@ -105,8 +105,8 @@ The work on **#15 (tenant scoping)** gets harder the longer it waits, because ev
 | [28](issues/28-payment-reminders.md) | Automatic payment reminders | M | P1 |
 | [29](issues/29-credit-notes-refunds.md) | Credit notes and refunds | M | P2 |
 | [30](issues/30-multi-currency.md) | Multi-currency with exchange rates | M | P2 |
-| [54](issues/54-real-email-sending.md) | Implement document email sending (currently a stub) | M | P0 |
-| [55](issues/55-quote-to-invoice-conversion.md) | Implement quote → invoice conversion (currently a stub) | S | P0 |
+| [54](issues/54-real-email-sending.md) | ✅ Implement document email sending | M | P0 |
+| [55](issues/55-quote-to-invoice-conversion.md) | ✅ Implement quote → invoice conversion | S | P0 |
 
 ## M4 — CRM
 *Exit criteria: a sales rep manages their week (leads, deals, follow-ups) entirely in Nexora.*

@@ -127,6 +127,16 @@ const quoteSchema = new mongoose.Schema({
       },
     },
   ],
+  // Every time this document was emailed to the customer
+  emails: [
+    {
+      to: String,
+      cc: [String],
+      sentAt: Date,
+      sentBy: { type: mongoose.Schema.ObjectId, ref: 'Admin' },
+      messageId: String,
+    },
+  ],
   updated: {
     type: Date,
     default: Date.now,

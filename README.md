@@ -14,7 +14,7 @@ The plan to make Nexora a market-ready SaaS is split into 7 milestones and 55 is
 |---|---|---|
 | **M1 Foundation & Security** | Safe for real customer data, tested, deploys reliably | ✅ Done (branch `m1/foundation-security`) |
 | M2 SaaS Core | Many companies and users per deployment, roles, audit log | Planned |
-| M3 Get Paid | Online payments, recurring invoices, client portal, reminders, **real email sending (#54)**, **quote → invoice (#55)** | In progress (#54, #55) |
+| M3 Get Paid | Online payments, recurring invoices, client portal, reminders, email sending, quote → invoice | In progress — #54 email ✅, #55 quote → invoice ✅ (branch `m3/email-and-quote-conversion`) |
 | M4 CRM | Contacts, leads → deals pipeline, activities, import | Planned |
 | M5 ERP | Products, inventory, expenses, purchase orders, reports | Planned |
 | M6 UX & AI | Analytics dashboard, search, dark mode, notifications, AI features | Planned |
@@ -59,8 +59,8 @@ The plan to make Nexora a market-ready SaaS is split into 7 milestones and 55 is
 ### Invoices & quotes
 - ✅ Line items, tax, status; totals are always computed on the server
 - ✅ PDF download
-- 🚧 Send by email — the endpoint is still a placeholder (#54)
-- 🚧 Convert a quote into an invoice — the endpoint is still a placeholder (#55)
+- ✅ Send invoices, quotes and payment receipts by email: PDF attached, a 7-day download link, optional CC and personal message; drafts become "sent" and every send is recorded on the document
+- ✅ Convert a quote into an invoice in one click (once per quote; the quote is marked accepted and the new invoice opens)
 - 🚧 Recurring invoices — the field exists, no scheduler yet (#25)
 
 ### Payments
@@ -111,7 +111,7 @@ The plan to make Nexora a market-ready SaaS is split into 7 milestones and 55 is
 | `currency.js` | Money arithmetic (totals, tax, balances) | Avoids floating-point rounding errors such as 0.1 + 0.2 |
 | `dayjs` | Dates in PDFs and dashboard summaries | Small, maintained replacement for `moment` |
 | `lodash` | Escaping user search text before it is used in a regex | `escapeRegExp` prevents regex injection |
-| `resend` | Sends password-reset emails (and invoice emails, #54) | Simple transactional email API |
+| `resend` | Sends password-reset emails and invoice / quote / receipt emails with the PDF attached | Simple transactional email API with attachments; delivery errors are reported back to the user |
 | `pino`, `pino-http` | JSON request and error logs with request IDs | Fast structured logging that log platforms can search |
 | `@sentry/node` | Error tracking (when `SENTRY_DSN` is set) | Groups errors with stack traces and the deployed commit; sensitive data is scrubbed |
 | `dotenv` | Loads `backend/.env` | Standard local configuration |
@@ -218,6 +218,8 @@ Optional (email, cloud uploads, error tracking) — all documented in `backend/.
 
 ```env
 RESEND_API=
+EMAIL_FROM="Acme Billing <billing@acme.com>"   # domain verified in Resend
+APP_URL=https://your-app.example.com            # links in emails point here
 
 # Uploaded logos and photos. "local" is fine for development; in production use any
 # S3-compatible bucket (AWS S3, Cloudflare R2, DigitalOcean Spaces). The bucket can be private.
@@ -333,7 +335,8 @@ The image includes Chromium and Noto fonts for PDF rendering and runs as the non
 
 - `render.yaml` sets up the service; the health check is `/health`.
 - Set `DATABASE`, then `STORAGE_DRIVER=s3` with the `S3_*` keys — without a bucket, uploaded logos and photos are lost on every deploy (the server logs a warning).
-- Optional: `RESEND_API`, `SENTRY_DSN`.
+- Email (password reset, sending documents): `RESEND_API`, `EMAIL_FROM` and `APP_URL` (the service's public URL).
+- Optional: `SENTRY_DSN`.
 
 ### Notes
 
@@ -399,8 +402,8 @@ Base URL: `http://localhost:8888/api/` — every route except auth needs `Author
 
 **Documents**
 - `GET /invoice|quote|payment/download-link/:id` → a 5-minute signed URL; open it to download the PDF
-- `POST /invoice|quote|payment/mail` — placeholder until #54
-- `GET /quote/convert/:id` — placeholder until #55
+- `POST /invoice|quote|payment/mail` `{ id, to?, cc?, message? }` → emails the document (PDF attached) to the customer
+- `POST /quote/convert/:id` → creates the invoice (or returns the existing one if already converted)
 
 **Other**
 - `GET /health`, `GET /ready` — liveness and readiness probes (no auth)
@@ -415,7 +418,9 @@ Base URL: `http://localhost:8888/api/` — every route except auth needs `Author
 | Server exits with "Invalid environment configuration" | The message lists the missing or invalid variables; see `backend/.env.example` |
 | Login fails / connection refused | Backend running on port **8888**? |
 | Atlas TLS / server selection error | Network Access IP allowlist; cluster not paused |
-| Recording a payment fails with a transaction error | MongoDB must be a replica set (Atlas always is) |
+| Recording a payment or converting a quote fails with a transaction error | MongoDB must be a replica set (Atlas always is); the server logs a warning at startup |
+| "Email is not set up on the server" | Set `RESEND_API`, `EMAIL_FROM` and `APP_URL` |
+| "The email could not be sent: …" | The message comes from Resend — usually the sender domain isn't verified |
 | Empty / invalid login after fresh DB | Run `npm run setup` in `backend/` |
 | Logos disappear after deploy | Set `STORAGE_DRIVER=s3` and the bucket keys |
 | PDF download fails in Docker | Chromium is installed in the image; check the logs for the request ID |
