@@ -29,3 +29,5 @@ services:
         sync: false
       - key: S3_REGION
         value: auto
+      - key: SENTRY_DSN
+        sync: false # optional error tracking

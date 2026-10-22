@@ -1,7 +1,4 @@
 require('module-alias/register');
-const mongoose = require('mongoose');
-const { globSync } = require('glob');
-const path = require('path');
 
 // Make sure we are running node 20+
 const [major] = process.versions.node.split('.').map(parseFloat);
@@ -12,6 +9,12 @@ if (major < 20) {
 
 // Loads .env and exits with a helpful message if required variables are missing
 const config = require('./config');
+// Error tracking must start before express and mongoose are loaded
+const Sentry = require('./instrument');
+
+const mongoose = require('mongoose');
+const { globSync } = require('glob');
+const path = require('path');
 const logger = require('./logger');
 
 if (!config.database) {
@@ -53,6 +56,7 @@ const shutdown = (signal) => {
   server.close(async () => {
     await require('@/controllers/pdfController').closeBrowser();
     await mongoose.disconnect();
+    await Sentry.close(2000);
     process.exit(0);
   });
   // Don't hang forever on keep-alive connections

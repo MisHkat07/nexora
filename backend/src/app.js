@@ -63,7 +63,8 @@ app.use(
         'style-src': ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'],
         'font-src': ["'self'", 'data:', 'https://fonts.gstatic.com'],
         'img-src': ["'self'", 'data:', 'blob:', 'https:'],
-        'connect-src': ["'self'", ...config.corsOrigins],
+        // Sentry ingest hosts, for frontend error reports (VITE_SENTRY_DSN)
+        'connect-src': ["'self'", ...config.corsOrigins, 'https://*.ingest.sentry.io', 'https://*.ingest.us.sentry.io', 'https://*.ingest.de.sentry.io'],
       },
     },
     // Uploaded logos are loaded cross-origin by the dev server and PDF renderer

@@ -26,6 +26,9 @@ const schema = Joi.object({
   S3_ENDPOINT: Joi.string().uri({ scheme: ['http', 'https'] }),
   S3_FORCE_PATH_STYLE: Joi.boolean().default(false),
   UPLOAD_MAX_BYTES: Joi.number().integer().min(1024).default(5 * 1024 * 1024),
+  // Error tracking (optional)
+  SENTRY_DSN: Joi.string().uri(),
+  SENTRY_TRACES_SAMPLE_RATE: Joi.number().min(0).max(1),
 }).unknown(true);
 
 // Treat `KEY=` lines in .env as unset

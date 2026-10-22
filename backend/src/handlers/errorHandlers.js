@@ -1,5 +1,6 @@
 const HttpError = require('./httpError');
 const logger = require('@/logger');
+const Sentry = require('@sentry/node');
 
 /*
   Maps any error to a status code and a message that is safe to send to the client.
@@ -34,6 +35,8 @@ const sendError = (error, req, res) => {
   const { status, message } = toSafeError(error);
   if (status >= 500) {
     (req.log || logger).error({ err: error }, 'Unhandled error');
+    // No-op unless SENTRY_DSN is set
+    Sentry.captureException(error, { tags: { requestId: req.id } });
   }
   if (res.headersSent) return;
   const body = { success: false, result: null, message };
