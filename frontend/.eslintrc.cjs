@@ -10,7 +10,7 @@ module.exports = {
   ignorePatterns: ['dist', '.eslintrc.cjs', 'src/components/outsideClick.js/demo.js'],
   overrides: [{ files: ['vite.config.js'], env: { node: true } }],
   parserOptions: { ecmaVersion: 'latest', sourceType: 'module' },
-  settings: { react: { version: '18.2' } },
+  settings: { react: { version: 'detect' } },
   plugins: ['react-refresh', 'unused-imports'],
   rules: {
     'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
