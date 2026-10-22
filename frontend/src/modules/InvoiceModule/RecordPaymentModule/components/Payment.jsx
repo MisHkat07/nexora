@@ -1,10 +1,9 @@
 import { useState, useEffect } from 'react';
 
-import { Button, Row, Col, Descriptions, Tag, Divider } from 'antd';
+import { Button, Row, Col, Descriptions, Divider } from 'antd';
 import { PageHeader } from '@ant-design/pro-layout';
 import { FileTextOutlined, CloseCircleOutlined } from '@ant-design/icons';
 
-import { generate as uniqueId } from 'shortid';
 
 import { useMoney } from '@/settings';
 
@@ -20,7 +19,7 @@ export default function Payment({ config, currentItem }) {
   const money = useMoney();
   const navigate = useNavigate();
 
-  const [itemslist, setItemsList] = useState([]);
+  const [, setItemsList] = useState([]);
   const [currentErp, setCurrentErp] = useState(currentItem);
 
   const [client, setClient] = useState({});
@@ -61,7 +60,7 @@ export default function Payment({ config, currentItem }) {
             // subTitle="This is cuurent erp page"
             extra={[
               <Button
-                key={`${uniqueId()}`}
+                key="cancel"
                 onClick={() => {
                   navigate(`/${entity.toLowerCase()}`);
                 }}
@@ -70,7 +69,7 @@ export default function Payment({ config, currentItem }) {
                 {translate('Cancel')}
               </Button>,
               <Button
-                key={`${uniqueId()}`}
+                key="show-invoice"
                 onClick={() => navigate(`/invoice/read/${currentErp._id}`)}
                 icon={<FileTextOutlined />}
               >

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Form, Divider } from 'antd';
 import dayjs from 'dayjs';
-import { Button, Tag } from 'antd';
+import { Button } from 'antd';
 import { PageHeader } from '@ant-design/pro-layout';
 
 import { useSelector, useDispatch } from 'react-redux';
@@ -9,14 +9,12 @@ import useLanguage from '@/locale/useLanguage';
 import { erp } from '@/redux/erp/actions';
 
 import calculate from '@/utils/calculate';
-import { generate as uniqueId } from 'shortid';
 import { selectUpdatedItem } from '@/redux/erp/selectors';
 import Loading from '@/components/Loading';
 
 import { CloseCircleOutlined, PlusOutlined } from '@ant-design/icons';
 import { useNavigate, useParams } from 'react-router-dom';
 
-import { settingsAction } from '@/redux/settings/actions';
 // import { StatusTag } from '@/components/Tag';
 
 function SaveForm({ form, translate }) {
@@ -151,7 +149,7 @@ export default function UpdateItem({ config, UpdateForm }) {
         ]}
         extra={[
           <Button
-            key={`${uniqueId()}`}
+            key="cancel"
             onClick={() => {
               navigate(`/${entity.toLowerCase()}`);
             }}
@@ -159,7 +157,7 @@ export default function UpdateItem({ config, UpdateForm }) {
           >
             {translate('Cancel')}
           </Button>,
-          <SaveForm translate={translate} form={form} key={`${uniqueId()}`} />,
+          <SaveForm translate={translate} form={form} key="save-form" />,
         ]}
         style={{
           padding: '20px 0px',

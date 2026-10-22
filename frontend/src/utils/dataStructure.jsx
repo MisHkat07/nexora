@@ -2,7 +2,6 @@ import dayjs from 'dayjs';
 import { Switch, Tag } from 'antd';
 import { CloseOutlined, CheckOutlined } from '@ant-design/icons';
 import { countryList } from '@/utils/countryList';
-import { generate as uniqueId } from 'shortid';
 import color from '@/utils/color';
 
 export const dataForRead = ({ fields, translate }) => {
@@ -166,7 +165,7 @@ export function dataForTable({ fields, translate, moneyFormatter, dateFormat }) 
         dataIndex: keyIndex,
         render: (_, record) => {
           return record[key].map((x) => (
-            <Tag bordered={false} key={`${uniqueId()}`} color={field.colors[x]}>
+            <Tag bordered={false} key={x} color={field.colors[x]}>
               {x}
             </Tag>
           ));
@@ -203,26 +202,4 @@ export function dataForTable({ fields, translate, moneyFormatter, dateFormat }) 
   });
 
   return columns;
-}
-
-function getRandomColor() {
-  const colors = [
-    'magenta',
-    'red',
-    'volcano',
-    'orange',
-    'gold',
-    'lime',
-    'green',
-    'cyan',
-    'blue',
-    'geekblue',
-    'purple',
-  ];
-
-  // Generate a random index between 0 and the length of the colors array
-  const randomIndex = Math.floor(Math.random() * colors.length);
-
-  // Return the color at the randomly generated index
-  return colors[randomIndex];
 }

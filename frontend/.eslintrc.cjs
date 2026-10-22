@@ -11,9 +11,16 @@ module.exports = {
   overrides: [{ files: ['vite.config.js'], env: { node: true } }],
   parserOptions: { ecmaVersion: 'latest', sourceType: 'module' },
   settings: { react: { version: '18.2' } },
-  plugins: ['react-refresh'],
+  plugins: ['react-refresh', 'unused-imports'],
   rules: {
     'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
     'react/prop-types': 0,
+    // Unused imports are auto-fixable (`npm run lint -- --fix`); unused variables are reported
+    'no-unused-vars': 'off',
+    'unused-imports/no-unused-imports': 'error',
+    'unused-imports/no-unused-vars': [
+      'error',
+      { vars: 'all', args: 'none', ignoreRestSiblings: true },
+    ],
   },
 };

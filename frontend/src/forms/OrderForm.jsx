@@ -1,4 +1,3 @@
-import React from 'react';
 import { Form, Input, Select, InputNumber } from 'antd';
 
 import useLanguage from '@/locale/useLanguage';

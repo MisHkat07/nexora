@@ -5,18 +5,15 @@ import DefaultLayout from '../DefaultLayout';
 import SidePanel from '@/components/SidePanel';
 import { Layout } from 'antd';
 import { useCrudContext } from '@/context/crud';
-import { useAppContext } from '@/context/appContext';
 
 const { Content } = Layout;
 
 const ContentBox = ({ children }) => {
-  const { state: stateCrud, crudContextAction } = useCrudContext();
-  const { state: stateApp } = useAppContext();
+  const { state: stateCrud } = useCrudContext();
   const { isPanelClose } = stateCrud;
   // const { isNavMenuClose } = stateApp;
-  const { panel } = crudContextAction;
 
-  const [isSidePanelClose, setSidePanel] = useState(isPanelClose);
+  const [, setSidePanel] = useState(isPanelClose);
 
   useEffect(() => {
     let timer = [];

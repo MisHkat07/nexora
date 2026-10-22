@@ -12,12 +12,10 @@ import { erp } from '@/redux/erp/actions';
 import { selectCreatedItem } from '@/redux/erp/selectors';
 
 import calculate from '@/utils/calculate';
-import { generate as uniqueId } from 'shortid';
 
 import Loading from '@/components/Loading';
 import {
   ArrowLeftOutlined,
-  ArrowRightOutlined,
   CloseCircleOutlined,
   PlusOutlined,
 } from '@ant-design/icons';
@@ -116,13 +114,13 @@ export default function CreateItem({ config, CreateForm }) {
         // subTitle="This is create page"
         extra={[
           <Button
-            key={`${uniqueId()}`}
+            key="cancel"
             onClick={() => navigate(`/${entity.toLowerCase()}`)}
             icon={<CloseCircleOutlined />}
           >
             {translate('Cancel')}
           </Button>,
-          <SaveForm form={form} key={`${uniqueId()}`} />,
+          <SaveForm form={form} key="save-form" />,
         ]}
         style={{
           padding: '20px 0px',

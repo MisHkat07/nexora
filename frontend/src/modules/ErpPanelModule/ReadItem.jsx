@@ -16,12 +16,11 @@ import { useSelector, useDispatch } from 'react-redux';
 import useLanguage from '@/locale/useLanguage';
 import { erp } from '@/redux/erp/actions';
 
-import { generate as uniqueId } from 'shortid';
 
 import { selectCurrentItem } from '@/redux/erp/selectors';
 
 import { downloadPdf } from '@/request';
-import { useMoney, useDate } from '@/settings';
+import { useMoney } from '@/settings';
 import useMail from '@/hooks/useMail';
 import { useNavigate } from 'react-router-dom';
 
@@ -151,7 +150,7 @@ export default function ReadItem({ config, selectedItem }) {
         ]}
         extra={[
           <Button
-            key={`${uniqueId()}`}
+            key="close"
             onClick={() => {
               navigate(`/${entity.toLowerCase()}`);
             }}
@@ -160,14 +159,14 @@ export default function ReadItem({ config, selectedItem }) {
             {translate('Close')}
           </Button>,
           <Button
-            key={`${uniqueId()}`}
+            key="download-pdf"
             onClick={() => downloadPdf({ entity, id: currentErp._id })}
             icon={<FilePdfOutlined />}
           >
             {translate('Download PDF')}
           </Button>,
           <Button
-            key={`${uniqueId()}`}
+            key="send-by-email"
             loading={mailInProgress}
             onClick={() => {
               send(currentErp._id);
@@ -177,7 +176,7 @@ export default function ReadItem({ config, selectedItem }) {
             {translate('Send by Email')}
           </Button>,
           <Button
-            key={`${uniqueId()}`}
+            key="convert-to-invoice"
             onClick={() => {
               dispatch(erp.convert({ entity, id: currentErp._id }));
             }}
@@ -188,7 +187,7 @@ export default function ReadItem({ config, selectedItem }) {
           </Button>,
 
           <Button
-            key={`${uniqueId()}`}
+            key="button"
             onClick={() => {
               dispatch(
                 erp.currentAction({
