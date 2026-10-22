@@ -14,13 +14,13 @@ import { useSelector, useDispatch } from 'react-redux';
 import { erp } from '@/redux/erp/actions';
 import useLanguage from '@/locale/useLanguage';
 
-
 import { selectCurrentItem } from '@/redux/erp/selectors';
 
 import { downloadPdf } from '@/request';
 import { useMoney } from '@/settings';
 
 import useMail from '@/hooks/useMail';
+import usePermission from '@/hooks/usePermission';
 import { useNavigate } from 'react-router-dom';
 
 export default function ReadItem({ config, selectedItem }) {
@@ -30,6 +30,7 @@ export default function ReadItem({ config, selectedItem }) {
 
   const { moneyFormatter } = useMoney();
   const { send, isLoading: mailInProgress } = useMail({ entity });
+  const { can } = usePermission();
   const navigate = useNavigate();
 
   const { result: currentResult } = useSelector(selectCurrentItem);
@@ -96,34 +97,38 @@ export default function ReadItem({ config, selectedItem }) {
           >
             {translate('Download PDF')}
           </Button>,
-          <Button
-            key="send-by-email"
-            loading={mailInProgress}
-            onClick={() => {
-              send(currentErp._id);
-            }}
-            icon={<MailOutlined />}
-          >
-            {translate('Send by email')}
-          </Button>,
+          can(entity, 'mail') && (
+            <Button
+              key="send-by-email"
+              loading={mailInProgress}
+              onClick={() => {
+                send(currentErp._id);
+              }}
+              icon={<MailOutlined />}
+            >
+              {translate('Send by email')}
+            </Button>
+          ),
 
-          <Button
-            key="button"
-            onClick={() => {
-              dispatch(
-                erp.currentAction({
-                  actionType: 'update',
-                  data: currentErp,
-                })
-              );
-              navigate(`/${entity.toLowerCase()}/update/${currentErp._id}`);
-            }}
-            type="primary"
-            icon={<EditOutlined />}
-          >
-            {translate('Edit')}
-          </Button>,
-        ]}
+          can(entity, 'update') && (
+            <Button
+              key="button"
+              onClick={() => {
+                dispatch(
+                  erp.currentAction({
+                    actionType: 'update',
+                    data: currentErp,
+                  })
+                );
+                navigate(`/${entity.toLowerCase()}/update/${currentErp._id}`);
+              }}
+              type="primary"
+              icon={<EditOutlined />}
+            >
+              {translate('Edit')}
+            </Button>
+          ),
+        ].filter(Boolean)}
         style={{
           padding: '20px 0px',
         }}

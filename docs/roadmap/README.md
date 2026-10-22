@@ -87,7 +87,7 @@ The work on **#15 (tenant scoping)** gets harder the longer it waits, because ev
 | [16](issues/16-tenant-data-migration.md) | ✅ Migrate existing data into a default organization | S | P0 |
 | [17](issues/17-self-serve-signup.md) | ✅ Self-serve signup with email verification | M | P0 |
 | [18](issues/18-team-users-invites.md) | Team members: invite, manage, deactivate | M | P0 |
-| [19](issues/19-rbac.md) | Role-based access control | L | P0 |
+| [19](issues/19-rbac.md) | ✅ Role-based access control | L | P0 |
 | [20](issues/20-session-refresh-tokens.md) | Secure sessions with refresh tokens | M | P1 |
 | [21](issues/21-two-factor-auth.md) | Two-factor authentication | M | P2 |
 | [22](issues/22-audit-log.md) | Audit log | M | P1 |

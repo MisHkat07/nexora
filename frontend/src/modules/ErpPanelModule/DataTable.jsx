@@ -20,6 +20,8 @@ import { useErpContext } from '@/context/erp';
 import { useNavigate } from 'react-router-dom';
 
 import { downloadPdf } from '@/request';
+import usePermission from '@/hooks/usePermission';
+import { withoutForbidden } from '@/utils/menuPermissions';
 
 function AddNewItem({ config }) {
   const navigate = useNavigate();
@@ -49,33 +51,42 @@ export default function DataTable({ config, extra = [] }) {
   const { erpContextAction } = useErpContext();
   const { modal } = erpContextAction;
 
-  const items = [
-    {
-      label: translate('Show'),
-      key: 'read',
-      icon: <EyeOutlined />,
-    },
-    {
-      label: translate('Edit'),
-      key: 'edit',
-      icon: <EditOutlined />,
-    },
-    {
-      label: translate('Download'),
-      key: 'download',
-      icon: <FilePdfOutlined />,
-    },
-    ...extra,
-    {
-      type: 'divider',
-    },
+  const { can } = usePermission();
+  const canAdd = !disableAdd && can(entity, 'create');
+  const items = withoutForbidden(
+    [
+      {
+        label: translate('Show'),
+        key: 'read',
+        icon: <EyeOutlined />,
+      },
+      {
+        label: translate('Edit'),
+        key: 'edit',
+        icon: <EditOutlined />,
+      },
+      {
+        label: translate('Download'),
+        key: 'download',
+        icon: <FilePdfOutlined />,
+      },
+      ...extra,
+      {
+        type: 'divider',
+      },
 
+      {
+        label: translate('Delete'),
+        key: 'delete',
+        icon: <DeleteOutlined />,
+      },
+    ],
     {
-      label: translate('Delete'),
-      key: 'delete',
-      icon: <DeleteOutlined />,
-    },
-  ];
+      edit: can(entity, 'update'),
+      delete: can(entity, 'delete'),
+      recordPayment: can('payment', 'create'),
+    }
+  );
 
   const navigate = useNavigate();
 
@@ -189,7 +200,7 @@ export default function DataTable({ config, extra = [] }) {
             {translate('Refresh')}
           </Button>,
 
-          !disableAdd && <AddNewItem config={config} key="add-new-item" />,
+          canAdd && <AddNewItem config={config} key="add-new-item" />,
         ]}
       ></PageHeader>
 

@@ -29,10 +29,11 @@ const adminSchema = new Schema({
     type: Date,
     default: Date.now,
   },
+  // What this user may do in their organization (see src/auth/permissions.js)
   role: {
     type: String,
     default: 'owner',
-    enum: ['owner'],
+    enum: require('../../auth/permissions').ROLES,
   },
 });
 

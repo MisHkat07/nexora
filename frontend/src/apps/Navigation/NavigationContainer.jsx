@@ -4,6 +4,7 @@ import { Button, Drawer, Layout, Menu, Typography } from 'antd';
 
 import { useAppContext } from '@/context/appContext';
 
+import usePermission from '@/hooks/usePermission';
 import useLanguage from '@/locale/useLanguage';
 import useResponsive from '@/hooks/useResponsive';
 import nexoraLogo from '@/style/images/nexora-logo.png';
@@ -53,6 +54,7 @@ function Sidebar({ collapsible, isMobile = false }) {
 
   const translate = useLanguage();
   const navigate = useNavigate();
+  const { can } = usePermission();
 
   const items = [
     {
@@ -109,12 +111,13 @@ function Sidebar({ collapsible, isMobile = false }) {
           label: <Link to={'/taxes'}>{translate('taxes')}</Link>,
           icon: <PercentageOutlined />,
         },
-        {
+        // Organization settings are for owners and admins
+        can('setting', 'update') && {
           key: 'generalSettings',
           label: <Link to={'/settings'}>{translate('settings')}</Link>,
           icon: <SettingOutlined />,
         },
-      ],
+      ].filter(Boolean),
     },
   ];
 
@@ -151,11 +154,7 @@ function Sidebar({ collapsible, isMobile = false }) {
     >
       <div className="navigation-inner">
         <div className="logo" onClick={() => navigate('/')} role="button" tabIndex={0}>
-          <img
-            className="logo-brand-img"
-            src={nexoraLogo}
-            alt="Nexora"
-          />
+          <img className="logo-brand-img" src={nexoraLogo} alt="Nexora" />
           {!showLogoApp && (
             <div className="logo-text-wrap">
               <span className="logo-text">Nexora</span>

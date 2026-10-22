@@ -16,12 +16,12 @@ import { useSelector, useDispatch } from 'react-redux';
 import useLanguage from '@/locale/useLanguage';
 import { erp } from '@/redux/erp/actions';
 
-
 import { selectCurrentItem } from '@/redux/erp/selectors';
 
 import { downloadPdf } from '@/request';
 import { useMoney } from '@/settings';
 import useMail from '@/hooks/useMail';
+import usePermission from '@/hooks/usePermission';
 import { useNavigate } from 'react-router-dom';
 
 const Item = ({ item, currentErp }) => {
@@ -75,6 +75,7 @@ export default function ReadItem({ config, selectedItem }) {
 
   const { moneyFormatter } = useMoney();
   const { send, isLoading: mailInProgress } = useMail({ entity });
+  const { can } = usePermission();
 
   const { result: currentResult } = useSelector(selectCurrentItem);
 
@@ -165,45 +166,50 @@ export default function ReadItem({ config, selectedItem }) {
           >
             {translate('Download PDF')}
           </Button>,
-          <Button
-            key="send-by-email"
-            loading={mailInProgress}
-            onClick={() => {
-              send(currentErp._id);
-            }}
-            icon={<MailOutlined />}
-          >
-            {translate('Send by Email')}
-          </Button>,
-          <Button
-            key="convert-to-invoice"
-            onClick={async () => {
-              const response = await dispatch(erp.convert({ entity, id: currentErp._id }));
-              if (response?.success) navigate(`/invoice/read/${response.result._id}`);
-            }}
-            icon={<RetweetOutlined />}
-            style={{ display: entity === 'quote' ? 'inline-block' : 'none' }}
-          >
-            {translate('Convert to Invoice')}
-          </Button>,
+          can(entity, 'mail') && (
+            <Button
+              key="send-by-email"
+              loading={mailInProgress}
+              onClick={() => {
+                send(currentErp._id);
+              }}
+              icon={<MailOutlined />}
+            >
+              {translate('Send by Email')}
+            </Button>
+          ),
+          entity === 'quote' && can('quote', 'convert') && (
+            <Button
+              key="convert-to-invoice"
+              onClick={async () => {
+                const response = await dispatch(erp.convert({ entity, id: currentErp._id }));
+                if (response?.success) navigate(`/invoice/read/${response.result._id}`);
+              }}
+              icon={<RetweetOutlined />}
+            >
+              {translate('Convert to Invoice')}
+            </Button>
+          ),
 
-          <Button
-            key="button"
-            onClick={() => {
-              dispatch(
-                erp.currentAction({
-                  actionType: 'update',
-                  data: currentErp,
-                })
-              );
-              navigate(`/${entity.toLowerCase()}/update/${currentErp._id}`);
-            }}
-            type="primary"
-            icon={<EditOutlined />}
-          >
-            {translate('Edit')}
-          </Button>,
-        ]}
+          can(entity, 'update') && (
+            <Button
+              key="button"
+              onClick={() => {
+                dispatch(
+                  erp.currentAction({
+                    actionType: 'update',
+                    data: currentErp,
+                  })
+                );
+                navigate(`/${entity.toLowerCase()}/update/${currentErp._id}`);
+              }}
+              type="primary"
+              icon={<EditOutlined />}
+            >
+              {translate('Edit')}
+            </Button>
+          ),
+        ].filter(Boolean)}
         style={{
           padding: '12px 0 20px',
         }}

@@ -2,6 +2,8 @@ import { lazy } from 'react';
 
 import { Navigate } from 'react-router-dom';
 
+import RequirePermission from '@/components/RequirePermission';
+
 const Logout = lazy(() => import('@/pages/Logout.jsx'));
 const NotFound = lazy(() => import('@/pages/NotFound.jsx'));
 
@@ -63,7 +65,11 @@ let routes = {
     },
     {
       path: '/invoice/create',
-      element: <InvoiceCreate />,
+      element: (
+        <RequirePermission entity="invoice" action="create">
+          <InvoiceCreate />
+        </RequirePermission>
+      ),
     },
     {
       path: '/invoice/read/:id',
@@ -71,11 +77,19 @@ let routes = {
     },
     {
       path: '/invoice/update/:id',
-      element: <InvoiceUpdate />,
+      element: (
+        <RequirePermission entity="invoice" action="update">
+          <InvoiceUpdate />
+        </RequirePermission>
+      ),
     },
     {
       path: '/invoice/pay/:id',
-      element: <InvoiceRecordPayment />,
+      element: (
+        <RequirePermission entity="payment" action="create">
+          <InvoiceRecordPayment />
+        </RequirePermission>
+      ),
     },
     {
       path: '/quote',
@@ -83,7 +97,11 @@ let routes = {
     },
     {
       path: '/quote/create',
-      element: <QuoteCreate />,
+      element: (
+        <RequirePermission entity="quote" action="create">
+          <QuoteCreate />
+        </RequirePermission>
+      ),
     },
     {
       path: '/quote/read/:id',
@@ -91,7 +109,11 @@ let routes = {
     },
     {
       path: '/quote/update/:id',
-      element: <QuoteUpdate />,
+      element: (
+        <RequirePermission entity="quote" action="update">
+          <QuoteUpdate />
+        </RequirePermission>
+      ),
     },
     {
       path: '/payment',
@@ -103,16 +125,28 @@ let routes = {
     },
     {
       path: '/payment/update/:id',
-      element: <PaymentUpdate />,
+      element: (
+        <RequirePermission entity="payment" action="update">
+          <PaymentUpdate />
+        </RequirePermission>
+      ),
     },
 
     {
       path: '/settings',
-      element: <Settings />,
+      element: (
+        <RequirePermission entity="setting" action="update">
+          <Settings />
+        </RequirePermission>
+      ),
     },
     {
       path: '/settings/edit/:settingsKey',
-      element: <Settings />,
+      element: (
+        <RequirePermission entity="setting" action="update">
+          <Settings />
+        </RequirePermission>
+      ),
     },
     {
       path: '/payment/mode',

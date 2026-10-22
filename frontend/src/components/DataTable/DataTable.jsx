@@ -18,8 +18,9 @@ import useLanguage from '@/locale/useLanguage';
 import { dataForTable } from '@/utils/dataStructure';
 import { useMoney, useDate } from '@/settings';
 
-
 import { useCrudContext } from '@/context/crud';
+import usePermission from '@/hooks/usePermission';
+import { withoutForbidden } from '@/utils/menuPermissions';
 
 function AddNewItem({ config }) {
   const { crudContextAction } = useCrudContext();
@@ -45,28 +46,32 @@ export default function DataTable({ config, extra = [] }) {
   const { moneyFormatter } = useMoney();
   const { dateFormat } = useDate();
 
-  const items = [
-    {
-      label: translate('Show'),
-      key: 'read',
-      icon: <EyeOutlined />,
-    },
-    {
-      label: translate('Edit'),
-      key: 'edit',
-      icon: <EditOutlined />,
-    },
-    ...extra,
-    {
-      type: 'divider',
-    },
+  const { can } = usePermission();
+  const items = withoutForbidden(
+    [
+      {
+        label: translate('Show'),
+        key: 'read',
+        icon: <EyeOutlined />,
+      },
+      {
+        label: translate('Edit'),
+        key: 'edit',
+        icon: <EditOutlined />,
+      },
+      ...extra,
+      {
+        type: 'divider',
+      },
 
-    {
-      label: translate('Delete'),
-      key: 'delete',
-      icon: <DeleteOutlined />,
-    },
-  ];
+      {
+        label: translate('Delete'),
+        key: 'delete',
+        icon: <DeleteOutlined />,
+      },
+    ],
+    { edit: can(entity, 'update'), delete: can(entity, 'delete') }
+  );
 
   const handleRead = (record) => {
     dispatch(crud.currentItem({ data: record }));
@@ -192,7 +197,7 @@ export default function DataTable({ config, extra = [] }) {
             {translate('Refresh')}
           </Button>,
 
-          <AddNewItem key="add-new-item" config={config} />,
+          can(entity, 'create') && <AddNewItem key="add-new-item" config={config} />,
         ]}
       ></PageHeader>
 

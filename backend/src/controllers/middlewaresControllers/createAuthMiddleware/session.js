@@ -1,6 +1,8 @@
 const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
 
+const { permissionsFor } = require('@/auth/permissions');
+
 /** Signs a session token for the user and records it, so it can be revoked on logout. */
 const startSession = async ({ user, UserPasswordModel, remember = false }) => {
   const token = jwt.sign(
@@ -26,6 +28,8 @@ const sessionResult = ({ user, token, remember = false, emailVerified }) => ({
   name: user.name,
   surname: user.surname,
   role: user.role,
+  // The UI hides what the role can't do; the server enforces it regardless
+  permissions: permissionsFor(user.role),
   email: user.email,
   photo: user.photo,
   emailVerified: Boolean(emailVerified),

@@ -1,6 +1,8 @@
 import { Dropdown, Table } from 'antd';
 
 import { request, downloadPdf } from '@/request';
+import usePermission from '@/hooks/usePermission';
+import { withoutForbidden } from '@/utils/menuPermissions';
 import useFetch from '@/hooks/useFetch';
 
 import { EllipsisOutlined, EyeOutlined, EditOutlined, FilePdfOutlined } from '@ant-design/icons';
@@ -12,24 +14,28 @@ import { useNavigate } from 'react-router-dom';
 export default function RecentTable({ ...props }) {
   const translate = useLanguage();
   let { entity, dataTableColumns } = props;
+  const { can } = usePermission();
 
-  const items = [
-    {
-      label: translate('Show'),
-      key: 'read',
-      icon: <EyeOutlined />,
-    },
-    {
-      label: translate('Edit'),
-      key: 'edit',
-      icon: <EditOutlined />,
-    },
-    {
-      label: translate('Download'),
-      key: 'download',
-      icon: <FilePdfOutlined />,
-    },
-  ];
+  const items = withoutForbidden(
+    [
+      {
+        label: translate('Show'),
+        key: 'read',
+        icon: <EyeOutlined />,
+      },
+      {
+        label: translate('Edit'),
+        key: 'edit',
+        icon: <EditOutlined />,
+      },
+      {
+        label: translate('Download'),
+        key: 'download',
+        icon: <FilePdfOutlined />,
+      },
+    ],
+    { edit: can(entity, 'update') }
+  );
 
   const navigate = useNavigate();
   const dispatch = useDispatch();

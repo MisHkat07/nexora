@@ -24,7 +24,7 @@ async function createOrganization({ name = 'Other Co' } = {}) {
 
 const orgId = async (organizationId) => organizationId || (await defaultOrganization())._id;
 
-async function createAdmin({ email = 'owner@test.com', password = 'secret123', organizationId } = {}) {
+async function createAdmin({ email = 'owner@test.com', password = 'secret123', organizationId, role = 'owner' } = {}) {
   const Admin = mongoose.model('Admin');
   const AdminPassword = mongoose.model('AdminPassword');
 
@@ -33,6 +33,7 @@ async function createAdmin({ email = 'owner@test.com', password = 'secret123', o
     name: 'Test',
     surname: 'Owner',
     enabled: true,
+    role,
     organizationId: await orgId(organizationId),
   }).save();
   const passwordDoc = new AdminPassword();

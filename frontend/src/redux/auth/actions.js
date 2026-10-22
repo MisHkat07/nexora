@@ -131,16 +131,18 @@ export const logout = () => async (dispatch) => {
 
 export const updateProfile =
   ({ entity, jsonData }) =>
-  async (dispatch) => {
+  async (dispatch, getState) => {
     let data = await request.updateAndUpload({ entity, id: '', jsonData });
 
     if (data.success === true) {
+      // Merge: the profile response has no session token or permissions, which must be kept
+      const current = { ...getState().auth.current, ...data.result };
       dispatch({
         type: actionTypes.REQUEST_SUCCESS,
-        payload: data.result,
+        payload: current,
       });
       const auth_state = {
-        current: data.result,
+        current,
         isLoggedIn: true,
         isLoading: false,
         isSuccess: true,

@@ -13,7 +13,7 @@ The plan to make Nexora a market-ready SaaS is split into 7 milestones and 55 is
 | Milestone | Goal | Status |
 |---|---|---|
 | **M1 Foundation & Security** | Safe for real customer data, tested, deploys reliably | ✅ Done (branch `m1/foundation-security`) |
-| M2 SaaS Core | Many companies and users per deployment, roles, audit log | In progress — #15 multi-tenancy ✅, #16 data migration ✅, #17 self-serve signup ✅ |
+| M2 SaaS Core | Many companies and users per deployment, roles, audit log | In progress — #15 multi-tenancy ✅, #16 migration ✅, #17 signup ✅, #19 roles ✅ (branch `m2/signup-and-roles`) |
 | M3 Get Paid | Online payments, recurring invoices, client portal, reminders, email sending, quote → invoice | In progress — #54 email ✅, #55 quote → invoice ✅ (branch `m3/email-and-quote-conversion`) |
 | M4 CRM | Contacts, leads → deals pipeline, activities, import | Planned |
 | M5 ERP | Products, inventory, expenses, purchase orders, reports | Planned |
@@ -188,6 +188,31 @@ from your company settings (`tenancy/migrate.js`, also available as `npm run mig
 
 `backend/tests/tenancy.test.js` checks that one company can't read, list, search, update, delete, pay, email,
 convert or download another company's records.
+
+---
+
+## Roles and permissions
+
+Every user has a role in their organization. The server checks it on every API route; the UI hides
+buttons, menu items and pages the role can't use.
+
+| Role | Can do |
+|---|---|
+| **Owner** | Everything (the account that created the organization) |
+| **Admin** | Everything, including settings and managing the team |
+| **Accountant** | Invoices, payments, taxes and payment modes (all actions, including email); add and edit customers; read quotes |
+| **Sales** | Customers (add, edit) and quotes (all actions, including converting to invoices and emailing); read invoices and payments |
+| **Viewer** | Read and download everything; change nothing |
+
+Only owners and admins can change organization settings or other users' passwords. Everyone can edit their own
+profile and password.
+
+The matrix lives in `backend/src/auth/permissions.js` (one place). Permissions are `entity:action`, e.g.
+`invoice:create`, `quote:convert`, `setting:update`; routes use `authorize('invoice:create')`. The login response
+includes the user's permission list, which the frontend reads through `usePermission()`.
+`backend/tests/permissions.test.js` checks every role against every protected action.
+
+Inviting team members and assigning roles from the UI comes with #18; until then roles can be set in the database.
 
 ---
 
