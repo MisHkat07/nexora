@@ -70,4 +70,7 @@ const uploadSchema = new mongoose.Schema({
   },
 });
 
-module.exports = mongoose.model('Upload ', uploadSchema);
+// Belongs to one organization; every query is scoped to it
+uploadSchema.plugin(require('../../tenancy/plugin'));
+
+module.exports = mongoose.model('Upload', uploadSchema);

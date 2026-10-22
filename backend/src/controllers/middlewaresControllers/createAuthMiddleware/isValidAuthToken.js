@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken');
 const mongoose = require('mongoose');
 
 const { sendError } = require('@/handlers/errorHandlers');
+const { withoutTenant, setCurrentTenant } = require('@/tenancy/context');
 
 const unauthorized = (res, message) =>
   res.status(401).json({
@@ -33,13 +34,18 @@ const isValidAuthToken = async (req, res, next, { userModel, jwtSecret = 'JWT_SE
     if (!verified.id || verified.aud)
       return unauthorized(res, 'Token verification failed, authorization denied.');
 
-    const userPasswordPromise = UserPassword.findOne({ user: verified.id, removed: false });
-    const userPromise = User.findOne({ _id: verified.id, removed: false });
-
-    const [user, userPassword] = await Promise.all([userPromise, userPasswordPromise]);
+    // The organization isn't known until we have the user, so this one lookup is unscoped
+    const [user, userPassword] = await withoutTenant(() =>
+      Promise.all([
+        User.findOne({ _id: verified.id, removed: false }).exec(),
+        UserPassword.findOne({ user: verified.id, removed: false }).exec(),
+      ])
+    );
 
     if (!user || !userPassword)
       return unauthorized(res, "User doesn't exist, authorization denied.");
+
+    if (!user.organizationId) return unauthorized(res, 'Your account is not linked to an organization.');
 
     if (!user.enabled) return unauthorized(res, 'Your account is disabled.');
 
@@ -49,6 +55,8 @@ const isValidAuthToken = async (req, res, next, { userModel, jwtSecret = 'JWT_SE
     const reqUserName = userModel.toLowerCase();
     req[reqUserName] = user;
     req.authToken = token;
+    // From here on, every query in this request is limited to the user's organization
+    setCurrentTenant(user.organizationId);
     next();
   } catch (error) {
     return sendError(error, req, res);

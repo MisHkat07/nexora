@@ -2,6 +2,7 @@ const downloadPdf = require('@/handlers/downloadHandler/downloadPdf');
 const express = require('express');
 
 const { DOWNLOADABLE_ENTITIES, verifyDownloadToken } = require('@/utils/downloadToken');
+const { withTenant } = require('@/tenancy/context');
 
 const router = express.Router();
 
@@ -19,7 +20,8 @@ router.route('/:directory/:file').get(function (req, res) {
   const id = match[1];
 
   const { token } = req.query;
-  if (typeof token !== 'string' || !verifyDownloadToken(token, directory, id)) {
+  const organizationId = typeof token === 'string' ? verifyDownloadToken(token, directory, id) : null;
+  if (!organizationId) {
     return res.status(401).json({
       success: false,
       result: null,
@@ -27,7 +29,8 @@ router.route('/:directory/:file').get(function (req, res) {
     });
   }
 
-  return downloadPdf(req, res, { directory, id });
+  // The signed link names the organization; the document is only found within it
+  return withTenant(organizationId, () => downloadPdf(req, res, { directory, id }));
 });
 
 module.exports = router;

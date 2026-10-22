@@ -11,7 +11,8 @@
     "reset": "node src/setup/reset.js",
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js --runInBand",
     "storage:migrate": "node src/setup/migrateUploadsToStorage.js",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "migrate:tenancy": "node src/setup/migrateTenancy.js"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.509.0",

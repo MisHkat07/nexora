@@ -83,8 +83,8 @@ The work on **#15 (tenant scoping)** gets harder the longer it waits, because ev
 
 | # | Issue | Size | Pri |
 |---|---|---|---|
-| [15](issues/15-organization-tenant-scoping.md) | Organization model + automatic tenant scoping | L | P0 |
-| [16](issues/16-tenant-data-migration.md) | Migrate existing data into a default organization | S | P0 |
+| [15](issues/15-organization-tenant-scoping.md) | ✅ Organization model + automatic tenant scoping | L | P0 |
+| [16](issues/16-tenant-data-migration.md) | ✅ Migrate existing data into a default organization | S | P0 |
 | [17](issues/17-self-serve-signup.md) | Self-serve signup with email verification | M | P0 |
 | [18](issues/18-team-users-invites.md) | Team members: invite, manage, deactivate | M | P0 |
 | [19](issues/19-rbac.md) | Role-based access control | L | P0 |

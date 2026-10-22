@@ -69,4 +69,7 @@ const paymentSchema = new mongoose.Schema({
   },
 });
 paymentSchema.plugin(require('mongoose-autopopulate'));
+// Belongs to one organization; every query is scoped to it
+paymentSchema.plugin(require('../../tenancy/plugin'));
+
 module.exports = mongoose.model('Payment', paymentSchema);

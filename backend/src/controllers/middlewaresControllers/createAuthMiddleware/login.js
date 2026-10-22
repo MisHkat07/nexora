@@ -3,6 +3,7 @@ const Joi = require('joi');
 const mongoose = require('mongoose');
 
 const authUser = require('./authUser');
+const { withoutTenant } = require('@/tenancy/context');
 
 const login = async (req, res, { userModel }) => {
   const UserPasswordModel = mongoose.model(userModel + 'Password');
@@ -27,7 +28,8 @@ const login = async (req, res, { userModel }) => {
     });
   }
 
-  const user = await UserModel.findOne({ email: email, removed: false });
+  // Before login the organization is unknown: find the user across organizations
+  const user = await withoutTenant(() => UserModel.findOne({ email: email, removed: false }));
 
   const databasePassword =
     user && (await UserPasswordModel.findOne({ user: user._id, removed: false }));

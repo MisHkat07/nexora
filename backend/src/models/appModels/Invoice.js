@@ -186,4 +186,7 @@ const invoiceSchema = new mongoose.Schema({
 });
 
 invoiceSchema.plugin(require('mongoose-autopopulate'));
+// Belongs to one organization; every query is scoped to it
+invoiceSchema.plugin(require('../../tenancy/plugin'));
+
 module.exports = mongoose.model('Invoice', invoiceSchema);

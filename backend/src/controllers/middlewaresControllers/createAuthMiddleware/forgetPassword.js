@@ -9,6 +9,7 @@ const { sendEmail, appLink } = require('@/services/email');
 const { passwordReset } = require('@/emailTemplate');
 const { loadSettings } = require('@/middlewares/settings');
 const logger = require('@/logger');
+const { withTenant, withoutTenant } = require('@/tenancy/context');
 
 // Same response whether or not the account exists, so this can't be used to discover emails
 const genericResponse = {
@@ -39,7 +40,7 @@ const forgetPassword = async (req, res, { userModel }) => {
     });
   }
 
-  const user = await User.findOne({ email: email.toLowerCase(), removed: false });
+  const user = await withoutTenant(() => User.findOne({ email: email.toLowerCase(), removed: false }));
   if (!user || !user.enabled) return res.status(200).json(genericResponse);
 
   // Only a hash of the token is stored; the token itself only ever appears in the email
@@ -55,7 +56,7 @@ const forgetPassword = async (req, res, { userModel }) => {
 
   // The link must point at this app (APP_URL); the token is only valid for one hour
   const link = appLink(`/resetpassword/${user._id}/${resetToken}`);
-  const { company_name } = await loadSettings();
+  const { company_name } = await withTenant(user.organizationId, () => loadSettings());
   const message = passwordReset({ name: user.name, link, companyName: company_name || 'Nexora' });
 
   try {

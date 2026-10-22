@@ -28,4 +28,7 @@ const schema = new mongoose.Schema({
   },
 });
 
+// Belongs to one organization; every query is scoped to it
+schema.plugin(require('../../tenancy/plugin'));
+
 module.exports = mongoose.model('Taxes', schema);

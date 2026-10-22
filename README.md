@@ -13,7 +13,7 @@ The plan to make Nexora a market-ready SaaS is split into 7 milestones and 55 is
 | Milestone | Goal | Status |
 |---|---|---|
 | **M1 Foundation & Security** | Safe for real customer data, tested, deploys reliably | ✅ Done (branch `m1/foundation-security`) |
-| M2 SaaS Core | Many companies and users per deployment, roles, audit log | Planned |
+| M2 SaaS Core | Many companies and users per deployment, roles, audit log | In progress — #15 multi-tenancy ✅, #16 data migration ✅ (branch `m2/multi-tenancy`) |
 | M3 Get Paid | Online payments, recurring invoices, client portal, reminders, email sending, quote → invoice | In progress — #54 email ✅, #55 quote → invoice ✅ (branch `m3/email-and-quote-conversion`) |
 | M4 CRM | Contacts, leads → deals pipeline, activities, import | Planned |
 | M5 ERP | Products, inventory, expenses, purchase orders, reports | Planned |
@@ -159,6 +159,37 @@ The plan to make Nexora a market-ready SaaS is split into 7 milestones and 55 is
 
 ---
 
+## Multi-tenancy (how data is separated between companies)
+
+One deployment serves many companies (**organizations**). Every business record — customers, invoices, quotes,
+payments, payment modes, taxes, settings, uploads and users — has an `organizationId`, and a user only ever sees
+their own organization's data.
+
+**How it works** (`backend/src/tenancy/`)
+- `plugin.js` is applied to every business model. It adds `organizationId` to every query, update, count,
+  aggregation and bulk write, stamps it on new documents, and refuses to change it afterwards.
+- `context.js` keeps the current organization per request (Node `AsyncLocalStorage`). The auth middleware sets it
+  from the logged-in user, so controllers don't pass it around.
+- **Fail closed:** inside an HTTP request, a query on a business model with no organization throws instead of
+  returning everyone's data.
+- Signed PDF links carry their organization, so downloads without a login are still scoped.
+- A user's email is unique across all organizations (login finds the account, then its organization).
+
+**When writing code**
+- In request handlers: nothing to do, just query as usual.
+- Before the user is known (login, password reset): wrap the user lookup in `withoutTenant(() => …)`.
+- Background jobs, scripts, webhooks: run as an organization with `withTenant(organizationId, () => …)`, or pass
+  `organizationId` explicitly when creating documents.
+- New models that hold business data: add `schema.plugin(require('../../tenancy/plugin'))`.
+
+**Existing installs:** on startup the server assigns any record without an organization to a default one created
+from your company settings (`tenancy/migrate.js`, also available as `npm run migrate:tenancy`). It's safe to run repeatedly.
+
+`backend/tests/tenancy.test.js` checks that one company can't read, list, search, update, delete, pay, email,
+convert or download another company's records.
+
+---
+
 ## Project structure
 
 ```
@@ -169,6 +200,7 @@ nexora/
 │   │   ├── models/          # Mongoose models
 │   │   ├── routes/          # API, download and public-file routes
 │   │   ├── storage/         # Local disk / S3 file storage
+│   │   ├── tenancy/         # Organization scoping (plugin, request context, migration)
 │   │   ├── pdf/             # Pug templates for PDFs
 │   │   ├── config.js        # Environment validation
 │   │   └── server.js        # Entry point
@@ -239,7 +271,7 @@ Seed the database (admin user, settings, default tax & payment mode):
 
 ```bash
 # Real install: choose your own login
-SETUP_ADMIN_EMAIL=you@company.com SETUP_ADMIN_PASSWORD='a-strong-password' npm run setup
+SETUP_COMPANY_NAME='Acme Ltd' SETUP_ADMIN_EMAIL=you@company.com SETUP_ADMIN_PASSWORD='a-strong-password' npm run setup
 
 # Demo install: admin@demo.com / admin123
 npm run setup
@@ -370,8 +402,9 @@ Auth routes: `/login`, `/forgetpassword`, `/resetpassword/:userId/:resetToken`.
 | root | `npm run dev` | API (nodemon) and UI (Vite) together |
 | root | `npm run build` / `npm start` | Build the UI / start the API serving it |
 | root | `npm test` | Backend tests |
-| backend | `npm run setup` | Seed admin, settings, tax, payment mode (`SETUP_ADMIN_EMAIL`, `SETUP_ADMIN_PASSWORD`) |
-| backend | `npm run reset` | Reset setup data |
+| backend | `npm run setup` | Create an organization with its owner, settings, tax and payment mode (`SETUP_COMPANY_NAME`, `SETUP_ADMIN_EMAIL`, `SETUP_ADMIN_PASSWORD`) |
+| backend | `npm run reset` | Delete all organizations, users and settings (development only; refuses in production) |
+| backend | `npm run migrate:tenancy` | Assign records without an organization to a default one (also runs on startup) |
 | backend | `npm run storage:migrate` | Copy local uploads to the S3 bucket |
 | backend | `npm run lint` | ESLint |
 | frontend | `npm run dev` | Vite dev server (port 3000) |

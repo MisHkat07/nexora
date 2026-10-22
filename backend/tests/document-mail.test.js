@@ -13,13 +13,14 @@ jest.mock('@/controllers/pdfController', () => ({
 }));
 
 const { createTestApp, closeTestApp } = require('./helpers/app');
-const { loginAs, createClient, createInvoice } = require('./helpers/factories');
+const { loginAs, createClient, createInvoice, defaultOrganization } = require('./helpers/factories');
 
 let app, auth, admin, client;
 beforeAll(async () => {
   app = await createTestApp();
   ({ auth, admin } = await loginAs(app));
   client = await createClient({ name: 'Acme <Trading>', email: 'ap@client.test' });
+  const { _id: organizationId } = await defaultOrganization();
   await mongoose.model('Setting').insertMany([
     { settingCategory: 'company_settings', settingKey: 'company_name', settingValue: 'Nexora Demo Co' },
     { settingCategory: 'company_settings', settingKey: 'company_email', settingValue: 'hello@nexora.test' },
@@ -29,7 +30,7 @@ beforeAll(async () => {
     { settingCategory: 'money_format_settings', settingKey: 'decimal_sep', settingValue: '.' },
     { settingCategory: 'money_format_settings', settingKey: 'thousand_sep', settingValue: ',' },
     { settingCategory: 'money_format_settings', settingKey: 'cent_precision', settingValue: 2 },
-  ]);
+  ].map((setting) => ({ ...setting, organizationId })));
 });
 afterAll(closeTestApp);
 beforeEach(() => mockSend.mockClear());
@@ -107,7 +108,7 @@ describe('#54 emailing documents', () => {
 
   test('quotes and payment receipts can be emailed too', async () => {
     const quote = await mongoose.model('Quote').create({
-      createdBy: admin._id, client: client._id, number: 4, year: 2026, date: new Date(), expiredDate: new Date(),
+      createdBy: admin._id, organizationId: admin.organizationId, client: client._id, number: 4, year: 2026, date: new Date(), expiredDate: new Date(),
       items: [{ itemName: 'X', quantity: 1, price: 10, total: 10 }], total: 10,
     });
     expect((await mail('quote', { id: String(quote._id) })).status).toBe(200);

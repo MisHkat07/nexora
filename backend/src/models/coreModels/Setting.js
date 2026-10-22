@@ -37,4 +37,7 @@ const settingSchema = new mongoose.Schema({
   },
 });
 
+// Belongs to one organization; every query is scoped to it
+settingSchema.plugin(require('../../tenancy/plugin'));
+
 module.exports = mongoose.model('Setting', settingSchema);

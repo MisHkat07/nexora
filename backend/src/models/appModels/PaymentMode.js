@@ -31,4 +31,7 @@ const paymentModeSchema = new mongoose.Schema({
   },
 });
 
+// Belongs to one organization; every query is scoped to it
+paymentModeSchema.plugin(require('../../tenancy/plugin'));
+
 module.exports = mongoose.model('PaymentMode', paymentModeSchema);

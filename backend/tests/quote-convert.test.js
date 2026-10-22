@@ -9,6 +9,7 @@ beforeAll(async () => {
   ({ auth, admin } = await loginAs(app));
   client = await createClient();
   await mongoose.model('Setting').create({
+    organizationId: admin.organizationId,
     settingCategory: 'finance_settings',
     settingKey: 'last_invoice_number',
     settingValue: 41,
@@ -22,6 +23,7 @@ const Invoice = () => mongoose.model('Invoice');
 const createQuote = (overrides = {}) =>
   Quote().create({
     createdBy: admin._id,
+    organizationId: admin.organizationId,
     client: client._id,
     number: 3,
     year: 2026,

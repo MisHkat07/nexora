@@ -11,11 +11,13 @@ const adminSchema = new Schema({
     default: false,
   },
 
+  // Unique across all organizations: login finds the account (and its organization) by email
   email: {
     type: String,
     lowercase: true,
     trim: true,
     required: true,
+    unique: true,
   },
   name: { type: String, required: true },
   surname: { type: String },
@@ -33,5 +35,8 @@ const adminSchema = new Schema({
     enum: ['owner'],
   },
 });
+
+// Belongs to one organization; every query is scoped to it
+adminSchema.plugin(require('../../tenancy/plugin'));
 
 module.exports = mongoose.model('Admin', adminSchema);

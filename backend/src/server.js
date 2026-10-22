@@ -28,25 +28,6 @@ if (config.isProduction && config.storage.driver === 'local') {
   );
 }
 
-mongoose.connect(config.database).catch((error) => {
-  logger.fatal({ err: error }, 'Could not connect to MongoDB. Check DATABASE in backend/.env');
-  process.exit(1);
-});
-
-// Payments and quote conversion use transactions, which need a replica set (Atlas always is one)
-mongoose.connection.once('open', async () => {
-  try {
-    const hello = await mongoose.connection.db.admin().command({ hello: 1 });
-    if (!hello.setName && hello.msg !== 'isdbgrid') {
-      logger.warn(
-        'MongoDB is a standalone server: recording payments and converting quotes will fail. Use MongoDB Atlas or start mongod as a replica set (--replSet).'
-      );
-    }
-  } catch (error) {
-    logger.warn({ err: error }, 'Could not check whether MongoDB is a replica set');
-  }
-});
-
 mongoose.connection.on('error', (error) => {
   logger.error({ err: error }, 'MongoDB connection error');
 });
@@ -57,16 +38,49 @@ for (const filePath of modelsFiles) {
   require(path.resolve(filePath));
 }
 
-// Start our app!
-const app = require('./app');
-app.set('port', config.port);
-const server = app.listen(app.get('port'), () => {
-  logger.info(`Express running → On PORT : ${server.address().port}`);
+// Payments and quote conversion use transactions, which need a replica set (Atlas always is one)
+const warnIfStandalone = async () => {
+  try {
+    const hello = await mongoose.connection.db.admin().command({ hello: 1 });
+    if (!hello.setName && hello.msg !== 'isdbgrid') {
+      logger.warn(
+        'MongoDB is a standalone server: recording payments and converting quotes will fail. Use MongoDB Atlas or start mongod as a replica set (--replSet).'
+      );
+    }
+  } catch (error) {
+    logger.warn({ err: error }, 'Could not check whether MongoDB is a replica set');
+  }
+};
+
+let server;
+const start = async () => {
+  try {
+    await mongoose.connect(config.database);
+  } catch (error) {
+    logger.fatal({ err: error }, 'Could not connect to MongoDB. Check DATABASE in backend/.env');
+    process.exit(1);
+  }
+  await warnIfStandalone();
+
+  // Data from before multi-tenancy is assigned to an organization before any request is served
+  await require('./tenancy/migrate').ensureTenancy({ logger });
+
+  const app = require('./app');
+  app.set('port', config.port);
+  server = app.listen(app.get('port'), () => {
+    logger.info(`Express running → On PORT : ${server.address().port}`);
+  });
+};
+
+start().catch((error) => {
+  logger.fatal({ err: error }, 'Startup failed');
+  process.exit(1);
 });
 
 // Finish in-flight requests before exiting when the platform stops the container
 const shutdown = (signal) => {
   logger.info(`${signal} received, shutting down`);
+  if (!server) process.exit(0);
   server.close(async () => {
     await require('@/controllers/pdfController').closeBrowser();
     await mongoose.disconnect();

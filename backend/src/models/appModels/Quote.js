@@ -148,4 +148,7 @@ const quoteSchema = new mongoose.Schema({
 });
 
 quoteSchema.plugin(require('mongoose-autopopulate'));
+// Belongs to one organization; every query is scoped to it
+quoteSchema.plugin(require('../../tenancy/plugin'));
+
 module.exports = mongoose.model('Quote', quoteSchema);

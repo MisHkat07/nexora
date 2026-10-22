@@ -1,15 +1,17 @@
 const mongoose = require('mongoose');
 const { createTestApp, closeTestApp } = require('./helpers/app');
+const { defaultOrganization } = require('./helpers/factories');
 
 let listBySettingKey;
 beforeAll(async () => {
   await createTestApp();
   ({ listBySettingKey } = require('@/middlewares/settings'));
+  const { _id: organizationId } = await defaultOrganization();
   await mongoose.model('Setting').insertMany([
     { settingCategory: 'app_settings', settingKey: 'company_name', settingValue: 'Acme' },
     { settingCategory: 'app_settings', settingKey: 'currency_symbol', settingValue: '$' },
     { settingCategory: 'app_settings', settingKey: 'other', settingValue: 'x' },
-  ]);
+  ].map((setting) => ({ ...setting, organizationId })));
 });
 afterAll(closeTestApp);
 

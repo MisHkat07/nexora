@@ -5,6 +5,7 @@ const Joi = require('joi');
 const mongoose = require('mongoose');
 
 const { isValidResetToken } = require('./resetToken');
+const { withoutTenant } = require('@/tenancy/context');
 
 const invalidLink = (res) =>
   res.status(403).json({
@@ -34,10 +35,10 @@ const resetPassword = async (req, res, { userModel }) => {
     });
   }
 
-  const [user, databasePassword] = await Promise.all([
+  const [user, databasePassword] = await withoutTenant(() => Promise.all([
     User.findOne({ _id: userId, removed: false }).exec(),
     UserPassword.findOne({ user: userId, removed: false }).exec(),
-  ]);
+  ]));
 
   if (!user || !databasePassword || !isValidResetToken(resetToken, databasePassword)) {
     return invalidLink(res);

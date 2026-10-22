@@ -5,7 +5,7 @@ const mongoose = require('mongoose');
 const { globSync } = require('glob');
 
 const { createTestApp, closeTestApp } = require('./helpers/app');
-const { loginAs, createClient, createInvoice } = require('./helpers/factories');
+const { loginAs, createClient, createInvoice, defaultOrganization } = require('./helpers/factories');
 let app, auth, admin, client;
 // Required after the models are registered (the PDF module looks them up on load)
 let generatePdf, closeBrowser, imageSource;
@@ -16,7 +16,8 @@ beforeAll(async () => {
   const defaults = globSync('./src/setup/defaultSettings/**/*.json').flatMap((file) =>
     JSON.parse(fs.readFileSync(file, 'utf-8'))
   );
-  await mongoose.model('Setting').insertMany(defaults);
+  const { _id: organizationId } = await defaultOrganization();
+  await mongoose.model('Setting').insertMany(defaults.map((setting) => ({ ...setting, organizationId })));
   ({ auth, admin } = await loginAs(app));
   client = await createClient({ name: 'Acme <b>Ltd</b>' });
 }, 60000);
@@ -40,6 +41,7 @@ describe('#07 PDF rendering with headless Chrome', () => {
     const invoice = await createInvoice(admin, client);
     const quote = await mongoose.model('Quote').create({
       createdBy: admin._id,
+      organizationId: admin.organizationId,
       client: client._id,
       number: 1,
       year: 2026,
@@ -51,6 +53,7 @@ describe('#07 PDF rendering with headless Chrome', () => {
     });
     const payment = await mongoose.model('Payment').create({
       createdBy: admin._id,
+      organizationId: admin.organizationId,
       client: client._id,
       invoice: invoice._id,
       number: 1,

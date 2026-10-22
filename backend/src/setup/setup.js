@@ -1,84 +1,47 @@
-require('dotenv').config({ path: '.env' });
-require('dotenv').config({ path: '.env.local' });
-const { globSync } = require('glob');
-const fs = require('fs');
-const crypto = require('crypto');
+/*
+  Seeds a fresh database with one organization, its owner, default settings, tax and payment mode.
 
+  Real install:  SETUP_ADMIN_EMAIL=you@company.com SETUP_ADMIN_PASSWORD=... SETUP_COMPANY_NAME="Acme Ltd" npm run setup
+  Demo install:  npm run setup   (admin@demo.com / admin123)
+*/
+require('module-alias/register');
+const path = require('path');
 const mongoose = require('mongoose');
-mongoose.connect(process.env.DATABASE);
+const { globSync } = require('glob');
 
-// Override the demo login for real installs: SETUP_ADMIN_EMAIL=you@company.com SETUP_ADMIN_PASSWORD=... npm run setup
+const config = require('@/config');
+
 const adminEmail = (process.env.SETUP_ADMIN_EMAIL || 'admin@demo.com').toLowerCase();
 const adminPassword = process.env.SETUP_ADMIN_PASSWORD || 'admin123';
+const companyName = process.env.SETUP_COMPANY_NAME || 'My Company';
 
 async function setupApp() {
   try {
-    const Admin = require('../models/coreModels/Admin');
-    const AdminPassword = require('../models/coreModels/AdminPassword');
-    const newAdminPassword = new AdminPassword();
+    await mongoose.connect(config.database);
+    for (const file of globSync('./src/models/**/*.js')) require(path.resolve(file));
+    const { createOrganization } = require('@/tenancy/createOrganization');
 
-    const salt = crypto.randomUUID();
+    if (await mongoose.model('Admin').exists({ email: adminEmail })) {
+      console.log(`🚫 An account for ${adminEmail} already exists. Nothing was changed.`);
+      process.exit(1);
+    }
 
-    const passwordHash = newAdminPassword.generateHash(salt, adminPassword);
+    const { organization } = await createOrganization({
+      name: companyName,
+      owner: { email: adminEmail, name: process.env.SETUP_ADMIN_NAME || 'Admin', password: adminPassword },
+    });
 
-    const demoAdmin = {
-      email: adminEmail,
-      name: process.env.SETUP_ADMIN_NAME || 'Admin',
-      surname: '',
-      enabled: true,
-      role: 'owner',
-    };
-    const result = await new Admin(demoAdmin).save();
-
-    const AdminPasswordData = {
-      password: passwordHash,
-      emailVerified: true,
-      salt: salt,
-      user: result._id,
-    };
-    await new AdminPassword(AdminPasswordData).save();
-
-    console.log(`👍 Admin created : Done! Login: ${adminEmail}`);
+    console.log(`👍 Organization "${organization.name}" created`);
+    console.log(`👍 Admin created. Login: ${adminEmail}`);
     if (!process.env.SETUP_ADMIN_PASSWORD) {
       console.log('⚠️  Using the demo password "admin123". Change it in Profile after logging in.');
     }
-
-    const Setting = require('../models/coreModels/Setting');
-
-    const settingFiles = [];
-
-    const settingsFiles = globSync('./src/setup/defaultSettings/**/*.json');
-
-    for (const filePath of settingsFiles) {
-      const file = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
-      settingFiles.push(...file);
-    }
-
-    await Setting.insertMany(settingFiles);
-
-    console.log('👍 Settings created : Done!');
-
-    const PaymentMode = require('../models/appModels/PaymentMode');
-    const Taxes = require('../models/appModels/Taxes');
-
-    await Taxes.insertMany([{ taxName: 'Tax 0%', taxValue: '0', isDefault: true }]);
-    console.log('👍 Taxes created : Done!');
-
-    await PaymentMode.insertMany([
-      {
-        name: 'Default Payment',
-        description: 'Default Payment Mode (Cash , Wire Transfert)',
-        isDefault: true,
-      },
-    ]);
-    console.log('👍 PaymentMode created : Done!');
-
     console.log('🥳 Setup completed :Success!');
-    process.exit();
+    process.exit(0);
   } catch (e) {
     console.log('\n🚫 Error! The Error info is below');
     console.log(e);
-    process.exit();
+    process.exit(1);
   }
 }
 

@@ -2,11 +2,39 @@ const crypto = require('crypto');
 const mongoose = require('mongoose');
 const request = require('supertest');
 
-async function createAdmin({ email = 'owner@test.com', password = 'secret123' } = {}) {
+/*
+  Test data. Everything belongs to an organization: by default one shared organization per
+  test file (`defaultOrganization()`); pass `organizationId` to create data for another one.
+*/
+
+let defaultOrg;
+async function defaultOrganization() {
+  if (!defaultOrg || !(await mongoose.model('Organization').exists({ _id: defaultOrg._id }))) {
+    defaultOrg = await createOrganization({ name: 'Test Co' });
+  }
+  return defaultOrg;
+}
+
+async function createOrganization({ name = 'Other Co' } = {}) {
+  return mongoose.model('Organization').create({
+    name,
+    slug: `${name.toLowerCase().replace(/\W+/g, '-')}-${crypto.randomBytes(4).toString('hex')}`,
+  });
+}
+
+const orgId = async (organizationId) => organizationId || (await defaultOrganization())._id;
+
+async function createAdmin({ email = 'owner@test.com', password = 'secret123', organizationId } = {}) {
   const Admin = mongoose.model('Admin');
   const AdminPassword = mongoose.model('AdminPassword');
 
-  const admin = await new Admin({ email, name: 'Test', surname: 'Owner', enabled: true }).save();
+  const admin = await new Admin({
+    email,
+    name: 'Test',
+    surname: 'Owner',
+    enabled: true,
+    organizationId: await orgId(organizationId),
+  }).save();
   const passwordDoc = new AdminPassword();
   const salt = crypto.randomUUID();
   passwordDoc.set({
@@ -30,7 +58,12 @@ async function loginAs(app, credentials) {
 }
 
 async function createClient(overrides = {}) {
-  return mongoose.model('Client').create({ name: 'Acme Ltd', email: 'billing@acme.test', ...overrides });
+  return mongoose.model('Client').create({
+    name: 'Acme Ltd',
+    email: 'billing@acme.test',
+    ...overrides,
+    organizationId: await orgId(overrides.organizationId),
+  });
 }
 
 async function createInvoice(admin, client, overrides = {}) {
@@ -49,7 +82,9 @@ async function createInvoice(admin, client, overrides = {}) {
     currency: 'USD',
     status: 'sent',
     ...overrides,
+    // Same organization as the admin unless told otherwise
+    organizationId: overrides.organizationId || admin.organizationId,
   });
 }
 
-module.exports = { createAdmin, loginAs, createClient, createInvoice };
+module.exports = { createAdmin, loginAs, createClient, createInvoice, createOrganization, defaultOrganization };

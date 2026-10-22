@@ -21,6 +21,7 @@ const corePublicRouter = require('./routes/coreRoutes/corePublicRouter');
 const adminAuth = require('./controllers/coreControllers/adminAuth');
 
 const errorHandlers = require('./handlers/errorHandlers');
+const { requestContext } = require('./tenancy/context');
 const erpApiRouter = require('./routes/appRoutes/appApi');
 
 // create our Express app
@@ -81,6 +82,8 @@ app.use(
 
 app.use(express.json({ limit: '1mb' }));
 app.use(express.urlencoded({ extended: true, limit: '1mb' }));
+// Each request gets its own tenant context; auth fills in the organization (see src/tenancy)
+app.use(requestContext);
 // Express 5 leaves req.body undefined when there is no body; handlers expect an object
 app.use((req, res, next) => {
   req.body ??= {};

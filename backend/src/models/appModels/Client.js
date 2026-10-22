@@ -32,4 +32,7 @@ const schema = new mongoose.Schema({
 
 schema.plugin(require('mongoose-autopopulate'));
 
+// Belongs to one organization; every query is scoped to it
+schema.plugin(require('../../tenancy/plugin'));
+
 module.exports = mongoose.model('Client', schema);
