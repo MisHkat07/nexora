@@ -16,6 +16,12 @@ const schema = Joi.object({
   TRUST_PROXY: Joi.number().integer().min(0).default(isProduction ? 1 : 0),
   FRONTEND_DIST: Joi.string(),
   RESEND_API: Joi.string().allow(''),
+  // Sender for all emails, e.g. "Acme Billing <billing@acme.com>" (domain verified in Resend)
+  EMAIL_FROM: Joi.string(),
+  // Public address of the app, used for links in emails (password reset, document links)
+  APP_URL: isProduction
+    ? Joi.string().uri({ scheme: ['https', 'http'] })
+    : Joi.string().uri({ scheme: ['https', 'http'] }).default('http://localhost:3000'),
   // Where uploaded files live: local disk (dev) or any S3-compatible bucket (AWS S3, R2, Spaces, MinIO)
   STORAGE_DRIVER: Joi.string().valid('local', 's3').default('local'),
   S3_BUCKET: Joi.string().when('STORAGE_DRIVER', { is: 's3', then: Joi.required() }),
@@ -55,6 +61,11 @@ module.exports = {
     : defaultCorsOrigins,
   trustProxy: env.TRUST_PROXY,
   frontendDist: env.FRONTEND_DIST,
+  appUrl: env.APP_URL ? env.APP_URL.replace(/\/+$/, '') : undefined,
+  email: {
+    apiKey: env.RESEND_API,
+    from: env.EMAIL_FROM,
+  },
   storage: {
     driver: env.STORAGE_DRIVER,
     maxUploadBytes: env.UPLOAD_MAX_BYTES,

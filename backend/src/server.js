@@ -33,6 +33,20 @@ mongoose.connect(config.database).catch((error) => {
   process.exit(1);
 });
 
+// Payments and quote conversion use transactions, which need a replica set (Atlas always is one)
+mongoose.connection.once('open', async () => {
+  try {
+    const hello = await mongoose.connection.db.admin().command({ hello: 1 });
+    if (!hello.setName && hello.msg !== 'isdbgrid') {
+      logger.warn(
+        'MongoDB is a standalone server: recording payments and converting quotes will fail. Use MongoDB Atlas or start mongod as a replica set (--replSet).'
+      );
+    }
+  } catch (error) {
+    logger.warn({ err: error }, 'Could not check whether MongoDB is a replica set');
+  }
+});
+
 mongoose.connection.on('error', (error) => {
   logger.error({ err: error }, 'MongoDB connection error');
 });

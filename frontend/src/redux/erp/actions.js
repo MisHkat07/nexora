@@ -294,6 +294,7 @@ export const erp = {
   convert:
     ({ entity, id }) =>
     async () => {
-      await request.convert({ entity, id });
+      // Returns the API response so the caller can open the new invoice
+      return request.convert({ entity, id });
     },
 };

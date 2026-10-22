@@ -31,3 +31,7 @@ services:
         value: auto
       - key: SENTRY_DSN
         sync: false # optional error tracking
+      - key: APP_URL
+        sync: false # public URL of this service, e.g. https://nexora.onrender.com
+      - key: EMAIL_FROM
+        sync: false # e.g. "Acme Billing <billing@acme.com>"
