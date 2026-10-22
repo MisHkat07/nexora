@@ -94,19 +94,17 @@ describe('logo embedding', () => {
   const logoPath = 'public/uploads/setting/test-logo.png';
   afterAll(() => fs.rmSync(path.resolve('src', logoPath), { force: true }));
 
-  test('a local upload becomes a data URI', () => {
+  test('an uploaded logo becomes a data URI', async () => {
     fs.mkdirSync(path.resolve('src/public/uploads/setting'), { recursive: true });
     fs.writeFileSync(path.resolve('src', logoPath), Buffer.from([0x89, 0x50, 0x4e, 0x47]));
-    expect(imageSource(logoPath)).toMatch(/^data:image\/png;base64,/);
+    expect(await imageSource(logoPath)).toMatch(/^data:image\/png;base64,/);
   });
 
-  test('paths outside public/ and non-images are refused', () => {
-    expect(imageSource('../package.json')).toBe('');
-    expect(imageSource('public/../../.env')).toBe('');
-    expect(imageSource('public/uploads/setting/missing.png')).toBe('');
-  });
-
-  test('remote URLs are passed through', () => {
-    expect(imageSource('https://cdn.example.com/logo.png')).toBe('https://cdn.example.com/logo.png');
+  test('paths outside uploads, missing files and remote URLs render no image', async () => {
+    expect(await imageSource('../package.json')).toBe('');
+    expect(await imageSource('public/../../.env')).toBe('');
+    expect(await imageSource('public/uploads/setting/missing.png')).toBe('');
+    // The PDF renderer never fetches anything over the network
+    expect(await imageSource('https://169.254.169.254/latest/meta-data')).toBe('');
   });
 });

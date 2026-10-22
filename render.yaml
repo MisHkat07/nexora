@@ -16,3 +16,16 @@ services:
         generateValue: true
       - key: RESEND_API
         sync: false
+      # Uploads must live in a bucket on Render: the container disk is wiped on every deploy
+      - key: STORAGE_DRIVER
+        sync: false # set to "s3" once a bucket exists (local uploads are lost on deploy)
+      - key: S3_BUCKET
+        sync: false
+      - key: S3_ACCESS_KEY_ID
+        sync: false
+      - key: S3_SECRET_ACCESS_KEY
+        sync: false
+      - key: S3_ENDPOINT
+        sync: false
+      - key: S3_REGION
+        value: auto

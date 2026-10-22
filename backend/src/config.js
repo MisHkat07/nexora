@@ -15,8 +15,17 @@ const schema = Joi.object({
   // Number of reverse proxies in front of the app (Render = 1)
   TRUST_PROXY: Joi.number().integer().min(0).default(isProduction ? 1 : 0),
   FRONTEND_DIST: Joi.string(),
-  PUBLIC_SERVER_FILE: Joi.string().allow(''),
   RESEND_API: Joi.string().allow(''),
+  // Where uploaded files live: local disk (dev) or any S3-compatible bucket (AWS S3, R2, Spaces, MinIO)
+  STORAGE_DRIVER: Joi.string().valid('local', 's3').default('local'),
+  S3_BUCKET: Joi.string().when('STORAGE_DRIVER', { is: 's3', then: Joi.required() }),
+  S3_ACCESS_KEY_ID: Joi.string().when('STORAGE_DRIVER', { is: 's3', then: Joi.required() }),
+  S3_SECRET_ACCESS_KEY: Joi.string().when('STORAGE_DRIVER', { is: 's3', then: Joi.required() }),
+  S3_REGION: Joi.string().default('auto'),
+  // Needed for non-AWS providers, e.g. https://<account>.r2.cloudflarestorage.com
+  S3_ENDPOINT: Joi.string().uri({ scheme: ['http', 'https'] }),
+  S3_FORCE_PATH_STYLE: Joi.boolean().default(false),
+  UPLOAD_MAX_BYTES: Joi.number().integer().min(1024).default(5 * 1024 * 1024),
 }).unknown(true);
 
 // Treat `KEY=` lines in .env as unset
@@ -43,4 +52,16 @@ module.exports = {
     : defaultCorsOrigins,
   trustProxy: env.TRUST_PROXY,
   frontendDist: env.FRONTEND_DIST,
+  storage: {
+    driver: env.STORAGE_DRIVER,
+    maxUploadBytes: env.UPLOAD_MAX_BYTES,
+    s3: {
+      bucket: env.S3_BUCKET,
+      region: env.S3_REGION,
+      endpoint: env.S3_ENDPOINT,
+      forcePathStyle: env.S3_FORCE_PATH_STYLE,
+      accessKeyId: env.S3_ACCESS_KEY_ID,
+      secretAccessKey: env.S3_SECRET_ACCESS_KEY,
+    },
+  },
 };

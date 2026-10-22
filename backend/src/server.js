@@ -19,6 +19,12 @@ if (!config.database) {
   process.exit(1);
 }
 
+if (config.isProduction && config.storage.driver === 'local') {
+  logger.warn(
+    'STORAGE_DRIVER is "local": uploaded logos and photos are lost when the container is replaced. Configure an S3 bucket (see backend/.env.example).'
+  );
+}
+
 mongoose.connect(config.database).catch((error) => {
   logger.fatal({ err: error }, 'Could not connect to MongoDB. Check DATABASE in backend/.env');
   process.exit(1);

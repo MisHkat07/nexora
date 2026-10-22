@@ -134,13 +134,18 @@ Optional (email / cloud uploads):
 
 ```env
 RESEND_API=
-PUBLIC_SERVER_FILE=
-DO_SPACES_KEY=
-DO_SPACES_SECRET=
-DO_SPACES_URL=
-DO_SPACES_NAME=
-REGION=
+
+# Uploaded logos and photos. "local" is fine for development; in production use any
+# S3-compatible bucket (AWS S3, Cloudflare R2, DigitalOcean Spaces). The bucket can be private.
+STORAGE_DRIVER=s3
+S3_BUCKET=
+S3_ACCESS_KEY_ID=
+S3_SECRET_ACCESS_KEY=
+S3_REGION=auto
+S3_ENDPOINT=https://<account-id>.r2.cloudflarestorage.com   # leave empty for AWS
 ```
+
+After switching an existing install to S3, copy the current uploads once with `npm run storage:migrate` (inside `backend/`).
 
 Seed the database (admin user, settings, default tax & payment mode):
 

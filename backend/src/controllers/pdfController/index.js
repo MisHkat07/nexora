@@ -1,9 +1,8 @@
-const path = require('path');
-const fs = require('fs');
 const pug = require('pug');
 const moment = require('moment');
 const puppeteer = require('puppeteer');
 
+const storage = require('@/storage');
 const { loadSettings } = require('@/middlewares/settings');
 const useLanguage = require('@/locale/useLanguage');
 const { useMoney, useDate } = require('@/settings');
@@ -15,8 +14,6 @@ const pugFiles = ['invoice', 'offer', 'quote', 'payment'];
 const MAX_CONCURRENT_RENDERS = 2;
 const RENDER_TIMEOUT_MS = 20000;
 
-const PUBLIC_DIR = path.resolve('src/public');
-const IMAGE_TYPES = { '.png': 'image/png', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.svg': 'image/svg+xml', '.webp': 'image/webp', '.gif': 'image/gif' };
 
 let browserPromise = null;
 
@@ -57,18 +54,14 @@ const releaseSlot = () => {
 };
 
 /**
- * Turns an uploaded image path like "public/uploads/setting/logo.png" into a data URI,
- * so the PDF needs no network access. Remote URLs are returned unchanged.
+ * Turns an uploaded image key like "public/uploads/setting/logo.png" into a data URI read
+ * from storage, so the PDF needs no network access. Anything else renders no image.
  */
-const imageSource = (filePath) => {
-  if (!filePath) return '';
-  if (/^https?:\/\//i.test(filePath)) return filePath;
-  const absolutePath = path.resolve('src', filePath);
-  const mimeType = IMAGE_TYPES[path.extname(absolutePath).toLowerCase()];
-  if (!mimeType || !absolutePath.startsWith(PUBLIC_DIR + path.sep) || !fs.existsSync(absolutePath)) {
-    return '';
-  }
-  return `data:${mimeType};base64,${fs.readFileSync(absolutePath).toString('base64')}`;
+const imageSource = async (key) => {
+  if (!storage.isValidKey(key)) return '';
+  const file = await storage.get(key);
+  if (!file || !file.contentType.startsWith('image/') || file.contentType === 'image/svg+xml') return '';
+  return `data:${file.contentType};base64,${file.body.toString('base64')}`;
 };
 
 const renderHtml = async (modelName, result) => {
@@ -91,17 +84,15 @@ const renderHtml = async (modelName, result) => {
   });
   const { dateFormat } = useDate({ settings });
 
-  const logoSrc = imageSource(settings.company_logo);
-  const html = pug.renderFile('src/pdf/' + modelName + '.pug', {
+  return pug.renderFile('src/pdf/' + modelName + '.pug', {
     model: result,
     settings,
-    logoSrc,
+    logoSrc: await imageSource(settings.company_logo),
     translate,
     dateFormat,
     moneyFormatter,
     moment: moment,
   });
-  return { html, remoteLogo: logoSrc.startsWith('http') ? logoSrc : null };
 };
 
 /** Renders a document (invoice, quote, payment) to a PDF and returns it as a Buffer. */
@@ -110,7 +101,7 @@ exports.generatePdf = async (modelName, result, { format = 'A4' } = {}) => {
     throw new Error(`No PDF template for ${modelName}`);
   }
 
-  const { html, remoteLogo } = await renderHtml(modelName, result);
+  const html = await renderHtml(modelName, result);
 
   await acquireSlot();
   let page;
@@ -120,12 +111,11 @@ exports.generatePdf = async (modelName, result, { format = 'A4' } = {}) => {
     page.setDefaultTimeout(RENDER_TIMEOUT_MS);
 
     // The document content is user data: no scripts, and nothing loaded from the network
-    // except an explicitly configured remote logo
     await page.setJavaScriptEnabled(false);
     await page.setRequestInterception(true);
     page.on('request', (request) => {
       const url = request.url();
-      if (url.startsWith('data:') || url === 'about:blank' || url === remoteLogo) request.continue();
+      if (url.startsWith('data:') || url === 'about:blank') request.continue();
       else request.abort();
     });
 
