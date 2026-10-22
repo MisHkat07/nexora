@@ -280,7 +280,7 @@ const request = {
   convert: async ({ entity, id }) => {
     try {
       includeToken();
-      const response = await axios.get(`${entity}/convert/${id}`);
+      const response = await axios.post(`${entity}/convert/${id}`);
       successHandler(response, {
         notifyOnSuccess: true,
         notifyOnFailed: true,

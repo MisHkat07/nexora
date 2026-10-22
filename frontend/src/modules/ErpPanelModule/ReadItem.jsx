@@ -177,8 +177,9 @@ export default function ReadItem({ config, selectedItem }) {
           </Button>,
           <Button
             key="convert-to-invoice"
-            onClick={() => {
-              dispatch(erp.convert({ entity, id: currentErp._id }));
+            onClick={async () => {
+              const response = await dispatch(erp.convert({ entity, id: currentErp._id }));
+              if (response?.success) navigate(`/invoice/read/${response.result._id}`);
             }}
             icon={<RetweetOutlined />}
             style={{ display: entity === 'quote' ? 'inline-block' : 'none' }}

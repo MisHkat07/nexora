@@ -41,7 +41,7 @@ const routerApp = (entity, controller, modelName) => {
   }
 
   if (entity === 'quote') {
-    router.route(`/${entity}/convert/:id`).get(catchErrors(controller['convert']));
+    router.route(`/${entity}/convert/:id`).post(catchErrors(controller['convert']));
   }
 };
 
