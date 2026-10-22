@@ -11,6 +11,7 @@ import nexoraLogo from '@/style/images/nexora-logo.png';
 
 import {
   SettingOutlined,
+  TeamOutlined,
   CustomerServiceOutlined,
   ContainerOutlined,
   FileSyncOutlined,
@@ -32,6 +33,7 @@ function resolveSelectedKey(pathname) {
   if (pathname.startsWith('/payment/mode')) return 'paymentMode';
   if (pathname.startsWith('/payment')) return 'payment';
   if (pathname.startsWith('/taxes')) return 'taxes';
+  if (pathname.startsWith('/team')) return 'team';
   if (pathname.startsWith('/settings')) return 'generalSettings';
   if (pathname.startsWith('/profile')) return 'generalSettings';
   return pathname.replace(/^\//, '').split('/')[0];
@@ -105,6 +107,11 @@ function Sidebar({ collapsible, isMobile = false }) {
           key: 'paymentMode',
           label: <Link to={'/payment/mode'}>{translate('payment_modes')}</Link>,
           icon: <WalletOutlined />,
+        },
+        {
+          key: 'team',
+          label: <Link to={'/team'}>Team</Link>,
+          icon: <TeamOutlined />,
         },
         {
           key: 'taxes',

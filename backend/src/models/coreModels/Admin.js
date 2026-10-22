@@ -21,6 +21,9 @@ const adminSchema = new Schema({
   },
   name: { type: String, required: true },
   surname: { type: String },
+  // Set for users who joined through a team invite
+  invitedBy: { type: mongoose.Schema.ObjectId, ref: 'Admin' },
+  invitedAt: Date,
   photo: {
     type: String,
     trim: true,

@@ -13,7 +13,7 @@ The plan to make Nexora a market-ready SaaS is split into 7 milestones and 55 is
 | Milestone | Goal | Status |
 |---|---|---|
 | **M1 Foundation & Security** | Safe for real customer data, tested, deploys reliably | ✅ Done (branch `m1/foundation-security`) |
-| M2 SaaS Core | Many companies and users per deployment, roles, audit log | In progress — #15 multi-tenancy ✅, #16 migration ✅, #17 signup ✅, #19 roles ✅ (branch `m2/signup-and-roles`) |
+| M2 SaaS Core | Many companies and users per deployment, roles, audit log | In progress — #15 multi-tenancy ✅, #16 migration ✅, #17 signup ✅, #18 team ✅, #19 roles ✅ |
 | M3 Get Paid | Online payments, recurring invoices, client portal, reminders, email sending, quote → invoice | In progress — #54 email ✅, #55 quote → invoice ✅ (branch `m3/email-and-quote-conversion`) |
 | M4 CRM | Contacts, leads → deals pipeline, activities, import | Planned |
 | M5 ERP | Products, inventory, expenses, purchase orders, reports | Planned |
@@ -212,7 +212,10 @@ The matrix lives in `backend/src/auth/permissions.js` (one place). Permissions a
 includes the user's permission list, which the frontend reads through `usePermission()`.
 `backend/tests/permissions.test.js` checks every role against every protected action.
 
-Inviting team members and assigning roles from the UI comes with #18; until then roles can be set in the database.
+**Team page (`/team`):** owners and admins invite people by email with a role (a 7-day link; if email isn't set up,
+the inviter gets the link to share), change roles, deactivate and reactivate members, and resend or cancel invitations.
+Changing a role or deactivating someone ends their current sessions immediately. The owner can't be changed, and
+nobody can change their own role or access. Everyone can see who is on the team.
 
 ---
 
@@ -455,6 +458,11 @@ Base URL: `http://localhost:8888/api/` — every route except auth needs `Author
 - `GET /public-config` → `{ signupEnabled }`
 - `POST /register` `{ companyName, name, email, password, country? }` (only with `SIGNUP_ENABLED=true`; 5 per hour per IP)
 - `POST /verify-email` `{ userId, token }`, `POST /resend-verification` (logged in)
+- `GET /invite/:userId/:token`, `POST /accept-invite` `{ userId, token, name, surname?, password }`
+
+**Team** (owners and admins manage; everyone can list)
+- `GET /team`, `POST /team/invite` `{ email, name?, role }`, `PATCH /team/:id` `{ role?, enabled? }`
+- `POST /team/:id/resend-invite`, `DELETE /team/:id` (cancels a pending invitation)
 
 **Entities**: `client`, `invoice`, `quote`, `payment`, `paymentmode`, `taxes`
 

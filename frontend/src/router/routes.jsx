@@ -29,6 +29,8 @@ const Taxes = lazy(() => import('@/pages/Taxes'));
 
 const Profile = lazy(() => import('@/pages/Profile'));
 const VerifyEmail = lazy(() => import('@/pages/VerifyEmail'));
+const Team = lazy(() => import('@/pages/Team'));
+const AcceptInvite = lazy(() => import('@/pages/AcceptInvite'));
 
 let routes = {
   expense: [],
@@ -157,6 +159,15 @@ let routes = {
       element: <Taxes />,
     },
 
+    {
+      path: '/team',
+      element: <Team />,
+    },
+    {
+      // An invitation link opened while already logged in
+      path: '/accept-invite/:userId/:token',
+      element: <AcceptInvite />,
+    },
     {
       path: '/profile',
       element: <Profile />,

@@ -150,3 +150,22 @@ export const updateProfile =
       window.localStorage.setItem('auth', JSON.stringify(auth_state));
     }
   };
+
+// Accepting a team invitation logs the new member in (replacing any current session in this tab)
+export const acceptInvite =
+  ({ acceptData }) =>
+  async (dispatch) => {
+    dispatch({ type: actionTypes.REQUEST_LOADING });
+    const data = await authService.acceptInvite({ acceptData });
+    if (data.success === true) {
+      window.localStorage.setItem(
+        'auth',
+        JSON.stringify({ current: data.result, isLoggedIn: true, isLoading: false, isSuccess: true })
+      );
+      window.localStorage.removeItem('isLogout');
+      dispatch({ type: actionTypes.REQUEST_SUCCESS, payload: data.result });
+    } else {
+      dispatch({ type: actionTypes.REQUEST_FAILED });
+    }
+    return data;
+  };

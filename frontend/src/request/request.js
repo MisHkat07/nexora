@@ -217,6 +217,20 @@ const request = {
       return errorHandler(error);
     }
   },
+  // DELETE on a plain path (unlike `delete`, which calls <entity>/delete/<id>)
+  remove: async ({ entity }) => {
+    try {
+      includeToken();
+      const response = await axios.delete(entity);
+      successHandler(response, {
+        notifyOnSuccess: true,
+        notifyOnFailed: true,
+      });
+      return response.data;
+    } catch (error) {
+      return errorHandler(error);
+    }
+  },
 
   upload: async ({ entity, id, jsonData }) => {
     try {

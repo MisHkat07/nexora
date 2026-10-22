@@ -7,6 +7,7 @@ const router = express.Router();
 
 const adminController = require('@/controllers/coreControllers/adminController');
 const settingController = require('@/controllers/coreControllers/settingController');
+const team = require('@/controllers/coreControllers/team');
 
 const { singleStorageUpload } = require('@/middlewares/uploadMiddleware');
 
@@ -21,6 +22,16 @@ router.route('/admin/read/:id').get(selfOr('team:read'), catchErrors(adminContro
 router
   .route('/admin/password-update/:id')
   .patch(selfOr('team:manage'), catchErrors(adminController.updatePassword));
+
+//_______________________________ Team (members of the organization) _______________________________
+
+router.route('/team').get(authorize('team:read'), catchErrors(team.list));
+router.route('/team/invite').post(authorize('team:manage'), catchErrors(team.invite));
+router
+  .route('/team/:id/resend-invite')
+  .post(authorize('team:manage'), catchErrors(team.resendInvite));
+router.route('/team/:id').patch(authorize('team:manage'), catchErrors(team.update));
+router.route('/team/:id').delete(authorize('team:manage'), catchErrors(team.revokeInvite));
 
 //_______________________________ Admin Profile (own account) _______________________________
 

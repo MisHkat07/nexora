@@ -109,3 +109,23 @@ export const logout = async ({ token } = {}) => {
   }
 };
 
+
+// Team invitation: details for the accept page, then accepting (which logs the new member in)
+export const inviteDetails = async ({ userId, token }) => {
+  try {
+    const response = await http.get(`invite/${userId}/${token}`);
+    return response.data;
+  } catch (error) {
+    return error.response?.data || { success: false, message: 'Could not reach the server' };
+  }
+};
+
+export const acceptInvite = async ({ acceptData }) => {
+  try {
+    const response = await http.post('accept-invite', acceptData);
+    successHandler({ data: response.data, status: response.status }, { notifyOnSuccess: true, notifyOnFailed: true });
+    return response.data;
+  } catch (error) {
+    return errorHandler(error);
+  }
+};

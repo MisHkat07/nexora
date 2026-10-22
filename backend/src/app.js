@@ -125,7 +125,10 @@ const signupLimiter = rateLimit({
   message: rateLimitResponse,
 });
 
-app.use(['/api/login', '/api/forgetpassword', '/api/resetpassword', '/api/verify-email'], authLimiter);
+app.use(
+  ['/api/login', '/api/forgetpassword', '/api/resetpassword', '/api/verify-email', '/api/accept-invite', '/api/invite'],
+  authLimiter
+);
 app.use(['/api/register', '/api/resend-verification'], signupLimiter);
 app.use(['/api', '/download'], apiLimiter);
 

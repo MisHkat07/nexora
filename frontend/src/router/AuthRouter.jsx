@@ -7,6 +7,7 @@ import ForgetPassword from '@/pages/ForgetPassword';
 import ResetPassword from '@/pages/ResetPassword';
 import Register from '@/pages/Register';
 import VerifyEmail from '@/pages/VerifyEmail';
+import AcceptInvite from '@/pages/AcceptInvite';
 
 
 export default function AuthRouter() {
@@ -20,6 +21,7 @@ export default function AuthRouter() {
       <Route element={<ResetPassword />} path="/resetpassword/:userId/:resetToken" />
       <Route element={<Register />} path="/register" />
       <Route element={<VerifyEmail />} path="/verify-email/:userId/:token" />
+      <Route element={<AcceptInvite />} path="/accept-invite/:userId/:token" />
       <Route path="*" element={<NotFound />} />
     </Routes>
   );

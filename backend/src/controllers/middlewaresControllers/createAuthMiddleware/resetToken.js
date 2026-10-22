@@ -25,11 +25,18 @@ const isValidResetToken = (token, databasePassword) =>
 const isValidEmailToken = (token, databasePassword) =>
   matchesHashedToken(token, databasePassword.emailToken, databasePassword.emailTokenExpires);
 
+const isValidInviteToken = (token, databasePassword) =>
+  matchesHashedToken(token, databasePassword.inviteToken, databasePassword.inviteTokenExpires);
+
+const INVITE_TOKEN_TTL_MS = 7 * 24 * 60 * 60 * 1000; // 7 days
+
 module.exports = {
   hashResetToken,
   newOneTimeToken,
   isValidResetToken,
   isValidEmailToken,
+  isValidInviteToken,
   RESET_TOKEN_TTL_MS,
   EMAIL_TOKEN_TTL_MS,
+  INVITE_TOKEN_TTL_MS,
 };

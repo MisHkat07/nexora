@@ -23,6 +23,9 @@ const AdminPasswordSchema = new Schema({
   // sha256 of the emailed reset token
   resetToken: String,
   resetTokenExpires: Date,
+  // sha256 of the emailed team-invite token; present while the invite is pending
+  inviteToken: String,
+  inviteTokenExpires: Date,
   emailVerified: {
     type: Boolean,
     default: false,

@@ -54,6 +54,20 @@ exports.passwordReset = ({ name, link, companyName = 'Nexora' }) => ({
   text: `Hello ${name},\n\nReset your password (valid for 1 hour): ${link}\n\nIf you didn't ask for this, ignore this email.`,
 });
 
+exports.teamInvite = ({ name, inviterName, companyName, role, link }) => ({
+  subject: `${inviterName} invited you to ${companyName} on Nexora`,
+  html: layout({
+    companyName,
+    preview: `Join ${companyName} on Nexora`,
+    body: `
+      <p style="margin:0 0 16px">Hello${name ? ` ${escape(name)}` : ''},</p>
+      <p style="margin:0 0 24px">${escape(inviterName)} invited you to join <strong>${escape(companyName)}</strong> on Nexora as <strong>${escape(role)}</strong>. This invitation is valid for 7 days.</p>
+      <p style="margin:0 0 24px">${button(link, 'Accept invitation')}</p>
+      <p style="margin:0;color:#6e84a3;font-size:13px">If you weren't expecting this, you can ignore this email.</p>`,
+  }),
+  text: `${inviterName} invited you to join ${companyName} on Nexora as ${role}.\n\nAccept the invitation (valid for 7 days): ${link}`,
+});
+
 exports.verifyEmail = ({ name, link, companyName }) => ({
   subject: 'Confirm your email address',
   html: layout({

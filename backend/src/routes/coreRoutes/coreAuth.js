@@ -5,6 +5,7 @@ const router = express.Router();
 const { catchErrors } = require('@/handlers/errorHandlers');
 const adminAuth = require('@/controllers/coreControllers/adminAuth');
 const signup = require('@/controllers/coreControllers/signup');
+const team = require('@/controllers/coreControllers/team');
 
 router.route('/login').post(catchErrors(adminAuth.login));
 
@@ -20,5 +21,9 @@ router.route('/verify-email').post(catchErrors(signup.verifyEmail));
 router
   .route('/resend-verification')
   .post(adminAuth.isValidAuthToken, catchErrors(signup.resendVerification));
+
+// Accepting a team invitation (the invitee has no account session yet)
+router.route('/invite/:userId/:token').get(catchErrors(team.inviteDetails));
+router.route('/accept-invite').post(catchErrors(team.acceptInvite));
 
 module.exports = router;
