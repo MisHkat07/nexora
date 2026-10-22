@@ -21,6 +21,8 @@ const schema = Joi.object({
     )
     .required(),
   taxRate: Joi.alternatives().try(Joi.number(), Joi.string()).required(),
+  // Currency comes from settings and cannot be changed per document
+  currency: Joi.any().strip(),
 });
 
 module.exports = schema;

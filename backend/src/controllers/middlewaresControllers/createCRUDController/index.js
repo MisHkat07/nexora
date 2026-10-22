@@ -11,11 +11,14 @@ const filter = require('./filter');
 const summary = require('./summary');
 const listAll = require('./listAll');
 const paginatedList = require('./paginatedList');
+const { getPolicy } = require('./queryPolicy');
 
 const createCRUDController = (modelName) => {
   if (!modelsFiles.includes(modelName)) {
     throw new Error(`Model ${modelName} does not exist`);
   }
+  // Fails at startup if a model has no query policy, so new models can't skip one
+  getPolicy(modelName);
 
   const Model = mongoose.model(modelName);
   let crudMethods = {

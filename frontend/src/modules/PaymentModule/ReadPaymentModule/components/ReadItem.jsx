@@ -18,7 +18,7 @@ import { generate as uniqueId } from 'shortid';
 
 import { selectCurrentItem } from '@/redux/erp/selectors';
 
-import { DOWNLOAD_BASE_URL } from '@/config/serverApiConfig';
+import { downloadPdf } from '@/request';
 import { useMoney } from '@/settings';
 
 import useMail from '@/hooks/useMail';
@@ -92,12 +92,7 @@ export default function ReadItem({ config, selectedItem }) {
           </Button>,
           <Button
             key={`${uniqueId()}`}
-            onClick={() => {
-              window.open(
-                `${DOWNLOAD_BASE_URL}${entity}/${entity}-${currentErp._id}.pdf`,
-                '_blank'
-              );
-            }}
+            onClick={() => downloadPdf({ entity, id: currentErp._id })}
             icon={<FilePdfOutlined />}
           >
             {translate('Download PDF')}

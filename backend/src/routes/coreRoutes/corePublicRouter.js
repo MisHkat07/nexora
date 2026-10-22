@@ -3,6 +3,7 @@ const router = express.Router();
 
 const path = require('path');
 const { isPathInside } = require('../../utils/is-path-inside');
+const { sendError } = require('@/handlers/errorHandlers');
 
 router.route('/:subPath/:directory/:file').get(function (req, res) {
   try {
@@ -38,12 +39,7 @@ router.route('/:subPath/:directory/:file').get(function (req, res) {
       }
     });
   } catch (error) {
-    return res.status(503).json({
-      success: false,
-      result: null,
-      message: error.message,
-      error: error,
-    });
+    return sendError(error, req, res);
   }
 });
 

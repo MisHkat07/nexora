@@ -1,14 +1,11 @@
 const remove = async (Model, req, res) => {
-  // Find the document by id and delete it
-  let updates = {
-    removed: true,
-  };
-  // Find the document by id and delete it
+  // Soft delete: mark the document as removed
   const result = await Model.findOneAndUpdate(
     {
       _id: req.params.id,
+      removed: false,
     },
-    { $set: updates },
+    { $set: { removed: true } },
     {
       new: true, // return the new result instead of the old one
     }

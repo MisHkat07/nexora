@@ -11,12 +11,12 @@ export default function Taxes() {
   const translate = useLanguage();
   const entity = 'taxes';
   const searchConfig = {
-    displayLabels: ['name'],
-    searchFields: 'name',
+    displayLabels: ['taxName'],
+    searchFields: 'taxName',
     outputValue: '_id',
   };
 
-  const deleteModalLabels = ['name'];
+  const deleteModalLabels = ['taxName'];
 
   const readColumns = [
     {

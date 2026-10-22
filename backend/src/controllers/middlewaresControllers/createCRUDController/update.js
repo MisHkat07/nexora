@@ -1,12 +1,15 @@
+const { validateBody } = require('./queryPolicy');
+
 const update = async (Model, req, res) => {
+  const body = validateBody(Model.modelName, req.body, { partial: true });
+
   // Find document by id and updates with the required fields
-  req.body.removed = false;
   const result = await Model.findOneAndUpdate(
     {
       _id: req.params.id,
       removed: false,
     },
-    req.body,
+    { $set: body },
     {
       new: true, // return the new result instead of the old one
       runValidators: true,

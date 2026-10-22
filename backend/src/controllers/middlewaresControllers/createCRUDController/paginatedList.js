@@ -1,40 +1,15 @@
-const paginatedList = async (Model, req, res) => {
-  const page = req.query.page || 1;
-  const limit = parseInt(req.query.items) || 10;
-  const skip = page * limit - limit;
+const { buildListQuery } = require('./queryPolicy');
 
-  const { sortBy = 'enabled', sortValue = -1, filter, equal } = req.query;
-
-  const fieldsArray = req.query.fields ? req.query.fields.split(',') : [];
-
-  let fields;
-
-  fields = fieldsArray.length === 0 ? {} : { $or: [] };
-
-  for (const field of fieldsArray) {
-    fields.$or.push({ [field]: { $regex: new RegExp(req.query.q, 'i') } });
-  }
+const paginatedList = async (Model, req, res, { populate } = {}) => {
+  const { conditions, sort, page, limit, skip } = buildListQuery(Model.modelName, req.query);
 
   //  Query the database for a list of all results
-  const resultsPromise = Model.find({
-    removed: false,
-
-    [filter]: equal,
-    ...fields,
-  })
-    .skip(skip)
-    .limit(limit)
-    .sort({ [sortBy]: sortValue })
-    .populate()
-    .exec();
+  let resultsQuery = Model.find(conditions).skip(skip).limit(limit).sort(sort);
+  if (populate) resultsQuery = resultsQuery.populate(...populate);
+  const resultsPromise = resultsQuery.exec();
 
   // Counting the total documents
-  const countPromise = Model.countDocuments({
-    removed: false,
-
-    [filter]: equal,
-    ...fields,
-  });
+  const countPromise = Model.countDocuments(conditions);
   // Resolving both promises
   const [result, count] = await Promise.all([resultsPromise, countPromise]);
 
