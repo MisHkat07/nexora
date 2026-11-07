@@ -1,8 +1,8 @@
 const bcrypt = require('bcryptjs');
 
-const { startSession, sessionResult } = require('./session');
+const { createSession, sessionResult } = require('@/auth/sessions');
 
-const authUser = async (req, res, { user, databasePassword, password, UserPasswordModel }) => {
+const authUser = async (req, res, { user, databasePassword, password }) => {
   const isMatch = await bcrypt.compare(databasePassword.salt + password, databasePassword.password);
 
   if (!isMatch)
@@ -13,7 +13,7 @@ const authUser = async (req, res, { user, databasePassword, password, UserPasswo
     });
 
   const remember = Boolean(req.body.remember);
-  const token = await startSession({ user, UserPasswordModel, remember });
+  const { token } = await createSession({ user, req, res, remember });
 
   return res.status(200).json({
     success: true,

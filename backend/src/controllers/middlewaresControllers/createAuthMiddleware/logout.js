@@ -1,30 +1,28 @@
-const mongoose = require('mongoose');
+const jwt = require('jsonwebtoken');
 
-const logout = async (req, res, { userModel }) => {
-  const UserPassword = mongoose.model(userModel + 'Password');
+const {
+  readRefreshCookie,
+  clearRefreshCookie,
+  revokeSession,
+} = require('@/auth/sessions');
 
-  // const token = req.cookies[`token_${cloud._id}`];
+// Ends this device's session. Works with the access token, or with only the refresh cookie
+// (e.g. when the access token has already expired), so logging out always succeeds.
+const logout = async (req, res) => {
+  const cookie = readRefreshCookie(req);
+  if (cookie) await revokeSession(cookie.sessionId);
 
-  const authHeader = req.headers['authorization'];
-  const token = authHeader && authHeader.split(' ')[1]; // Extract the token
+  const token = (req.headers['authorization'] || '').split(' ')[1];
+  if (token) {
+    try {
+      const { sid } = jwt.verify(token, process.env.JWT_SECRET, { ignoreExpiration: true });
+      if (sid) await revokeSession(sid);
+    } catch {
+      // An invalid token has nothing to revoke
+    }
+  }
 
-  if (token)
-    await UserPassword.findOneAndUpdate(
-      { user: req.admin._id },
-      { $pull: { loggedSessions: token } },
-      {
-        new: true,
-      }
-    ).exec();
-  else
-    await UserPassword.findOneAndUpdate(
-      { user: req.admin._id },
-      { loggedSessions: [] },
-      {
-        new: true,
-      }
-    ).exec();
-
+  clearRefreshCookie(res);
   return res.json({
     success: true,
     result: {},
