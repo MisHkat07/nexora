@@ -31,6 +31,12 @@ const Profile = lazy(() => import('@/pages/Profile'));
 const VerifyEmail = lazy(() => import('@/pages/VerifyEmail'));
 const Team = lazy(() => import('@/pages/Team'));
 const AcceptInvite = lazy(() => import('@/pages/AcceptInvite'));
+const ResourcePage = lazy(() => import('@/pages/ResourcePage'));
+const Pipeline = lazy(() => import('@/pages/Pipeline'));
+const Portal = lazy(() => import('@/pages/Portal'));
+const Billing = lazy(() => import('@/pages/Billing'));
+const Docs = lazy(() => import('@/pages/Docs'));
+const Legal = lazy(() => import('@/pages/Legal'));
 
 let routes = {
   expense: [],
@@ -172,6 +178,21 @@ let routes = {
       path: '/profile',
       element: <Profile />,
     },
+    { path: '/pipeline', element: <Pipeline /> },
+    { path: '/contact', element: <ResourcePage /> },
+    { path: '/lead', element: <ResourcePage /> },
+    { path: '/activity', element: <ResourcePage /> },
+    { path: '/tag', element: <ResourcePage /> },
+    { path: '/product', element: <ResourcePage /> },
+    { path: '/vendor', element: <ResourcePage /> },
+    { path: '/expense', element: <ResourcePage /> },
+    { path: '/purchaseorder', element: <ResourcePage /> },
+    { path: '/warehouse', element: <ResourcePage /> },
+    { path: '/billing', element: <Billing /> },
+    { path: '/docs', element: <Docs /> },
+    { path: '/privacy', element: <Legal /> },
+    { path: '/terms', element: <Legal /> },
+    { path: '/p/:token', element: <Portal /> },
     {
       path: '*',
       element: <NotFound />,

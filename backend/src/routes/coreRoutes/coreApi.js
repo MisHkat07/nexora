@@ -8,6 +8,8 @@ const router = express.Router();
 const adminController = require('@/controllers/coreControllers/adminController');
 const settingController = require('@/controllers/coreControllers/settingController');
 const team = require('@/controllers/coreControllers/team');
+const organization = require('@/controllers/coreControllers/organization');
+const auditLog = require('@/controllers/coreControllers/auditLog');
 
 const { singleStorageUpload } = require('@/middlewares/uploadMiddleware');
 
@@ -36,6 +38,12 @@ router.route('/team/:id').delete(authorize('team:manage'), catchErrors(team.revo
 //_______________________________ Admin Profile (own account) _______________________________
 
 router.route('/admin/profile/password').patch(catchErrors(adminController.updateProfilePassword));
+
+router.route('/organization').get(catchErrors(organization.read));
+router.route('/organization').patch(authorize('setting:update'), catchErrors(organization.update));
+
+// History of one record is open to whoever can read it; the unfiltered log is admin-only (checked inside)
+router.route('/audit').get(catchErrors(auditLog.list));
 router
   .route('/admin/profile/update')
   .patch(

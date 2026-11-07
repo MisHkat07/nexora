@@ -1,4 +1,5 @@
-import { ConfigProvider } from 'antd';
+import { useEffect, useState } from 'react';
+import { ConfigProvider, theme } from 'antd';
 
 /** Nexora brand tokens from brand guideline */
 export const nexoraBrand = {
@@ -21,9 +22,22 @@ export const nexoraBrand = {
 };
 
 export default function Localization({ children }) {
+  const [dark, setDark] = useState(() => window.localStorage.getItem('nexora-theme') === 'dark');
+
+  useEffect(() => {
+    const sync = () => setDark(window.localStorage.getItem('nexora-theme') === 'dark');
+    window.addEventListener('nexora-theme', sync);
+    window.addEventListener('storage', sync);
+    return () => {
+      window.removeEventListener('nexora-theme', sync);
+      window.removeEventListener('storage', sync);
+    };
+  }, []);
+
   return (
     <ConfigProvider
       theme={{
+        algorithm: dark ? theme.darkAlgorithm : theme.defaultAlgorithm,
         token: {
           colorPrimary: nexoraBrand.primary,
           colorInfo: nexoraBrand.primary,

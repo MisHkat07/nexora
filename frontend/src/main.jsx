@@ -6,6 +6,12 @@ import { createRoot } from 'react-dom/client';
 import RootApp from './RootApp';
 import ErrorFallback from './components/ErrorFallback';
 
+if ('serviceWorker' in navigator && import.meta.env.PROD) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js').catch(() => {});
+  });
+}
+
 const root = createRoot(document.getElementById('root'));
 root.render(
   <Sentry.ErrorBoundary fallback={(props) => <ErrorFallback {...props} />}>

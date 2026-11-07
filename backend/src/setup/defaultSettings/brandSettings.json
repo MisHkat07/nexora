@@ -1,0 +1,20 @@
+[
+  {
+    "settingCategory": "brand_settings",
+    "settingKey": "brand_color",
+    "settingValue": "#0061ff",
+    "valueType": "string"
+  },
+  {
+    "settingCategory": "brand_settings",
+    "settingKey": "email_footer",
+    "settingValue": "",
+    "valueType": "string"
+  },
+  {
+    "settingCategory": "brand_settings",
+    "settingKey": "pdf_template",
+    "settingValue": "classic",
+    "valueType": "string"
+  }
+]

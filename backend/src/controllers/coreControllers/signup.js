@@ -8,7 +8,7 @@ const { createOrganization } = require('@/tenancy/createOrganization');
 const { withoutTenant } = require('@/tenancy/context');
 const { sendEmail, appLink, missingConfiguration } = require('@/services/email');
 const { verifyEmail } = require('@/emailTemplate');
-const { startSession, sessionResult } = require('@/controllers/middlewaresControllers/createAuthMiddleware/session');
+const { createSession, sessionResult } = require('@/auth/sessions');
 const {
   newOneTimeToken,
   isValidEmailToken,
@@ -88,10 +88,20 @@ exports.register = async (req, res) => {
     await session.endSession();
   }
 
+  await mongoose.model('Organization').updateOne(
+    { _id: admin.organizationId },
+    {
+      $set: {
+        plan: 'free',
+        subscriptionStatus: 'trialing',
+        trialEndsAt: new Date(Date.now() + 14 * 864e5),
+      },
+    }
+  );
+
   const verificationSent = autoVerify ? false : await sendVerification({ user: admin, companyName: value.companyName, req });
 
-  const UserPasswordModel = mongoose.model('AdminPassword');
-  const token = await startSession({ user: admin, UserPasswordModel });
+  const { token } = await createSession({ user: admin, req, res });
 
   return res.status(201).json({
     success: true,

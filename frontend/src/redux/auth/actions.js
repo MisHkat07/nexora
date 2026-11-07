@@ -1,6 +1,15 @@
 import * as actionTypes from './types';
 import * as authService from '@/auth';
 import { request } from '@/request';
+import { forgetUser, rememberUser, withoutToken } from '@/auth/session';
+
+const signedIn = (dispatch, result) => {
+  const authState = rememberUser(result);
+  dispatch({
+    type: actionTypes.REQUEST_SUCCESS,
+    payload: authState.current,
+  });
+};
 
 export const login =
   ({ loginData }) =>
@@ -10,25 +19,23 @@ export const login =
     });
     const data = await authService.login({ loginData });
 
+    if (data.success === true && data.result?.twoFactorRequired) {
+      dispatch({ type: actionTypes.REQUEST_FAILED });
+      return data;
+    }
     if (data.success === true) {
-      const auth_state = {
-        current: data.result,
-        isLoggedIn: true,
-        isLoading: false,
-        isSuccess: true,
-      };
-      window.localStorage.setItem('auth', JSON.stringify(auth_state));
-      window.localStorage.removeItem('isLogout');
-      dispatch({
-        type: actionTypes.REQUEST_SUCCESS,
-        payload: data.result,
-      });
+      signedIn(dispatch, data.result);
     } else {
       dispatch({
         type: actionTypes.REQUEST_FAILED,
       });
     }
+    return data;
   };
+
+export const completeLogin = (result) => (dispatch) => {
+  signedIn(dispatch, result);
+};
 
 export const register =
   ({ registerData }) =>
@@ -40,18 +47,7 @@ export const register =
 
     // Signup logs the new owner straight in
     if (data.success === true) {
-      const auth_state = {
-        current: data.result,
-        isLoggedIn: true,
-        isLoading: false,
-        isSuccess: true,
-      };
-      window.localStorage.setItem('auth', JSON.stringify(auth_state));
-      window.localStorage.removeItem('isLogout');
-      dispatch({
-        type: actionTypes.REQUEST_SUCCESS,
-        payload: data.result,
-      });
+      signedIn(dispatch, data.result);
     } else {
       dispatch({
         type: actionTypes.REQUEST_FAILED,
@@ -64,8 +60,7 @@ export const markEmailVerified = () => async (dispatch, getState) => {
   const { auth } = getState();
   if (!auth.isLoggedIn) return;
   const current = { ...auth.current, emailVerified: true };
-  const stored = JSON.parse(window.localStorage.getItem('auth') || '{}');
-  window.localStorage.setItem('auth', JSON.stringify({ ...stored, current }));
+  rememberUser(current);
   dispatch({ type: actionTypes.REQUEST_SUCCESS, payload: current });
 };
 
@@ -78,18 +73,7 @@ export const resetPassword =
     const data = await authService.resetPassword({ resetPasswordData });
 
     if (data.success === true) {
-      const auth_state = {
-        current: data.result,
-        isLoggedIn: true,
-        isLoading: false,
-        isSuccess: true,
-      };
-      window.localStorage.setItem('auth', JSON.stringify(auth_state));
-      window.localStorage.removeItem('isLogout');
-      dispatch({
-        type: actionTypes.REQUEST_SUCCESS,
-        payload: data.result,
-      });
+      signedIn(dispatch, data.result);
     } else {
       dispatch({
         type: actionTypes.REQUEST_FAILED,
@@ -98,35 +82,11 @@ export const resetPassword =
   };
 
 export const logout = () => async (dispatch) => {
+  await authService.logout();
+  forgetUser();
   dispatch({
     type: actionTypes.LOGOUT_SUCCESS,
   });
-  const result = window.localStorage.getItem('auth');
-  const tmpAuth = JSON.parse(result);
-  const settings = window.localStorage.getItem('settings');
-  const tmpSettings = JSON.parse(settings);
-  window.localStorage.removeItem('auth');
-  window.localStorage.removeItem('settings');
-  window.localStorage.setItem('isLogout', JSON.stringify({ isLogout: true }));
-  // Revoke this session on the server (the token was read before the stored session was cleared)
-  const data = await authService.logout({ token: tmpAuth?.current?.token });
-  if (data.success === false) {
-    const auth_state = {
-      current: tmpAuth,
-      isLoggedIn: true,
-      isLoading: false,
-      isSuccess: true,
-    };
-    window.localStorage.setItem('auth', JSON.stringify(auth_state));
-    window.localStorage.setItem('settings', JSON.stringify(tmpSettings));
-    window.localStorage.removeItem('isLogout');
-    dispatch({
-      type: actionTypes.LOGOUT_FAILED,
-      payload: data.result,
-    });
-  } else {
-    // on lgout success
-  }
 };
 
 export const updateProfile =
@@ -136,18 +96,12 @@ export const updateProfile =
 
     if (data.success === true) {
       // Merge: the profile response has no session token or permissions, which must be kept
-      const current = { ...getState().auth.current, ...data.result };
+      const current = withoutToken({ ...getState().auth.current, ...data.result });
+      rememberUser(current);
       dispatch({
         type: actionTypes.REQUEST_SUCCESS,
         payload: current,
       });
-      const auth_state = {
-        current,
-        isLoggedIn: true,
-        isLoading: false,
-        isSuccess: true,
-      };
-      window.localStorage.setItem('auth', JSON.stringify(auth_state));
     }
   };
 
@@ -158,12 +112,7 @@ export const acceptInvite =
     dispatch({ type: actionTypes.REQUEST_LOADING });
     const data = await authService.acceptInvite({ acceptData });
     if (data.success === true) {
-      window.localStorage.setItem(
-        'auth',
-        JSON.stringify({ current: data.result, isLoggedIn: true, isLoading: false, isSuccess: true })
-      );
-      window.localStorage.removeItem('isLogout');
-      dispatch({ type: actionTypes.REQUEST_SUCCESS, payload: data.result });
+      signedIn(dispatch, data.result);
     } else {
       dispatch({ type: actionTypes.REQUEST_FAILED });
     }

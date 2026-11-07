@@ -1,4 +1,3 @@
-const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const crypto = require('crypto');
 const Joi = require('joi');
@@ -6,6 +5,8 @@ const mongoose = require('mongoose');
 
 const { isValidResetToken } = require('./resetToken');
 const { withoutTenant } = require('@/tenancy/context');
+const { createSession, revokeUserSessions } = require('@/auth/sessions');
+const { loginResponse } = require('@/controllers/coreControllers/sessionsController');
 
 const invalidLink = (res) =>
   res.status(403).json({
@@ -54,40 +55,28 @@ const resetPassword = async (req, res, { userModel }) => {
   const salt = crypto.randomUUID();
   const hashedPassword = bcrypt.hashSync(salt + password);
 
-  const token = jwt.sign(
-    {
-      id: userId,
-    },
-    process.env.JWT_SECRET,
-    { expiresIn: '24h', jwtid: crypto.randomUUID() }
-  );
-
   // The token is single-use, and every existing session is signed out
-  await UserPassword.findOneAndUpdate(
+  const passwordDoc = await UserPassword.findOneAndUpdate(
     { user: userId },
     {
       $set: {
-        loggedSessions: [token],
+        loggedSessions: [],
         password: hashedPassword,
         salt: salt,
         emailVerified: true,
       },
       $unset: { resetToken: 1, resetTokenExpires: 1 },
-    }
+    },
+    { new: true }
   ).exec();
 
-  return res.status(200).json({
-    success: true,
-    result: {
-      _id: user._id,
-      name: user.name,
-      surname: user.surname,
-      role: user.role,
-      email: user.email,
-      photo: user.photo,
-      token: token,
-      maxAge: req.body.remember ? 365 : null,
-    },
+  await revokeUserSessions(user._id);
+  const { token } = await createSession({ user, req, res });
+
+  return loginResponse(res, {
+    user,
+    passwordDoc,
+    token,
     message: 'Successfully resetPassword user',
   });
 };

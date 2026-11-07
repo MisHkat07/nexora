@@ -113,6 +113,13 @@ const sendDocumentEmail = async ({ entity, body, user, senderVerified }) => {
   const title = `${doc.title} ${reference}`;
 
   const pdf = await generatePdf(doc.modelName, record);
+  const { currentTenant } = require('@/tenancy/context');
+  const { signPortalToken } = require('@/features/portal');
+  const organizationId = currentTenant();
+  const portalUrl =
+    organizationId && (entity === 'invoice' || entity === 'quote')
+      ? appLink(`/p/${signPortalToken({ organizationId, entity, id: record._id })}`)
+      : undefined;
   const content = documentEmail({
     companyName,
     clientName: client.name || 'there',
@@ -121,6 +128,9 @@ const sendDocumentEmail = async ({ entity, body, user, senderVerified }) => {
     details: doc.details(record, reference, money, date),
     message: value.message,
     downloadUrl: appLink(signDownloadUrl(entity, record._id, EMAIL_LINK_TTL)),
+    portalUrl,
+    brandColor: settings.brand_color,
+    footer: settings.email_footer,
   });
 
   const { id: messageId } = await sendEmail({

@@ -70,6 +70,11 @@ const start = async () => {
   server = app.listen(app.get('port'), () => {
     logger.info(`Express running → On PORT : ${server.address().port}`);
   });
+
+  const { ensureSchedules } = require('./jobs/handlers');
+  const { startWorker } = require('./jobs/queue');
+  await ensureSchedules();
+  startWorker();
 };
 
 start().catch((error) => {

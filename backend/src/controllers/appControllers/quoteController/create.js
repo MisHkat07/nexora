@@ -4,6 +4,7 @@ const Model = mongoose.model('Quote');
 
 const { increaseBySettingKey } = require('@/middlewares/settings');
 const { calculate } = require('@/helpers');
+const { record } = require('@/audit/record');
 const schema = require('./schemaValidate');
 
 const create = async (req, res) => {
@@ -58,6 +59,7 @@ const create = async (req, res) => {
   increaseBySettingKey({
     settingKey: 'last_quote_number',
   });
+  await record({ req, action: 'create', entity: 'quote', entityId: result._id });
 
   // Returning successfull response
   return res.status(200).json({

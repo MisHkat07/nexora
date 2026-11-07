@@ -4,6 +4,9 @@ const Model = mongoose.model('Invoice');
 
 const { calculate } = require('@/helpers');
 const schema = require('./schemaValidate');
+const { recordDocumentChange } = require('@/audit/record');
+
+const AUDITED_FIELDS = ['total', 'subTotal', 'taxTotal', 'taxRate', 'discount', 'items', 'status', 'paymentStatus', 'notes', 'client', 'date'];
 
 const update = async (req, res) => {
   let body = req.body;
@@ -69,7 +72,15 @@ const update = async (req, res) => {
     new: true, // return the new result instead of the old one
   }).exec();
 
-  // Returning successfull response
+  if (previousInvoice && result) {
+    await recordDocumentChange({
+      req,
+      entity: 'invoice',
+      before: previousInvoice,
+      after: result,
+      fields: AUDITED_FIELDS,
+    });
+  }
 
   return res.status(200).json({
     success: true,

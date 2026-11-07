@@ -1,5 +1,8 @@
 const mongoose = require('mongoose');
 
+const { currentTenant } = require('@/tenancy/context');
+const { invalidateSettings } = require('@/middlewares/settings/loadSettings');
+
 const Model = mongoose.model('Setting');
 
 const updateManySetting = async (req, res) => {
@@ -39,6 +42,7 @@ const updateManySetting = async (req, res) => {
     });
   }
   const result = await Model.bulkWrite(updateDataArray);
+  invalidateSettings(currentTenant());
 
   if (!result || result.nMatched < 1) {
     return res.status(404).json({

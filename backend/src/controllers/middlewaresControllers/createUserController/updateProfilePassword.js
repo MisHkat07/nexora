@@ -25,7 +25,7 @@ const updateProfilePassword = async (userModel, req, res) => {
     userId: userProfile._id,
     user: userProfile,
     password,
-    keepSessionToken: req.authToken,
+    keepSessionId: req.sessionId,
   });
 
   return res.status(200).json({

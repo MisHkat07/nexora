@@ -1,5 +1,8 @@
 const mongoose = require('mongoose');
 
+const { currentTenant } = require('@/tenancy/context');
+const { invalidateSettings } = require('./loadSettings');
+
 const Model = mongoose.model('Setting');
 
 const updateBySettingKey = async ({ settingKey, settingValue }) => {
@@ -21,10 +24,9 @@ const updateBySettingKey = async ({ settingKey, settingValue }) => {
     // If no results found, return document not found
     if (!result) {
       return null;
-    } else {
-      // Return success resposne
-      return result;
     }
+    invalidateSettings(currentTenant());
+    return result;
   } catch {
     return null;
   }

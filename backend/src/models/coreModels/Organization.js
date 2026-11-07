@@ -21,7 +21,17 @@ const organizationSchema = new mongoose.Schema({
   },
   plan: {
     type: String,
+    enum: ['free', 'starter', 'pro'],
     default: 'free',
+  },
+  // trialing and active can write; past_due becomes read-only after graceUntil
+  subscriptionStatus: { type: String, enum: ['trialing', 'active', 'past_due', 'canceled'] },
+  trialEndsAt: Date,
+  graceUntil: Date,
+  // When on, members who have not enrolled in 2FA can only set it up and sign out
+  requireTwoFactor: {
+    type: Boolean,
+    default: false,
   },
   owner: { type: mongoose.Schema.ObjectId, ref: 'Admin' },
   created: {

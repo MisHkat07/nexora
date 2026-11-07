@@ -6,6 +6,7 @@
   },
   "scripts": {
     "start": "node src/server.js",
+    "worker": "node src/worker.js",
     "dev": "nodemon src/server.js --ignore public/",
     "setup": "node src/setup/setup.js",
     "reset": "node src/setup/reset.js",
@@ -34,10 +35,12 @@
     "mongoose": "^8.1.1",
     "mongoose-autopopulate": "^1.1.0",
     "multer": "^2.5.0",
+    "otplib": "^12.0.1",
     "pino": "^9.14.0",
     "pino-http": "^10.5.0",
     "pug": "^3.0.2",
     "puppeteer": "^25.16.0",
+    "qrcode": "^1.5.4",
     "resend": "^2.0.0",
     "transliteration": "^2.3.5"
   },
@@ -51,7 +54,8 @@
     "mongodb-memory-server": "^10.4.3",
     "nodemon": "3.0.1",
     "pino-pretty": "^13.2.0",
-    "supertest": "^7.3.1"
+    "supertest": "^7.3.1",
+    "typescript": "^5.9.3"
   },
   "_moduleAliases": {
     "@": "src"

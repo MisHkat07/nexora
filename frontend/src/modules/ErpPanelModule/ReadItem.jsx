@@ -23,6 +23,7 @@ import { useMoney } from '@/settings';
 import useMail from '@/hooks/useMail';
 import usePermission from '@/hooks/usePermission';
 import { useNavigate } from 'react-router-dom';
+import RecordHistory from '@/components/RecordHistory';
 
 const Item = ({ item, currentErp }) => {
   const { moneyFormatter } = useMoney();
@@ -328,6 +329,7 @@ export default function ReadItem({ config, selectedItem }) {
           </Col>
         </Row>
       </div>
+      {(entity === 'invoice' || entity === 'quote') && <RecordHistory entity={entity} id={currentErp?._id} />}
     </>
   );
 }

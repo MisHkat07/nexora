@@ -8,7 +8,8 @@ const { ROLES } = require('@/auth/permissions');
 const { currentTenant, withoutTenant } = require('@/tenancy/context');
 const { sendEmail, appLink } = require('@/services/email');
 const { teamInvite } = require('@/emailTemplate');
-const { startSession, sessionResult } = require('@/controllers/middlewaresControllers/createAuthMiddleware/session');
+const { createSession, sessionResult, revokeUserSessions } = require('@/auth/sessions');
+const { record } = require('@/audit/record');
 const {
   newOneTimeToken,
   isValidInviteToken,
@@ -105,6 +106,7 @@ exports.invite = async (req, res) => {
       .required(),
   }).validate(req.body);
   if (error) throw new HttpError(400, error.details[0].message);
+  await require('@/features/billing').assertSeatAllowed();
 
   // Emails are unique across all organizations
   if (await withoutTenant(() => Admin().exists({ email: value.email }))) {
@@ -185,6 +187,16 @@ exports.update = async (req, res) => {
   // Deactivated users and role changes take effect immediately: end their sessions
   if (value.enabled === false || value.role) {
     await AdminPassword().updateOne({ user: user._id }, { $set: { loggedSessions: [] } }).exec();
+    await revokeUserSessions(user._id);
+  }
+  if (value.role && value.role !== user.role) {
+    await record({
+      req,
+      action: 'role_change',
+      entity: 'admin',
+      entityId: user._id,
+      diff: [{ field: 'role', from: user.role, to: value.role }],
+    });
   }
 
   const updated = await Admin().findById(user._id).exec();
@@ -270,7 +282,7 @@ exports.acceptInvite = async (req, res) => {
   });
 
   const joined = await withoutTenant(() => Admin().findById(user._id).exec());
-  const token = await startSession({ user: joined, UserPasswordModel: AdminPassword() });
+  const { token } = await createSession({ user: joined, req, res });
   return res.status(200).json({
     success: true,
     result: sessionResult({ user: joined, token, emailVerified: true }),

@@ -56,8 +56,14 @@ const forgetPassword = async (req, res, { userModel }) => {
 
   // The link must point at this app (APP_URL); the token is only valid for one hour
   const link = appLink(`/resetpassword/${user._id}/${resetToken}`);
-  const { company_name } = await withTenant(user.organizationId, () => loadSettings());
-  const message = passwordReset({ name: user.name, link, companyName: company_name || 'Nexora' });
+  const settings = await withTenant(user.organizationId, () => loadSettings());
+  const message = passwordReset({
+    name: user.name,
+    link,
+    companyName: settings.company_name || 'Nexora',
+    brandColor: settings.brand_color,
+    footer: settings.email_footer,
+  });
 
   try {
     await sendEmail({ to: user.email, subject: message.subject, html: message.html, text: message.text });

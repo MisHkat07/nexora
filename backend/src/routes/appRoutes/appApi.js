@@ -6,6 +6,7 @@ const appControllers = require('@/controllers/appControllers');
 const { routesList } = require('@/models/utils');
 const { DOWNLOADABLE_ENTITIES, signDownloadUrl } = require('@/utils/downloadToken');
 const authorize = require('@/auth/authorize');
+const { record } = require('@/audit/record');
 
 const mongoose = require('mongoose');
 
@@ -15,6 +16,7 @@ const downloadLink = (modelName, entity) => async (req, res) => {
   if (!exists) {
     return res.status(404).json({ success: false, result: null, message: 'No document found ' });
   }
+  await record({ req, action: 'export', entity, entityId: req.params.id });
   return res.status(200).json({
     success: true,
     result: { url: signDownloadUrl(entity, req.params.id) },

@@ -57,7 +57,14 @@ const readRefreshCookie = (req) => {
 };
 
 /** What login, signup, refresh and invite acceptance return to the frontend. */
-const sessionResult = ({ user, token, remember = false, emailVerified }) => ({
+const sessionResult = ({
+  user,
+  token,
+  remember = false,
+  emailVerified,
+  twoFactorEnabled = false,
+  mustEnrollTwoFactor = false,
+}) => ({
   _id: user._id,
   name: user.name,
   surname: user.surname,
@@ -67,6 +74,8 @@ const sessionResult = ({ user, token, remember = false, emailVerified }) => ({
   email: user.email,
   photo: user.photo,
   emailVerified: Boolean(emailVerified),
+  twoFactorEnabled: Boolean(twoFactorEnabled),
+  mustEnrollTwoFactor: Boolean(mustEnrollTwoFactor),
   token,
   maxAge: remember ? 30 : null,
 });

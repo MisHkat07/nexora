@@ -37,3 +37,36 @@ services:
         sync: false # e.g. "Acme Billing <billing@acme.com>"
       - key: SIGNUP_ENABLED
         value: "false" # set to "true" to allow self-serve signup at /register
+      - key: STRIPE_SECRET_KEY
+        sync: false
+      - key: STRIPE_WEBHOOK_SECRET
+        sync: false
+      - key: STRIPE_PRICE_STARTER
+        sync: false
+      - key: STRIPE_PRICE_PRO
+        sync: false
+      - key: OPENAI_API_KEY
+        sync: false
+  - type: worker
+    name: nexora-worker
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    dockerCommand: node src/worker.js
+    plan: free
+    branch: main
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE
+        sync: false
+      - key: JWT_SECRET
+        fromService:
+          name: nexora
+          type: web
+          envVarKey: JWT_SECRET
+      - key: RESEND_API
+        sync: false
+      - key: EMAIL_FROM
+        sync: false
+      - key: APP_URL
+        sync: false

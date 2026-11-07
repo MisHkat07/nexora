@@ -134,6 +134,14 @@ const invoiceSchema = new mongoose.Schema({
     default: 'unpaid',
     enum: ['unpaid', 'paid', 'partially'],
   },
+  mailStatus: { type: String, enum: ['queued', 'sent', 'failed', 'opened'] },
+  viewCount: { type: Number, default: 0 },
+  firstViewedAt: Date,
+  billingContact: { type: mongoose.Schema.ObjectId, ref: 'Contact' },
+  recurringProfile: { type: mongoose.Schema.ObjectId, ref: 'RecurringProfile' },
+  recurringPeriod: String,
+  remindersSent: { type: [String], default: [] },
+  remindersOff: { type: Boolean, default: false },
   isOverdue: {
     type: Boolean,
     default: false,
@@ -185,6 +193,13 @@ const invoiceSchema = new mongoose.Schema({
   },
 });
 
+invoiceSchema.index(
+  { recurringProfile: 1, recurringPeriod: 1 },
+  {
+    unique: true,
+    partialFilterExpression: { recurringPeriod: { $type: 'string' } },
+  }
+);
 invoiceSchema.plugin(require('mongoose-autopopulate'));
 // Belongs to one organization; every query is scoped to it
 invoiceSchema.plugin(require('../../tenancy/plugin'));

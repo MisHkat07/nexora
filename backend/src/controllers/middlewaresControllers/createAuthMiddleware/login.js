@@ -49,8 +49,7 @@ const login = async (req, res, { userModel }) => {
       message: 'Your account is disabled, contact your account adminstrator',
     });
 
-  //  authUser if your has correct password
-  authUser(req, res, {
+  return authUser(req, res, {
     user,
     databasePassword,
     password,

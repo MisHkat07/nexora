@@ -19,7 +19,7 @@ const updatePassword = async (userModel, req, res) => {
     userId: target._id,
     user: target,
     password: req.body.password,
-    keepSessionToken: isSelf ? req.authToken : undefined,
+    keepSessionId: isSelf ? req.sessionId : undefined,
   });
 
   return res.status(200).json({

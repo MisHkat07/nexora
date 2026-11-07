@@ -85,7 +85,7 @@ const renderHtml = async (modelName, result) => {
   });
   const { dateFormat } = useDate({ settings });
 
-  return pug.renderFile('src/pdf/' + modelName + '.pug', {
+  const html = pug.renderFile('src/pdf/' + modelName + '.pug', {
     model: result,
     settings,
     logoSrc: await imageSource(settings.company_logo),
@@ -94,6 +94,29 @@ const renderHtml = async (modelName, result) => {
     moneyFormatter,
     dayjs,
   });
+  return applyBranding(html, settings);
+};
+
+const safeColor = (color) => (/^#[0-9a-fA-F]{6}$/.test(color || '') ? color : null);
+
+const escapeHtml = (value) =>
+  String(value).replace(/[&<>"']/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char]));
+
+/** Applies the organization's brand color, template and footer without rewriting each Pug file. */
+const applyBranding = (html, settings) => {
+  const color = safeColor(settings.brand_color);
+  let out = color ? html.replaceAll('#52008c', color) : html;
+  if (settings.pdf_template === 'modern') {
+    out = out.replace('font-family: sans-serif', 'font-family: "Segoe UI", Helvetica, sans-serif');
+    if (color) {
+      out = out.replace('h1.invoice{\n        font-size:32px;', `h1.invoice{\n        font-size:28px;border-bottom:3px solid ${color};padding-bottom:8px;`);
+    }
+  }
+  const footer = String(settings.email_footer || '').trim();
+  if (footer && out.includes('</body>')) {
+    out = out.replace('</body>', `<p style="margin-top:28px;font-size:11px;color:#666">${escapeHtml(footer)}</p></body>`);
+  }
+  return out;
 };
 
 /** Renders a document (invoice, quote, payment) to a PDF and returns it as a Buffer. */

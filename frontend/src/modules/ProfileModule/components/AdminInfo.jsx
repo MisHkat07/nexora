@@ -10,6 +10,7 @@ import { selectCurrentAdmin } from '@/redux/auth/selectors';
 
 import useLanguage from '@/locale/useLanguage';
 import { FILE_BASE_URL } from '@/config/serverApiConfig';
+import AccountSecurity from '@/components/AccountSecurity';
 
 const AdminInfo = ({ config }) => {
   const translate = useLanguage();
@@ -91,6 +92,7 @@ const AdminInfo = ({ config }) => {
           {translate('Logout')}
         </Button>
       </Space>
+      <AccountSecurity />
     </div>
   );
 };

@@ -30,6 +30,7 @@ jobs:
           key: mongodb-binaries-${{ runner.os }}-${{ hashFiles('backend/package-lock.json') }}
       - run: npm ci
       - run: npm run lint
+      - run: npx tsc --noEmit
       - run: npm test
 
   frontend:
@@ -48,6 +49,7 @@ jobs:
       - run: npm ci
       # Errors fail the build; the remaining hook-dependency warnings are reported only
       - run: npm run lint
+      - run: npx tsc --noEmit
       - run: npm run build
 
   docker:

@@ -38,6 +38,23 @@ const AdminPasswordSchema = new Schema({
     type: [String],
     default: [],
   },
+  // TOTP secret, encrypted. totpEnabled is what login checks; the pending secret is enrollment not yet confirmed.
+  totpSecret: String,
+  totpPendingSecret: String,
+  totpEnabled: {
+    type: Boolean,
+    default: false,
+  },
+  recoveryCodes: {
+    type: [
+      {
+        _id: false,
+        hash: String,
+        used: { type: Boolean, default: false },
+      },
+    ],
+    default: [],
+  },
 });
 
 // AdminPasswordSchema.index({ user: 1 });

@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Avatar, Dropdown, Layout, Typography } from 'antd';
@@ -96,6 +96,7 @@ export default function HeaderContent() {
   ];
 
   const displayName = [currentAdmin?.name, currentAdmin?.surname].filter(Boolean).join(' ');
+  const [dark, setDark] = useState(() => window.localStorage.getItem('nexora-theme') === 'dark');
 
   return (
     <Header className="app-header">
@@ -105,6 +106,19 @@ export default function HeaderContent() {
       </div>
 
       <div className="app-header-right">
+        <button
+          type="button"
+          className="app-header-settings"
+          onClick={() => {
+            const next = !dark;
+            window.localStorage.setItem('nexora-theme', next ? 'dark' : 'light');
+            setDark(next);
+            window.dispatchEvent(new Event('nexora-theme'));
+          }}
+          aria-label="Toggle color theme"
+        >
+          {dark ? 'Light' : 'Dark'}
+        </button>
         <button
           type="button"
           className="app-header-settings"

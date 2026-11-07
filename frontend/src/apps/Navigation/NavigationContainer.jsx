@@ -28,6 +28,10 @@ const { Text } = Typography;
 function resolveSelectedKey(pathname) {
   if (!pathname || pathname === '/') return 'dashboard';
   if (pathname.startsWith('/customer')) return 'customer';
+  if (pathname.startsWith('/pipeline') || pathname.startsWith('/lead') || pathname.startsWith('/contact')) return 'pipeline';
+  if (pathname.startsWith('/product') || pathname.startsWith('/warehouse')) return 'product';
+  if (pathname.startsWith('/expense') || pathname.startsWith('/vendor') || pathname.startsWith('/purchaseorder')) return 'expense';
+  if (pathname.startsWith('/billing')) return 'billing';
   if (pathname.startsWith('/invoice')) return 'invoice';
   if (pathname.startsWith('/quote')) return 'quote';
   if (pathname.startsWith('/payment/mode')) return 'paymentMode';
@@ -74,6 +78,11 @@ function Sidebar({ collapsible, isMobile = false }) {
           icon: <CustomerServiceOutlined />,
           label: <Link to={'/customer'}>{translate('customers')}</Link>,
         },
+        {
+          key: 'pipeline',
+          icon: <TeamOutlined />,
+          label: <Link to={'/pipeline'}>Pipeline</Link>,
+        },
       ],
     },
     {
@@ -103,6 +112,21 @@ function Sidebar({ collapsible, isMobile = false }) {
       type: 'group',
       label: translate('configuration'),
       children: [
+        {
+          key: 'product',
+          icon: <ContainerOutlined />,
+          label: <Link to={'/product'}>Products</Link>,
+        },
+        {
+          key: 'expense',
+          icon: <WalletOutlined />,
+          label: <Link to={'/expense'}>Expenses</Link>,
+        },
+        {
+          key: 'billing',
+          icon: <CreditCardOutlined />,
+          label: <Link to={'/billing'}>Billing</Link>,
+        },
         {
           key: 'paymentMode',
           label: <Link to={'/payment/mode'}>{translate('payment_modes')}</Link>,

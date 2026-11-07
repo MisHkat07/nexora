@@ -88,23 +88,25 @@ The work on **#15 (tenant scoping)** gets harder the longer it waits, because ev
 | [17](issues/17-self-serve-signup.md) | ✅ Self-serve signup with email verification | M | P0 |
 | [18](issues/18-team-users-invites.md) | ✅ Team members: invite, manage, deactivate | M | P0 |
 | [19](issues/19-rbac.md) | ✅ Role-based access control | L | P0 |
-| [20](issues/20-session-refresh-tokens.md) | Secure sessions with refresh tokens | M | P1 |
-| [21](issues/21-two-factor-auth.md) | Two-factor authentication | M | P2 |
-| [22](issues/22-audit-log.md) | Audit log | M | P1 |
-| [23](issues/23-per-org-settings.md) | Per-organization settings and branding | M | P1 |
+| [20](issues/20-session-refresh-tokens.md) | ✅ Secure sessions with refresh tokens | M | P1 |
+| [21](issues/21-two-factor-auth.md) | ✅ Two-factor authentication | M | P2 |
+| [22](issues/22-audit-log.md) | ✅ Audit log | M | P1 |
+| [23](issues/23-per-org-settings.md) | ✅ Per-organization settings and branding | M | P1 |
 
 ## M3 — Get Paid
 *Exit criteria: a client receives an invoice email, opens the portal, pays by card, and the invoice is marked paid automatically.*
 
+Card checkout uses Stripe when `STRIPE_SECRET_KEY` is set. Until then, portal pay and webhooks record a test payment. Recurring invoices and reminders run on `npm run worker` (also started by the web process).
+
 | # | Issue | Size | Pri |
 |---|---|---|---|
-| [24](issues/24-online-payments-stripe.md) | Online invoice payments + webhooks | L | P0 |
-| [25](issues/25-recurring-invoices.md) | Recurring invoice scheduler | M | P1 |
-| [26](issues/26-background-jobs.md) | Background job queue | M | P1 |
-| [27](issues/27-client-portal.md) | Client portal: view, accept, pay | L | P1 |
-| [28](issues/28-payment-reminders.md) | Automatic payment reminders | M | P1 |
-| [29](issues/29-credit-notes-refunds.md) | Credit notes and refunds | M | P2 |
-| [30](issues/30-multi-currency.md) | Multi-currency with exchange rates | M | P2 |
+| [24](issues/24-online-payments-stripe.md) | ✅ Online invoice payments + webhooks | L | P0 |
+| [25](issues/25-recurring-invoices.md) | ✅ Recurring invoice scheduler | M | P1 |
+| [26](issues/26-background-jobs.md) | ✅ Background job queue | M | P1 |
+| [27](issues/27-client-portal.md) | ✅ Client portal: view, accept, pay | L | P1 |
+| [28](issues/28-payment-reminders.md) | ✅ Automatic payment reminders | M | P1 |
+| [29](issues/29-credit-notes-refunds.md) | ✅ Credit notes and refunds | M | P2 |
+| [30](issues/30-multi-currency.md) | ✅ Multi-currency with exchange rates | M | P2 |
 | [54](issues/54-real-email-sending.md) | ✅ Implement document email sending | M | P0 |
 | [55](issues/55-quote-to-invoice-conversion.md) | ✅ Implement quote → invoice conversion | S | P0 |
 
@@ -113,47 +115,49 @@ The work on **#15 (tenant scoping)** gets harder the longer it waits, because ev
 
 | # | Issue | Size | Pri |
 |---|---|---|---|
-| [31](issues/31-contacts.md) | Contacts: multiple people per customer | M | P1 |
-| [32](issues/32-leads-deals-pipeline.md) | Leads and deals pipeline (Kanban) | L | P0 |
-| [33](issues/33-activities-timeline.md) | Activities and customer timeline | L | P1 |
-| [34](issues/34-tags-custom-fields.md) | Tags, custom fields, saved views | M | P2 |
-| [35](issues/35-import-export.md) | CSV/Excel import and export | M | P1 |
+| [31](issues/31-contacts.md) | ✅ Contacts: multiple people per customer | M | P1 |
+| [32](issues/32-leads-deals-pipeline.md) | ✅ Leads and deals pipeline (Kanban) | L | P0 |
+| [33](issues/33-activities-timeline.md) | ✅ Activities and customer timeline | L | P1 |
+| [34](issues/34-tags-custom-fields.md) | ✅ Tags, custom fields, saved views | M | P2 |
+| [35](issues/35-import-export.md) | ✅ CSV/Excel import and export | M | P1 |
 
 ## M5 — ERP
 *Exit criteria: the owner sees real profit, stock levels and receivables aging without a spreadsheet.*
 
 | # | Issue | Size | Pri |
 |---|---|---|---|
-| [36](issues/36-products-catalog.md) | Products and services catalog | M | P0 |
-| [37](issues/37-inventory.md) | Inventory: stock, movements, warehouses | L | P1 |
-| [38](issues/38-vendors-expenses.md) | Vendors and expenses | M | P1 |
-| [39](issues/39-purchase-orders.md) | Purchase orders and bills | M | P2 |
-| [40](issues/40-financial-reports.md) | Financial reports (P&L, AR aging, tax) | L | P1 |
+| [36](issues/36-products-catalog.md) | ✅ Products and services catalog | M | P0 |
+| [37](issues/37-inventory.md) | ✅ Inventory: stock, movements, warehouses | L | P1 |
+| [38](issues/38-vendors-expenses.md) | ✅ Vendors and expenses | M | P1 |
+| [39](issues/39-purchase-orders.md) | ✅ Purchase orders and bills | M | P2 |
+| [40](issues/40-financial-reports.md) | ✅ Financial reports (P&L, AR aging, tax) | L | P1 |
 
 ## M6 — UX & AI
 *Exit criteria: the product looks and feels like a modern SaaS product, and its AI features save users real time.*
 
 | # | Issue | Size | Pri |
 |---|---|---|---|
-| [41](issues/41-dashboard-analytics.md) | Dashboard redesign with real analytics | M | P1 |
-| [42](issues/42-global-search-command-palette.md) | Global search + Ctrl/Cmd+K palette | M | P2 |
-| [43](issues/43-dark-mode.md) | Dark mode and theme tokens | S | P2 |
-| [44](issues/44-notifications.md) | Notification center, real-time | M | P2 |
-| [45](issues/45-onboarding.md) | Onboarding checklist and sample data | S | P1 |
-| [46](issues/46-mobile-pwa.md) | Mobile pass + PWA + accessibility | M | P2 |
-| [47](issues/47-ai-document-drafting.md) | AI: draft invoices/quotes from plain language | M | P1 |
-| [48](issues/48-ai-receipt-capture.md) | AI: receipt capture into expenses | M | P2 |
-| [49](issues/49-ai-assistant.md) | AI assistant over business data | L | P2 |
+| [41](issues/41-dashboard-analytics.md) | ✅ Dashboard redesign with real analytics | M | P1 |
+| [42](issues/42-global-search-command-palette.md) | ✅ Global search + Ctrl/Cmd+K palette | M | P2 |
+| [43](issues/43-dark-mode.md) | ✅ Dark mode and theme tokens | S | P2 |
+| [44](issues/44-notifications.md) | ✅ Notification center, real-time | M | P2 |
+| [45](issues/45-onboarding.md) | ✅ Onboarding checklist and sample data | S | P1 |
+| [46](issues/46-mobile-pwa.md) | ✅ Mobile pass + PWA + accessibility | M | P2 |
+| [47](issues/47-ai-document-drafting.md) | ✅ AI: draft invoices/quotes from plain language | M | P1 |
+| [48](issues/48-ai-receipt-capture.md) | ✅ AI: receipt capture into expenses | M | P2 |
+| [49](issues/49-ai-assistant.md) | ✅ AI assistant over business data | L | P2 |
 
 ## M7 — Launch
 *Exit criteria: people can find the product, try it, pay for it and trust it.*
 
+Plans: free (20 invoices / month, 2 people), starter (200 / 5), pro (unlimited). A 14-day trial starts at signup. Stripe subscription checkout runs when `STRIPE_SECRET_KEY` and `STRIPE_PRICE_STARTER` / `STRIPE_PRICE_PRO` are set; without them, non-production updates the plan directly.
+
 | # | Issue | Size | Pri |
 |---|---|---|---|
-| [50](issues/50-subscription-billing.md) | SaaS plans and subscription billing | L | P1 |
-| [51](issues/51-landing-demo-docs.md) | Marketing site, demo, docs, API reference | M | P1 |
-| [52](issues/52-compliance-legal.md) | Legal pages, data export/deletion, backups | M | P1 |
-| [53](issues/53-typescript-migration.md) | Incremental TypeScript migration | L | P2 |
+| [50](issues/50-subscription-billing.md) | ✅ SaaS plans and subscription billing | L | P1 |
+| [51](issues/51-landing-demo-docs.md) | ✅ Marketing site, demo, docs, API reference | M | P1 |
+| [52](issues/52-compliance-legal.md) | ✅ Legal pages, data export/deletion, backups | M | P1 |
+| [53](issues/53-typescript-migration.md) | ✅ Incremental TypeScript migration | L | P2 |
 
 ---
 

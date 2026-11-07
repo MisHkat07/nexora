@@ -6,6 +6,7 @@ const INITIAL_SETTINGS_STATE = {
   company_settings: {},
   app_settings: {},
   money_format_settings: {},
+  brand_settings: {},
 };
 
 const INITIAL_STATE = {

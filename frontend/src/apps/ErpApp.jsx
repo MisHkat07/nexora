@@ -12,9 +12,14 @@ import PageLoader from '@/components/PageLoader';
 import { settingsAction } from '@/redux/settings/actions';
 
 import { selectSettings } from '@/redux/settings/selectors';
+import { selectCurrentAdmin } from '@/redux/auth/selectors';
+import TwoFactorEnroll from '@/components/TwoFactorEnroll';
 
 import AppRouter from '@/router/AppRouter';
 import VerifyEmailBanner from '@/components/VerifyEmailBanner';
+import OnboardingBanner from '@/components/OnboardingBanner';
+import CommandPalette from '@/components/CommandPalette';
+import NotificationsBell from '@/components/NotificationsBell';
 
 import useResponsive from '@/hooks/useResponsive';
 
@@ -37,6 +42,18 @@ export default function ErpCrmApp() {
   // const appSettings = useSelector(selectAppSettings);
 
   const { isSuccess: settingIsloaded } = useSelector(selectSettings);
+  const currentAdmin = useSelector(selectCurrentAdmin);
+  const page = currentAdmin?.mustEnrollTwoFactor ? (
+    <TwoFactorEnroll />
+  ) : (
+    <>
+      <VerifyEmailBanner />
+      <OnboardingBanner />
+      <CommandPalette />
+      <NotificationsBell />
+      <AppRouter />
+    </>
+  );
 
   // useEffect(() => {
   //   const { loadDefaultLang } = storePersist.get('firstVisit');
@@ -63,8 +80,7 @@ export default function ErpCrmApp() {
                 maxWidth: 'none',
               }}
             >
-              <VerifyEmailBanner />
-              <AppRouter />
+              {page}
             </Content>
           </Layout>
         ) : (
@@ -80,8 +96,7 @@ export default function ErpCrmApp() {
                 maxWidth: 'none',
               }}
             >
-              <VerifyEmailBanner />
-              <AppRouter />
+              {page}
             </Content>
           </Layout>
         )}

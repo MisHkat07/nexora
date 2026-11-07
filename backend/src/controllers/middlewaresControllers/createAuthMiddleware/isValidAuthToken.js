@@ -5,6 +5,17 @@ const mongoose = require('mongoose');
 const { sendError } = require('@/handlers/errorHandlers');
 const { withoutTenant, setCurrentTenant } = require('@/tenancy/context');
 const { findActiveSession } = require('@/auth/sessions');
+const { accountFlags } = require('@/auth/account');
+
+// Until 2FA is enrolled, the account can load the shell and finish setup, and nothing else
+const enrollmentAllowed = (req) => {
+  const path = (req.originalUrl || '').split('?')[0];
+  if (req.method === 'GET' && (path.startsWith('/api/setting') || path === '/api/organization')) return true;
+  if (path === '/api/logout' || path === '/api/auth/logout' || path === '/api/auth/logout-all') return true;
+  if (path.startsWith('/api/auth/2fa/') || path.startsWith('/api/auth/sessions')) return true;
+  if (path.startsWith('/api/admin/profile')) return true;
+  return false;
+};
 
 const unauthorized = (res, message) =>
   res.status(401).json({
@@ -63,6 +74,22 @@ const isValidAuthToken = async (req, res, next, { userModel, jwtSecret = 'JWT_SE
     req.emailVerified = Boolean(userPassword.emailVerified);
     // From here on, every query in this request is limited to the user's organization
     setCurrentTenant(user.organizationId);
+
+    const flags = await accountFlags(user, userPassword);
+    req.mustEnrollTwoFactor = flags.mustEnrollTwoFactor;
+    if (flags.mustEnrollTwoFactor && !enrollmentAllowed(req)) {
+      return res.status(403).json({
+        success: false,
+        result: null,
+        message: 'Your organization requires two-factor authentication. Set it up to continue.',
+        code: 'two_factor_enrollment_required',
+      });
+    }
+
+    // lastUsed is for the session list; writing it on every request would hammer the database
+    if (!session.lastUsedAt || Date.now() - new Date(session.lastUsedAt).getTime() > 5 * 60 * 1000) {
+      mongoose.model('Session').updateOne({ _id: session._id }, { $set: { lastUsedAt: new Date() } }).exec();
+    }
     next();
   } catch (error) {
     return sendError(error, req, res);

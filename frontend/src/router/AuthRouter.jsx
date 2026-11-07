@@ -8,14 +8,22 @@ import ResetPassword from '@/pages/ResetPassword';
 import Register from '@/pages/Register';
 import VerifyEmail from '@/pages/VerifyEmail';
 import AcceptInvite from '@/pages/AcceptInvite';
+import Landing from '@/pages/Landing';
+import Legal from '@/pages/Legal';
+import Docs from '@/pages/Docs';
+import Portal from '@/pages/Portal';
 
 
 export default function AuthRouter() {
 
   return (
     <Routes>
-      <Route element={<Login />} path="/" />
+      <Route element={<Landing />} path="/" />
       <Route element={<Login />} path="/login" />
+      <Route element={<Legal />} path="/privacy" />
+      <Route element={<Legal />} path="/terms" />
+      <Route element={<Docs />} path="/docs" />
+      <Route element={<Portal />} path="/p/:token" />
       <Route element={<Navigate to="/login" replace />} path="/logout" />
       <Route element={<ForgetPassword />} path="/forgetpassword" />
       <Route element={<ResetPassword />} path="/resetpassword/:userId/:resetToken" />

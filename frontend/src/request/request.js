@@ -3,17 +3,15 @@ import { API_BASE_URL } from '@/config/serverApiConfig';
 
 import errorHandler from './errorHandler';
 import successHandler from './successHandler';
-import storePersist from '@/redux/storePersist';
+import { attachSession } from '@/auth/session';
+
+axios.defaults.baseURL = API_BASE_URL;
+axios.defaults.withCredentials = true;
+attachSession(axios);
 
 function includeToken() {
   axios.defaults.baseURL = API_BASE_URL;
-
   axios.defaults.withCredentials = true;
-  const auth = storePersist.get('auth');
-
-  if (auth) {
-    axios.defaults.headers.common['Authorization'] = `Bearer ${auth.current.token}`;
-  }
 }
 
 const request = {

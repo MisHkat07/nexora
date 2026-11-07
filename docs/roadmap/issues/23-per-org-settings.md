@@ -9,9 +9,9 @@ depends_on: [15]
 `Setting` documents are global. Each organization needs its own company info, logo, currency, number prefixes, and email/PDF branding.
 
 ## Tasks
-- [ ] Scope `Setting` by `organizationId`; cache per org (the `node-cache` already in use) with invalidation on update
-- [ ] Settings for brand color + email footer + PDF template choice
-- [ ] Load org settings in emails and PDFs
+- [x] Scope `Setting` by `organizationId`; cache per org (the `node-cache` already in use) with invalidation on update
+- [x] Settings for brand color + email footer + PDF template choice
+- [x] Load org settings in emails and PDFs
 
 ## Acceptance criteria
 - Two orgs show different logos, currencies and invoice prefixes on the same deployment

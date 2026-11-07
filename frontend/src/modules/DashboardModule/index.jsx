@@ -20,6 +20,7 @@ import RecentTable from './components/RecentTable';
 import SummaryCard from './components/SummaryCard';
 import PreviewCard from './components/PreviewCard';
 import CustomerPreviewCard from './components/CustomerPreviewCard';
+import Insights from './components/Insights';
 
 import { selectMoneyFormat } from '@/redux/settings/selectors';
 import { useSelector } from 'react-redux';
@@ -139,6 +140,7 @@ export default function DashboardModule() {
   if (money_format_settings) {
     return (
       <div className="page-module dashboard">
+        <Insights />
         <Row gutter={[20, 20]}>
           <SummaryCard
             title={translate('Invoices')}

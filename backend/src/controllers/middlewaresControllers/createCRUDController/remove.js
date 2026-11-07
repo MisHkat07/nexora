@@ -1,3 +1,5 @@
+const { record } = require('@/audit/record');
+
 const remove = async (Model, req, res) => {
   // Soft delete: mark the document as removed
   const result = await Model.findOneAndUpdate(
@@ -17,13 +19,13 @@ const remove = async (Model, req, res) => {
       result: null,
       message: 'No document found ',
     });
-  } else {
-    return res.status(200).json({
+  }
+  await record({ req, action: 'delete', entity: Model.modelName.toLowerCase(), entityId: result._id });
+  return res.status(200).json({
       success: true,
       result,
       message: 'Successfully Deleted the document ',
     });
-  }
 };
 
 module.exports = remove;

@@ -1,7 +1,11 @@
 const mongoose = require('mongoose');
+
+const { ensureDefaults } = require('@/middlewares/settings/loadSettings');
+
 const Model = mongoose.model('Setting');
 
 const listAll = async (req, res) => {
+  await ensureDefaults();
   const sort = parseInt(req.query.sort) || 'desc';
 
   //  Query the database for a list of all results

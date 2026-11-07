@@ -18,6 +18,9 @@ const schema = new mongoose.Schema({
   country: String,
   address: String,
   email: String,
+  remindersOff: { type: Boolean, default: false },
+  tags: [{ type: mongoose.Schema.ObjectId, ref: 'Tag' }],
+  custom: { type: Map, of: String },
   createdBy: { type: mongoose.Schema.ObjectId, ref: 'Admin' },
   assigned: { type: mongoose.Schema.ObjectId, ref: 'Admin' },
   created: {

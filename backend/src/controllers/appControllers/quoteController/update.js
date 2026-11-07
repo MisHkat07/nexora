@@ -4,6 +4,9 @@ const Model = mongoose.model('Quote');
 
 const { calculate } = require('@/helpers');
 const schema = require('./schemaValidate');
+const { recordDocumentChange } = require('@/audit/record');
+
+const AUDITED_FIELDS = ['total', 'subTotal', 'taxTotal', 'taxRate', 'discount', 'items', 'status', 'notes', 'client', 'date'];
 
 const update = async (req, res) => {
   const { error, value } = schema.validate(req.body);
@@ -14,6 +17,8 @@ const update = async (req, res) => {
       message: error.details[0]?.message,
     });
   }
+
+  const previous = await Model.findOne({ _id: req.params.id, removed: false }).exec();
 
   const { items = [], taxRate = 0 } = value;
 
@@ -58,7 +63,15 @@ const update = async (req, res) => {
     new: true, // return the new result instead of the old one
   }).exec();
 
-  // Returning successfull response
+  if (previous && result) {
+    await recordDocumentChange({
+      req,
+      entity: 'quote',
+      before: previous,
+      after: result,
+      fields: AUDITED_FIELDS,
+    });
+  }
 
   return res.status(200).json({
     success: true,

@@ -3,10 +3,12 @@ import { API_BASE_URL } from '@/config/serverApiConfig';
 import axios from 'axios';
 import errorHandler from '@/request/errorHandler';
 import successHandler from '@/request/successHandler';
+import { attachSession, getAccessToken } from '@/auth/session';
 
 // Own instance: '@/request' sets axios.defaults.baseURL after login, which would double the
 // /api/ prefix on these calls (e.g. logging out and back in without reloading the page)
 const http = axios.create({ baseURL: API_BASE_URL, withCredentials: true });
+attachSession(http);
 
 export const login = async ({ loginData }) => {
   try {
@@ -88,11 +90,13 @@ export const resetPassword = async ({ resetPasswordData }) => {
     return errorHandler(error);
   }
 };
-// The caller passes the token: the stored session is already cleared when this runs
-export const logout = async ({ token } = {}) => {
+// Ends this device's session. The refresh cookie is sent because the path is /api/auth.
+export const logout = async () => {
   try {
-    const response = await http.post(`logout?timestamp=${new Date().getTime()}`, null, {
+    const token = getAccessToken();
+    const response = await http.post(`auth/logout?timestamp=${new Date().getTime()}`, null, {
       headers: token ? { Authorization: `Bearer ${token}` } : {},
+      skipAuthRefresh: true,
     });
     const { status, data } = response;
 
@@ -117,6 +121,20 @@ export const inviteDetails = async ({ userId, token }) => {
     return response.data;
   } catch (error) {
     return error.response?.data || { success: false, message: 'Could not reach the server' };
+  }
+};
+
+// Second login step when the account has two-factor authentication on
+export const verifyTwoFactor = async ({ ticket, code, recoveryCode, remember }) => {
+  try {
+    const response = await http.post('auth/2fa/challenge', { ticket, code, recoveryCode, remember });
+    successHandler(
+      { data: response.data, status: response.status },
+      { notifyOnSuccess: false, notifyOnFailed: true }
+    );
+    return response.data;
+  } catch (error) {
+    return errorHandler(error);
   }
 };
 

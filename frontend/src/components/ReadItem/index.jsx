@@ -11,6 +11,7 @@ import { valueByString } from '@/utils/helpers';
 
 import useLanguage from '@/locale/useLanguage';
 import { useDate } from '@/settings';
+import RecordHistory from '@/components/RecordHistory';
 
 export default function ReadItem({ config }) {
   const { dateFormat } = useDate();
@@ -53,5 +54,12 @@ export default function ReadItem({ config }) {
     );
   });
 
-  return <div style={show}>{itemsList}</div>;
+  return (
+    <div style={show}>
+      {itemsList}
+      {config.entity === 'client' && currentResult?._id && (
+        <RecordHistory entity="client" id={currentResult._id} />
+      )}
+    </div>
+  );
 }

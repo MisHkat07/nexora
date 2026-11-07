@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const Model = mongoose.model('Invoice');
 
 const { calculate } = require('@/helpers');
+const { record } = require('@/audit/record');
 const { increaseBySettingKey } = require('@/middlewares/settings');
 const schema = require('./schemaValidate');
 
@@ -46,6 +47,7 @@ const create = async (req, res) => {
 
   body['paymentStatus'] = paymentStatus;
   body['createdBy'] = req.admin._id;
+  await require('@/features/billing').assertInvoiceAllowed();
 
   // Creating a new document in the collection
   const result = await new Model(body).save();
@@ -62,6 +64,7 @@ const create = async (req, res) => {
   increaseBySettingKey({
     settingKey: 'last_invoice_number',
   });
+  await record({ req, action: 'create', entity: 'invoice', entityId: result._id });
 
   // Returning successfull response
   return res.status(200).json({

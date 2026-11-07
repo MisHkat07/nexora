@@ -1,4 +1,5 @@
 const { validateBody } = require('./queryPolicy');
+const { record } = require('@/audit/record');
 
 const create = async (Model, req, res) => {
   const body = validateBody(Model.modelName, req.body);
@@ -9,6 +10,8 @@ const create = async (Model, req, res) => {
     removed: false,
     createdBy: req.admin?._id,
   }).save();
+
+  await record({ req, action: 'create', entity: Model.modelName.toLowerCase(), entityId: result._id });
 
   // Returning successfull response
   return res.status(200).json({
